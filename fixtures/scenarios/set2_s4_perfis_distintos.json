@@ -1,0 +1,123 @@
+[
+  {
+    "mr_id": "MR-Ana",
+    "author": "Ana",
+    "title": "feat: mr-ana implementation",
+    "description": "Implementation for MR-Ana",
+    "type_declared": "feat",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [
+      {
+        "id": 1,
+        "title": "Issue"
+      }
+    ],
+    "diff_summary": [
+      {
+        "file": "domain/code_0.py",
+        "additions": 38,
+        "deletions": 0,
+        "content_excerpt": "# domain code"
+      },
+      {
+        "file": "api/code_1.py",
+        "additions": 37,
+        "deletions": 0,
+        "content_excerpt": "# api code"
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [],
+    "quantitative": {
+      "X": 0.429,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-Bruno",
+    "author": "Bruno",
+    "title": "test: mr-bruno implementation",
+    "description": "Implementation for MR-Bruno",
+    "type_declared": "test",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [],
+    "diff_summary": [
+      {
+        "file": "tests/code_0.py",
+        "additions": 70,
+        "deletions": 0,
+        "content_excerpt": "# tests code"
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [],
+    "quantitative": {
+      "X": 0.387,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-Carla",
+    "author": "Carla",
+    "title": "ci: mr-carla implementation",
+    "description": "Implementation for MR-Carla",
+    "type_declared": "ci",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [],
+    "diff_summary": [
+      {
+        "file": "infra/code_0.py",
+        "additions": 33,
+        "deletions": 0,
+        "content_excerpt": "# infra code"
+      },
+      {
+        "file": "config/code_1.py",
+        "additions": 32,
+        "deletions": 0,
+        "content_excerpt": "# config code"
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [],
+    "quantitative": {
+      "X": 0.383,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-Diego",
+    "author": "Diego",
+    "title": "docs: mr-diego implementation",
+    "description": "Implementation for MR-Diego",
+    "type_declared": "docs",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [],
+    "diff_summary": [
+      {
+        "file": "docs/code_0.py",
+        "additions": 5,
+        "deletions": 0,
+        "content_excerpt": "# docs code"
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [],
+    "quantitative": {
+      "X": 0.089,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  }
+]

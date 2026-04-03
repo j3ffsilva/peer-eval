@@ -1,0 +1,223 @@
+[
+  {
+    "mr_id": "MR-1",
+    "author": "Ana",
+    "title": "feat: mr-1 implementation",
+    "description": "Implementation for MR-1",
+    "type_declared": "feat",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [
+      {
+        "id": 1,
+        "title": "Issue"
+      }
+    ],
+    "diff_summary": [
+      {
+        "file": "api/code_0.py",
+        "additions": 27,
+        "deletions": 0,
+        "content_excerpt": "# api code"
+      },
+      {
+        "file": "domain/code_1.py",
+        "additions": 27,
+        "deletions": 0,
+        "content_excerpt": "# domain code"
+      },
+      {
+        "file": "tests/code_2.py",
+        "additions": 26,
+        "deletions": 0,
+        "content_excerpt": "# tests code"
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [],
+    "quantitative": {
+      "X": 0.464,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-2",
+    "author": "Ana",
+    "title": "fix: mr-2 implementation",
+    "description": "Implementation for MR-2",
+    "type_declared": "fix",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [],
+    "diff_summary": [
+      {
+        "file": "core/code_0.py",
+        "additions": 35,
+        "deletions": 0,
+        "content_excerpt": "# core code"
+      },
+      {
+        "file": "services/code_1.py",
+        "additions": 35,
+        "deletions": 0,
+        "content_excerpt": "# services code"
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [],
+    "quantitative": {
+      "X": 0.395,
+      "S": 0.9,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-3",
+    "author": "Ana",
+    "title": "refactor: mr-3 implementation",
+    "description": "Implementation for MR-3",
+    "type_declared": "refactor",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [],
+    "diff_summary": [
+      {
+        "file": "domain/code_0.py",
+        "additions": 30,
+        "deletions": 0,
+        "content_excerpt": "# domain code"
+      },
+      {
+        "file": "tests/code_1.py",
+        "additions": 30,
+        "deletions": 0,
+        "content_excerpt": "# tests code"
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [],
+    "quantitative": {
+      "X": 0.369,
+      "S": 1.0,
+      "Q": 0.0
+    }
+  },
+  {
+    "mr_id": "MR-4",
+    "author": "Bruno",
+    "title": "feat: mr-4 implementation",
+    "description": "Implementation for MR-4",
+    "type_declared": "feat",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [],
+    "diff_summary": [
+      {
+        "file": "api/code_0.py",
+        "additions": 27,
+        "deletions": 0,
+        "content_excerpt": "# api code"
+      },
+      {
+        "file": "domain/code_1.py",
+        "additions": 27,
+        "deletions": 0,
+        "content_excerpt": "# domain code"
+      },
+      {
+        "file": "tests/code_2.py",
+        "additions": 26,
+        "deletions": 0,
+        "content_excerpt": "# tests code"
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [
+      "Carla"
+    ],
+    "quantitative": {
+      "X": 0.464,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-5",
+    "author": "Carla",
+    "title": "fix: mr-5 implementation",
+    "description": "Implementation for MR-5",
+    "type_declared": "fix",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [
+      {
+        "id": 1,
+        "title": "Issue"
+      }
+    ],
+    "diff_summary": [
+      {
+        "file": "core/code_0.py",
+        "additions": 35,
+        "deletions": 0,
+        "content_excerpt": "# core code"
+      },
+      {
+        "file": "tests/code_1.py",
+        "additions": 35,
+        "deletions": 0,
+        "content_excerpt": "# tests code"
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [
+      "Bruno",
+      "Diego"
+    ],
+    "quantitative": {
+      "X": 0.395,
+      "S": 0.9,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-6",
+    "author": "Diego",
+    "title": "feat: mr-6 implementation",
+    "description": "Implementation for MR-6",
+    "type_declared": "feat",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [],
+    "diff_summary": [
+      {
+        "file": "services/code_0.py",
+        "additions": 33,
+        "deletions": 0,
+        "content_excerpt": "# services code"
+      },
+      {
+        "file": "infra/code_1.py",
+        "additions": 32,
+        "deletions": 0,
+        "content_excerpt": "# infra code"
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [
+      "Bruno"
+    ],
+    "quantitative": {
+      "X": 0.383,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  }
+]

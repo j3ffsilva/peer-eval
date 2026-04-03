@@ -1,0 +1,59 @@
+[
+  {
+    "mr_id": "MR-Ana",
+    "author": "Ana",
+    "title": "fix: mr-ana implementation",
+    "description": "Implementation for MR-Ana",
+    "type_declared": "fix",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [
+      {
+        "id": 1,
+        "title": "Issue"
+      }
+    ],
+    "diff_summary": [
+      {
+        "file": "domain/code_0.py",
+        "additions": 8,
+        "deletions": 0,
+        "content_excerpt": "# domain code"
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [],
+    "quantitative": {
+      "X": 0.103,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-Carla",
+    "author": "Carla",
+    "title": "docs: mr-carla implementation",
+    "description": "Implementation for MR-Carla",
+    "type_declared": "docs",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [],
+    "diff_summary": [
+      {
+        "file": "docs/code_0.py",
+        "additions": 20,
+        "deletions": 0,
+        "content_excerpt": "# docs code"
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [],
+    "quantitative": {
+      "X": 0.155,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  }
+]
