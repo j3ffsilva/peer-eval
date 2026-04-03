@@ -1,0 +1,4014 @@
+{
+  "generated_at": "2026-04-03T22:25:25.154651Z",
+  "model_version": "3.0",
+  "configuration": {
+    "L": 0.36,
+    "ALPHA": 0.85,
+    "BETA": 0.15,
+    "GATE_A": 0.3,
+    "GATE_X": 0.2,
+    "GATE_PENALTY": 0.1,
+    "T_AUTHOR": 0.7,
+    "T_REVIEWER_MAX": 0.3
+  },
+  "artifacts": {
+    "total_mrs": 21,
+    "mrs": [
+      {
+        "mr_id": "MR-112",
+        "author": "nicole.silva",
+        "title": "Docs/ first part of evolutionary management",
+        "description": "This pull request includes the updates and improvements developed during the current sprint.\n\n### Changes implemented:\n\n* Enhancements based on feedback from the previous sprint\n* Adjustments to existing features to improve usability and performance\n* Minor bug fixes identified during development\n* Code refactoring to improve maintainability\n\n### Notes:\n\n* All changes were tested in the development environment\n* No breaking changes were introduced\n\n### Next steps:\n\n* Review and validation by the team\n* Merge into `develop` branch after approval",
+        "type_declared": "unknown",
+        "opened_at": "2026-03-26T18:34:49.921Z",
+        "merged_at": "2026-03-26T18:35:45.414Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/ProjectManagement.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "   - [2.4 Sprint Review 4 (Current Sprint)](#24-sprint-review-4-current-sprint)      - [2.4.1 Strengths](#241-strengths)      - [2.4.2 Weaknesses and Verifiable Improvement Actions](#242-weaknesses-and-verifiable-improvement-actions)      - [2.4.3 Improvement Plan for the Next Sprint](#243-improveme"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.0648,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-112",
+          "author": "nicole.silva",
+          "E": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153387Z"
+        }
+      },
+      {
+        "mr_id": "MR-108",
+        "author": "henrique.diniz",
+        "title": "docs: add regression model and 3D surface plot to Project.md",
+        "description": "Adds 3D surface plot visualization for the quadratic regression model.\n\n**Files:**\n- docs/assets/Project/phase2-surface-plot.png",
+        "type_declared": "docs",
+        "opened_at": "2026-03-26T17:37:23.600Z",
+        "merged_at": "2026-03-26T18:26:56.200Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/assets/Project/phase2-surface-plot.png",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.0648,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-108",
+          "author": "henrique.diniz",
+          "E": {
+            "value": 0.1,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153399Z"
+        }
+      },
+      {
+        "mr_id": "MR-106",
+        "author": "henrique.diniz",
+        "title": "docs: collect benchmark data for optimization analysis",
+        "description": "Collects benchmark data with 36 measurements (12 combinations x 3 repetitions) for throughput analysis.\n\n**Files added:**\n- scripts/benchmark-data/benchmark-raw.csv\n- scripts/benchmark-data/benchmark-results.csv\n- scripts/benchmark-data/benchmark-results.md\n- scripts/benchmark-data/regression-results.json\n- scripts/benchmark-data/regression-results.md",
+        "type_declared": "docs",
+        "opened_at": "2026-03-26T17:30:02.190Z",
+        "merged_at": "2026-03-26T17:40:38.832Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "scripts/benchmark-data/benchmark-raw.csv",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "batch_size,worker_count,repetition,throughput_records_per_second,elapsed_seconds 100,2,1,96525.10,0.5180 100,2,2,97847.36,0.5110 100,2,3,98425.20,0.5080 100,4,1,95238.10,0.5250 100,4,2,97465.89,0.5130 100,4,3,95969.29,0.5210 100,6,1,91911.76,0.5440 100,6,2,92421.44,0.5410 100,6,3,96153.85,0.5200 250"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-results.csv",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "batch_size,worker_count,avg_throughput_records_per_second 100,2,97599.22 100,4,96224.42 100,6,93495.68 250,2,83056.63 250,4,81042.50 250,6,80473.40 500,2,99076.94 500,4,97088.35 500,6,96657.70 1000,2,99207.13 1000,4,98103.42 1000,6,98489.91"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-results.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Throughput Benchmark Results  ## Introduction  This document presents the results of the throughput benchmark conducted on the DataON queue processing system.  The main objective was to collect experimental data to identify the optimal configuration of **Batch Size (B)** and **Worker Count (W)** t"
+          },
+          {
+            "file": "scripts/benchmark-data/regression-results.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   \"model\": \"T(B,W) = aB² + cW² + dBW + eB + fW + g\",   \"coefficients\": {     \"a\": 0.011742586620698159,     \"c\": 98.10093750036322,     \"d\": 0.8354711512719177,     \"e\": -6.783861300787066,     \"f\": -1785.1647824668325,     \"g\": 96395.23815015052   },   \"r2\": 0.27675786186220475,   \"adjustedR2\": -"
+          },
+          {
+            "file": "scripts/benchmark-data/regression-results.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Regression Analysis Results  ## Introduction  This document presents the results of the quadratic regression analysis performed on the benchmark data. The goal is to model throughput **T** as a function of **Batch Size (B)** and **Worker Count (W)** to find the optimal system configuration.  ### M"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.1543,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-106",
+          "author": "henrique.diniz",
+          "E": {
+            "value": 0.1,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153410Z"
+        }
+      },
+      {
+        "mr_id": "MR-105",
+        "author": "henrique.diniz",
+        "title": "feat: add BullMQ benchmark scripts for math artifact",
+        "description": "Adds benchmark scripts (runBenchmark.js, fitRegression.js) for measuring system throughput with BullMQ queue system.\n\n**Files added:**\n- scripts/benchmark/runBenchmark.js\n- scripts/benchmark/fitRegression.js\n- package.json (new scripts)",
+        "type_declared": "feat",
+        "opened_at": "2026-03-26T17:29:46.955Z",
+        "merged_at": "2026-03-26T17:39:58.392Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "scripts/benchmark/fitRegression.js",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "/**  * Quadratic Surface Regression for Benchmark Data  *   * Fits the model: T(B,W) = aB² + cW² + dBW + eB + fW + g  * using Ordinary Least Squares (OLS) on real benchmark data.  *   * Usage: node scripts/benchmark/fitRegression.js  */  const fs = require('fs') const path = require('path')  functio"
+          },
+          {
+            "file": "scripts/benchmark/runBenchmark.js",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "/**  * Real Benchmark for BullMQ Queue System  *   * This script measures actual throughput of the queue processing system  * by varying Batch Size (B) and Worker Count (W).  *   * Usage: node scripts/benchmark/runBenchmark.js  * Requires: REDIS_URL environment variable  */  const { Queue, Worker } "
+          },
+          {
+            "file": "package.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    \"test\": \"jest\",     \"benchmark:run\": \"node scripts/benchmark/runBenchmark.js\",     \"benchmark:regression\": \"node scripts/benchmark/fitRegression.js\""
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.1437,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-105",
+          "author": "henrique.diniz",
+          "E": {
+            "value": 0.3,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153417Z"
+        }
+      },
+      {
+        "mr_id": "MR-93",
+        "author": "henrique.diniz",
+        "title": "docs: add benchmark instructions to README",
+        "description": "- Add runBenchmark.js for measuring queue throughput\n- Add fitRegression.js for quadratic surface regression\n- Update package.json with benchmark:run and benchmark:regression scripts\n\nPart of Math Artifact (Appendix A)",
+        "type_declared": "docs",
+        "opened_at": "2026-03-25T18:22:44.884Z",
+        "merged_at": "2026-03-26T17:09:57.354Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/assets/Project/phase2-surface-plot.png",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "docs/Project.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    - [Appendix A: System Configuration and Optimization Report](#appendix-a-system-configuration-and-optimization-report)       - [A.1 Data Collection (Benchmarking)](#a1-data-collection-benchmarking)       - [A.2 The Performance Model](#a2-the-performance-model)       - [A.3 Optimization Derivatio"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-raw.csv",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "batch_size,worker_count,repetition,throughput_records_per_second,elapsed_seconds 100,2,1,96525.10,0.5180 100,2,2,97847.36,0.5110 100,2,3,98425.20,0.5080 100,4,1,95238.10,0.5250 100,4,2,97465.89,0.5130 100,4,3,95969.29,0.5210 100,6,1,91911.76,0.5440 100,6,2,92421.44,0.5410 100,6,3,96153.85,0.5200 250"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-results.csv",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "batch_size,worker_count,avg_throughput_records_per_second 100,2,97599.22 100,4,96224.42 100,6,93495.68 250,2,83056.63 250,4,81042.50 250,6,80473.40 500,2,99076.94 500,4,97088.35 500,6,96657.70 1000,2,99207.13 1000,4,98103.42 1000,6,98489.91"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-results.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Benchmark Results  ## Raw Data (Trial-level)  | Batch Size (B) | Worker Count (W) | Rep | Throughput (records/s) | |---:|---:|---:|---:| | 100 | 2 | 1 | 96525.10 | | 100 | 2 | 2 | 97847.36 | | 100 | 2 | 3 | 98425.20 | | 100 | 4 | 1 | 95238.10 | | 100 | 4 | 2 | 97465.89 | | 100 | 4 | 3 | 95969.29 |"
+          },
+          {
+            "file": "scripts/benchmark-data/optimization-derivation.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Optimization Derivation - Detailed Calculations  This document provides the step-by-step calculations for the multivariable calculus optimization analysis.  ## Fitted Model  $$T(B,W) = aB^2 + cW^2 + dBW + eB + fW + g$$  ### Coefficients  | Coefficient | Value | |-------------|-------| | a | 0.0117"
+          },
+          {
+            "file": "scripts/benchmark-data/regression-results.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   \"model\": \"T(B,W) = aB² + cW² + dBW + eB + fW + g\",   \"coefficients\": {     \"a\": 0.011742586620698159,     \"c\": 98.10093750036322,     \"d\": 0.8354711512719177,     \"e\": -6.783861300787066,     \"f\": -1785.1647824668325,     \"g\": 96395.23815015052   },   \"r2\": 0.27675786186220475,   \"adjustedR2\": -"
+          },
+          {
+            "file": "scripts/benchmark-data/regression-results.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Regression Analysis Results  ## Quadratic Surface Model  $$ T(B,W) = aB^2 + cW^2 + dBW + eB + fW + g $$  ## Fitted Coefficients  - $a = 0.0117425866$ - $c = 98.1009375004$ - $d = 0.8354711513$ - $e = -6.7838613008$ - $f = -1785.1647824668$ - $g = 96395.2381501505$  ## Model Quality  - $R^2 = 0.276"
+          },
+          {
+            "file": "scripts/benchmark-data/strategic-recommendation.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Strategic Recommendation - Configuration Guide  This document provides practical guidance for configuring the BullMQ queue system based on the mathematical optimization analysis.  ## Recommended Production Configuration  | Parameter | Value | Justification | |-----------|-------|---------------| |"
+          },
+          {
+            "file": "README.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "<br>  # Running Benchmarks  The project includes a benchmark suite to measure queue processing throughput and optimize system configuration (Batch Size and Worker Count).  ## Prerequisites  - Node.js installed - Redis running locally (`redis-server`) or configured via `REDIS_URL` in `.env`  ## Avail"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.2799,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-93",
+          "author": "henrique.diniz",
+          "E": {
+            "value": 0.1,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.44000000000000006,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153428Z"
+        }
+      },
+      {
+        "mr_id": "MR-91",
+        "author": "henrique.diniz",
+        "title": "docs: add detailed optimization derivation calculations",
+        "description": "- Add runBenchmark.js for measuring queue throughput\n- Add fitRegression.js for quadratic surface regression\n- Update package.json with benchmark:run and benchmark:regression scripts\n\nPart of Math Artifact (Appendix A)",
+        "type_declared": "docs",
+        "opened_at": "2026-03-25T18:20:49.663Z",
+        "merged_at": "2026-03-26T17:09:56.872Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/assets/Project/phase2-surface-plot.png",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "docs/Project.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  - [Appendix A: System Configuration and Optimization Report](#appendix-a-system-configuration-and-optimization-report)   - [23. Conclusion](#23-conclusion) ## 22. Related Technical Documents ## Appendix A: System Configuration and Optimization Report  ### A.1 Data Collection (Benchmarking)  Object"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-raw.csv",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "batch_size,worker_count,repetition,throughput_records_per_second,elapsed_seconds 100,2,1,96525.10,0.5180 100,2,2,97847.36,0.5110 100,2,3,98425.20,0.5080 100,4,1,95238.10,0.5250 100,4,2,97465.89,0.5130 100,4,3,95969.29,0.5210 100,6,1,91911.76,0.5440 100,6,2,92421.44,0.5410 100,6,3,96153.85,0.5200 250"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-results.csv",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "batch_size,worker_count,avg_throughput_records_per_second 100,2,97599.22 100,4,96224.42 100,6,93495.68 250,2,83056.63 250,4,81042.50 250,6,80473.40 500,2,99076.94 500,4,97088.35 500,6,96657.70 1000,2,99207.13 1000,4,98103.42 1000,6,98489.91"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-results.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Benchmark Results  ## Raw Data (Trial-level)  | Batch Size (B) | Worker Count (W) | Rep | Throughput (records/s) | |---:|---:|---:|---:| | 100 | 2 | 1 | 96525.10 | | 100 | 2 | 2 | 97847.36 | | 100 | 2 | 3 | 98425.20 | | 100 | 4 | 1 | 95238.10 | | 100 | 4 | 2 | 97465.89 | | 100 | 4 | 3 | 95969.29 |"
+          },
+          {
+            "file": "scripts/benchmark-data/optimization-derivation.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Optimization Derivation - Detailed Calculations  This document provides the step-by-step calculations for the multivariable calculus optimization analysis.  ## Fitted Model  $$T(B,W) = aB^2 + cW^2 + dBW + eB + fW + g$$  ### Coefficients  | Coefficient | Value | |-------------|-------| | a | 0.0117"
+          },
+          {
+            "file": "scripts/benchmark-data/regression-results.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   \"model\": \"T(B,W) = aB² + cW² + dBW + eB + fW + g\",   \"coefficients\": {     \"a\": 0.011742586620698159,     \"c\": 98.10093750036322,     \"d\": 0.8354711512719177,     \"e\": -6.783861300787066,     \"f\": -1785.1647824668325,     \"g\": 96395.23815015052   },   \"r2\": 0.27675786186220475,   \"adjustedR2\": -"
+          },
+          {
+            "file": "scripts/benchmark-data/regression-results.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Regression Analysis Results  ## Quadratic Surface Model  $$ T(B,W) = aB^2 + cW^2 + dBW + eB + fW + g $$  ## Fitted Coefficients  - $a = 0.0117425866$ - $c = 98.1009375004$ - $d = 0.8354711513$ - $e = -6.7838613008$ - $f = -1785.1647824668$ - $g = 96395.2381501505$  ## Model Quality  - $R^2 = 0.276"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.2311,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-91",
+          "author": "henrique.diniz",
+          "E": {
+            "value": 0.1,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.425,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153437Z"
+        }
+      },
+      {
+        "mr_id": "MR-90",
+        "author": "henrique.diniz",
+        "title": "docs: add regression model and 3D surface plot to Project.md",
+        "description": "- Add runBenchmark.js for measuring queue throughput\n- Add fitRegression.js for quadratic surface regression\n- Update package.json with benchmark:run and benchmark:regression scripts\n\nPart of Math Artifact (Appendix A)",
+        "type_declared": "docs",
+        "opened_at": "2026-03-25T18:19:46.905Z",
+        "merged_at": "2026-03-26T17:09:56.506Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/assets/Project/phase2-surface-plot.png",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "docs/Project.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  - [Appendix A: System Configuration and Optimization Report](#appendix-a-system-configuration-and-optimization-report)   - [23. Conclusion](#23-conclusion) ## 22. Related Technical Documents ## Appendix A: System Configuration and Optimization Report  ### A.1 Data Collection (Benchmarking)  Object"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-raw.csv",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "batch_size,worker_count,repetition,throughput_records_per_second,elapsed_seconds 100,2,1,96525.10,0.5180 100,2,2,97847.36,0.5110 100,2,3,98425.20,0.5080 100,4,1,95238.10,0.5250 100,4,2,97465.89,0.5130 100,4,3,95969.29,0.5210 100,6,1,91911.76,0.5440 100,6,2,92421.44,0.5410 100,6,3,96153.85,0.5200 250"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-results.csv",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "batch_size,worker_count,avg_throughput_records_per_second 100,2,97599.22 100,4,96224.42 100,6,93495.68 250,2,83056.63 250,4,81042.50 250,6,80473.40 500,2,99076.94 500,4,97088.35 500,6,96657.70 1000,2,99207.13 1000,4,98103.42 1000,6,98489.91"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-results.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Benchmark Results  ## Raw Data (Trial-level)  | Batch Size (B) | Worker Count (W) | Rep | Throughput (records/s) | |---:|---:|---:|---:| | 100 | 2 | 1 | 96525.10 | | 100 | 2 | 2 | 97847.36 | | 100 | 2 | 3 | 98425.20 | | 100 | 4 | 1 | 95238.10 | | 100 | 4 | 2 | 97465.89 | | 100 | 4 | 3 | 95969.29 |"
+          },
+          {
+            "file": "scripts/benchmark-data/regression-results.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   \"model\": \"T(B,W) = aB² + cW² + dBW + eB + fW + g\",   \"coefficients\": {     \"a\": 0.011742586620698159,     \"c\": 98.10093750036322,     \"d\": 0.8354711512719177,     \"e\": -6.783861300787066,     \"f\": -1785.1647824668325,     \"g\": 96395.23815015052   },   \"r2\": 0.27675786186220475,   \"adjustedR2\": -"
+          },
+          {
+            "file": "scripts/benchmark-data/regression-results.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Regression Analysis Results  ## Quadratic Surface Model  $$ T(B,W) = aB^2 + cW^2 + dBW + eB + fW + g $$  ## Fitted Coefficients  - $a = 0.0117425866$ - $c = 98.1009375004$ - $d = 0.8354711513$ - $e = -6.7838613008$ - $f = -1785.1647824668$ - $g = 96395.2381501505$  ## Model Quality  - $R^2 = 0.276"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.217,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-90",
+          "author": "henrique.diniz",
+          "E": {
+            "value": 0.1,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.41428571428571426,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153445Z"
+        }
+      },
+      {
+        "mr_id": "MR-92",
+        "author": "henrique.diniz",
+        "title": "docs: add strategic recommendation configuration guide",
+        "description": "- Add runBenchmark.js for measuring queue throughput\n- Add fitRegression.js for quadratic surface regression\n- Update package.json with benchmark:run and benchmark:regression scripts\n\nPart of Math Artifact (Appendix A)",
+        "type_declared": "docs",
+        "opened_at": "2026-03-25T18:21:25.447Z",
+        "merged_at": "2026-03-26T17:09:55.464Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/assets/Project/phase2-surface-plot.png",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "docs/Project.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  - [Appendix A: System Configuration and Optimization Report](#appendix-a-system-configuration-and-optimization-report)   - [23. Conclusion](#23-conclusion) ## 22. Related Technical Documents ## Appendix A: System Configuration and Optimization Report  ### A.1 Data Collection (Benchmarking)  Object"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-raw.csv",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "batch_size,worker_count,repetition,throughput_records_per_second,elapsed_seconds 100,2,1,96525.10,0.5180 100,2,2,97847.36,0.5110 100,2,3,98425.20,0.5080 100,4,1,95238.10,0.5250 100,4,2,97465.89,0.5130 100,4,3,95969.29,0.5210 100,6,1,91911.76,0.5440 100,6,2,92421.44,0.5410 100,6,3,96153.85,0.5200 250"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-results.csv",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "batch_size,worker_count,avg_throughput_records_per_second 100,2,97599.22 100,4,96224.42 100,6,93495.68 250,2,83056.63 250,4,81042.50 250,6,80473.40 500,2,99076.94 500,4,97088.35 500,6,96657.70 1000,2,99207.13 1000,4,98103.42 1000,6,98489.91"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-results.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Benchmark Results  ## Raw Data (Trial-level)  | Batch Size (B) | Worker Count (W) | Rep | Throughput (records/s) | |---:|---:|---:|---:| | 100 | 2 | 1 | 96525.10 | | 100 | 2 | 2 | 97847.36 | | 100 | 2 | 3 | 98425.20 | | 100 | 4 | 1 | 95238.10 | | 100 | 4 | 2 | 97465.89 | | 100 | 4 | 3 | 95969.29 |"
+          },
+          {
+            "file": "scripts/benchmark-data/optimization-derivation.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Optimization Derivation - Detailed Calculations  This document provides the step-by-step calculations for the multivariable calculus optimization analysis.  ## Fitted Model  $$T(B,W) = aB^2 + cW^2 + dBW + eB + fW + g$$  ### Coefficients  | Coefficient | Value | |-------------|-------| | a | 0.0117"
+          },
+          {
+            "file": "scripts/benchmark-data/regression-results.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   \"model\": \"T(B,W) = aB² + cW² + dBW + eB + fW + g\",   \"coefficients\": {     \"a\": 0.011742586620698159,     \"c\": 98.10093750036322,     \"d\": 0.8354711512719177,     \"e\": -6.783861300787066,     \"f\": -1785.1647824668325,     \"g\": 96395.23815015052   },   \"r2\": 0.27675786186220475,   \"adjustedR2\": -"
+          },
+          {
+            "file": "scripts/benchmark-data/regression-results.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Regression Analysis Results  ## Quadratic Surface Model  $$ T(B,W) = aB^2 + cW^2 + dBW + eB + fW + g $$  ## Fitted Coefficients  - $a = 0.0117425866$ - $c = 98.1009375004$ - $d = 0.8354711513$ - $e = -6.7838613008$ - $f = -1785.1647824668$ - $g = 96395.2381501505$  ## Model Quality  - $R^2 = 0.276"
+          },
+          {
+            "file": "scripts/benchmark-data/strategic-recommendation.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Strategic Recommendation - Configuration Guide  This document provides practical guidance for configuring the BullMQ queue system based on the mathematical optimization analysis.  ## Recommended Production Configuration  | Parameter | Value | Justification | |-----------|-------|---------------| |"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.244,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-92",
+          "author": "henrique.diniz",
+          "E": {
+            "value": 0.1,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.43333333333333335,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153455Z"
+        }
+      },
+      {
+        "mr_id": "MR-89",
+        "author": "henrique.diniz",
+        "title": "docs: collect benchmark data for optimization analysis",
+        "description": "- Add benchmark-raw.csv with 36 trial measurements\n- Add benchmark-results.csv with 12 averaged data points\n- Add benchmark-results.md summary report\n- Add regression-results.json with fitted coefficients\n- Add regression-results.md with analysis\n\nBenchmark: 50,000 rows × 12 combinations × 3 repetitions Best result: B=1000, W=2 → 99,207 records/s\n\nPart of Math Artifact (Appendix A) - Phase 1",
+        "type_declared": "docs",
+        "opened_at": "2026-03-25T18:19:06.067Z",
+        "merged_at": "2026-03-26T14:16:52.213Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "scripts/benchmark-data/benchmark-raw.csv",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "batch_size,worker_count,repetition,throughput_records_per_second,elapsed_seconds 100,2,1,96525.10,0.5180 100,2,2,97847.36,0.5110 100,2,3,98425.20,0.5080 100,4,1,95238.10,0.5250 100,4,2,97465.89,0.5130 100,4,3,95969.29,0.5210 100,6,1,91911.76,0.5440 100,6,2,92421.44,0.5410 100,6,3,96153.85,0.5200 250"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-results.csv",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "batch_size,worker_count,avg_throughput_records_per_second 100,2,97599.22 100,4,96224.42 100,6,93495.68 250,2,83056.63 250,4,81042.50 250,6,80473.40 500,2,99076.94 500,4,97088.35 500,6,96657.70 1000,2,99207.13 1000,4,98103.42 1000,6,98489.91"
+          },
+          {
+            "file": "scripts/benchmark-data/benchmark-results.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Throughput Benchmark Results  ## Introduction  This document presents the results of the throughput benchmark conducted on the DataON queue processing system.  The main objective was to collect experimental data to identify the optimal configuration of **Batch Size (B)** and **Worker Count (W)** t"
+          },
+          {
+            "file": "scripts/benchmark-data/regression-results.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   \"model\": \"T(B,W) = aB² + cW² + dBW + eB + fW + g\",   \"coefficients\": {     \"a\": 0.011742586620698159,     \"c\": 98.10093750036322,     \"d\": 0.8354711512719177,     \"e\": -6.783861300787066,     \"f\": -1785.1647824668325,     \"g\": 96395.23815015052   },   \"r2\": 0.27675786186220475,   \"adjustedR2\": -"
+          },
+          {
+            "file": "scripts/benchmark-data/regression-results.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Regression Analysis Results  ## Introduction  This document presents the results of the quadratic regression analysis performed on the benchmark data. The goal is to model throughput **T** as a function of **Batch Size (B)** and **Worker Count (W)** to find the optimal system configuration.  ### M"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.1543,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-89",
+          "author": "henrique.diniz",
+          "E": {
+            "value": 0.1,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153462Z"
+        }
+      },
+      {
+        "mr_id": "MR-96",
+        "author": "catarina.felipe",
+        "title": "feat: Auth0 user synchronization and global notification system implementation",
+        "description": "* **Auth0 User Sync:** Implemented a robust `/api/auth/me` flow that automatically synchronizes Auth0 metadata (name, email, sub) with our local database. It handles user creation on first login and updates existing records if display names are placeholders (e.g., \"User\" or \"New User\").\n* **Global Notification System:** Implemented backend support for notifications accessible to all users.\n  * Added `getNotifications` and `markRead` logic to `siteController`.\n  * Ensured notifications are filtered by the user's `auth0Sub`. Bug Fixes & Refactoring\n\n\n* **Route Priority Fix:** Resolved a critical \"NaN\" database error (PostgreSQL code `22P02`) by reordering routes in `app.ts`. Static routes like `/api/sites/notifications` are now defined before dynamic routes like `/api/sites/:id` to prevent parameter collision.\n* **TypeScript Syntax:** Fixed `TS1005` compilation errors in `siteController.ts` related to method closures and semicolon placement.\n* **Data Validation:** Added `Number()` casting and `isNaN` checks for ID parameters to ensure API stability when dealing with database queries.\n\n\n* Integrated `siteService` more deeply with controllers to separate business logic from routing.\n* Improved error handling in the notification flow to return empty states instead of 500 errors, enhancing the frontend user experience.",
+        "type_declared": "feat",
+        "opened_at": "2026-03-25T20:47:06.848Z",
+        "merged_at": "2026-03-26T05:19:38.795Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "src/backend/controllers/siteController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Request, Response } from 'express'; import { siteQueue } from '../queues/siteQueue'; import { siteService } from '../services/siteService';   /**    * 1. CREATE (Upload do Usuário)    * Cria o registro como 'pending' e envia para a fila de processamento/validação.    */       const { buildi"
+          },
+          {
+            "file": "src/backend/controllers/usersController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  // Novo: Endpoint de Sincronização disparado pelo Auth0   async syncAuth0User(req: Request, res: Response) {     try {       const { name, email, sub } = req.body;       if (!email || !sub) {         return res.status(400).json({ message: 'Email and Sub are required' });       }        const user "
+          },
+          {
+            "file": "src/backend/queues/siteWorker.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      console.log(`No errors found — siteId: ${siteId}. Waiting for Admin approval.`)               await siteService.updateStatus(siteId, 'pending', true)     }"
+          },
+          {
+            "file": "src/backend/repositories/siteRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    if (errors.length === 0) return     const values = errors.map((_, i) =>       `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`     ).join(', ')     const params = errors.flatMap((e) => [       importJobId,       e.rowNumber,       e.columnName,       e.errorMessage,     ]);     awa"
+          },
+          {
+            "file": "src/backend/repositories/usersRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    const result = await pool.query(\"SELECT * FROM users ORDER BY id ASC\");     return result.rows[0] || null;   async findByEmail(email: string) {     const result = await pool.query(\"SELECT * FROM users WHERE email = $1\", [email]);     return result.rows[0] || null;   }     );     return result.ro"
+          },
+          {
+            "file": "src/backend/services/equiemPushService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  /**    * Aprova o site internamente.     * Como não há mais API externa, este método oficializa o registro no banco local.    */     // O site geralmente estará como 'completed' (processado pelo worker)      // ou 'pending' (se o worker ainda não terminou).     // Ajustamos para permitir a aprovaç"
+          },
+          {
+            "file": "src/backend/services/siteService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    if (role === 'admin') {       return this.siteRepository.findAll()     }     let user = await this.usersRepository.findByAuth0Sub(auth0Sub)     if (!user) {       const uniqueEmail = email || `${auth0Sub}@placeholder.com`       user = await this.usersRepository.create(name, uniqueEmail, '', 'cli"
+          },
+          {
+            "file": "src/backend/services/usersService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    const users = await this.usersRepository.findAll();     return users.map(user => ({       ...user,       status: user.role === 'admin' ? 'Admin' : 'Approved'     }));   }   async updateUserRole(id: number, newRole: string) {     return this.usersRepository.updateRole(id, newRole);   }     return"
+          },
+          {
+            "file": "src/backend/app.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { PaymentMethodsController } from \"./controllers/paymentMethodsController\" import { HostsPaymentMethodsController } from \"./controllers/hostsPaymentMethodsController\" import { CoworkingRatesPaymentMethodsController } from \"./controllers/coworkingRatesPaymentMethodsController\" import { UsersRe"
+          },
+          {
+            "file": "src/database/01_create_database.sql",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ");  CREATE TABLE admin_notifications_read (     id SERIAL PRIMARY KEY,     site_id INTEGER NOT NULL,     admin_id INTEGER NOT NULL,     read_at TIMESTAMP DEFAULT NOW(),          FOREIGN KEY (site_id) REFERENCES web_site(id) ON DELETE CASCADE,     FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE"
+          },
+          {
+            "file": "src/frontend/src/app/components/header/header.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "}  /* Badge Vermelho */ .notif-container {   position: relative; }  .badge-red {   position: absolute;   top: 0;   right: 0;   background: #ef4444;   color: white;   font-size: 10px;   font-weight: bold;   min-width: 18px;   height: 18px;   border-radius: 50%;   display: flex;   align-items: center;"
+          },
+          {
+            "file": "src/frontend/src/app/components/header/header.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    <span class=\"mode-badge\" [ngClass]=\"(isAdmin$ | async) ? 'admin-mode' : 'user-mode'\">       {{ (isAdmin$ | async) ? 'Admin Mode' : 'Standard Mode' }}     </span>     <div class=\"notif-container\" *ngIf=\"isAdmin$ | async\">       <button class=\"icon-btn\" title=\"Notifications\" (click)=\"toggleNotifDr"
+          },
+          {
+            "file": "src/frontend/src/app/components/header/header.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Component, Inject, HostListener } from '@angular/core'; import { Router } from '@angular/router'; import { SiteService } from '../../services/siteService';   isAdmin$: Observable<boolean>;      // Notificações   showNotifDropdown = false;   notifications: any[] = [];   unreadCount = 0;     "
+          },
+          {
+            "file": "src/frontend/src/app/pages/adminManagement/adminManagement.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  constructor(private siteService: SiteService) { }     this.loadRequests();   /**    * Busca todos os sites do backend e mapeia para o formato da tabela    */   loadRequests() {           user: site.user_name || (site.user ? site.user.name : `User #${site.user_id}`),           userEmail: site.user_"
+          },
+          {
+            "file": "src/frontend/src/app/pages/dashboard/dashboard.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "   <div class=\"page-header\">              <div class=\"current-context\" style=\"margin-top: 16px; display: inline-flex; align-items: center; padding: 6px 12px 6px 10px; background-color: #F3F4F6; border-radius: 6px; border-left: 4px solid #3B82F6;\">         <span style=\"font-size: 0.8rem; color: #6B72"
+          },
+          {
+            "file": "src/frontend/src/app/pages/dashboard/dashboard.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { NgApexchartsModule } from 'ng-apexcharts'; import {   ApexAxisChartSeries, ApexChart, ApexPlotOptions, ApexDataLabels, ApexFill,   ApexNonAxisChartSeries, ApexTooltip, ApexLegend } from 'ng-apexcharts'; export type BarChartOptions = { series: ApexAxisChartSeries; chart: ApexChart; plotOptio"
+          },
+          {
+            "file": "src/frontend/src/app/pages/myOnboardings/myOnboardings.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "                           <button class=\"btn-icon delete\" title=\"Delete\" (click)=\"openDeleteModal(item)\">               <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ef4444\" stroke-width=\"2\"><polyline points=\"3 6 5 6 21 6\"></polyline><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 "
+          },
+          {
+            "file": "src/frontend/src/app/pages/myOnboardings/myOnboardings.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  // Adicionado o estado 'Delete'   activeModal: 'Validated' | 'Pending' | 'Error' | 'Delete' | null = null;      // Variável para guardar temporariamente o item que o usuário clicou na lixeira   itemToDelete: Onboarding | null = null;   // --- LÓGICA DE EXCLUSÃO (Botão da Lixeira) ---    // 1. Abre"
+          },
+          {
+            "file": "src/frontend/src/app/pages/newImport/newImport.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "                     // ✅ CORREÇÃO: Adicionado 'pending' na verificação.           // Isso interrompe o loading assim que o worker valida o arquivo.           if (status === 'completed' || status === 'pushed' || status === 'pending') {           // Se for 'processing', o polling continua.     }, 200"
+          },
+          {
+            "file": "src/frontend/src/app/pages/userManagement/userManagement.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "/* --- INICIO DA SEÇÃO DE SCROLL --- */ .table-container {   max-height: 500px; /* Limita a altura da tabela */   overflow-y: auto;  /* Habilita scroll vertical */ }  .data-table thead th {   position: sticky;   top: 0;   z-index: 10;   background: #f8fafc; } /* --- FIM DA SEÇÃO DE SCROLL --- */ .ba"
+          },
+          {
+            "file": "src/frontend/src/app/pages/userManagement/userManagement.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "           <option value=\"All\">All Status</option>     <div class=\"table-container\">       <table class=\"data-table\">         <thead>           <tr>             <th>User Name</th>             <th>Email Address</th>             <th>Role</th>             <th>Status</th>             <th class=\"actions-"
+          },
+          {
+            "file": "src/frontend/src/app/pages/userManagement/userManagement.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  // Controle dos Modais   isPromoteModalOpen = false;   isDeleteModalOpen = false;   selectedUser: UserRequest | null = null;   constructor(private userService: UserService) { }         this.applyFilters();   openPromoteModal(user: UserRequest) {     this.selectedUser = user;     this.isPromoteModa"
+          },
+          {
+            "file": "src/frontend/src/app/services/siteService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  // Adicionei o /api aqui para simplificar todos os métodos abaixo   private api = 'http://localhost:3000/api';      return this.http.post(`${this.api}/sites`, formData);     return this.http.get(`${this.api}/sites/${id}`);     return this.http.get<any[]>(`${this.api}/sites`);     return this.http."
+          },
+          {
+            "file": "src/frontend/src/app/services/userService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  id: string;    // Ajustado para o padrão que já funciona no seu projeto   private api = 'http://localhost:3000';     return this.http.get<UserRequest[]>(`${this.api}${this.baseUrl}`);   }    // Novo método para promover usuários   updateUserRole(id: string, newRole: string): Observable<UserRequest"
+          },
+          {
+            "file": "src/frontend/src/app/app.config.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "        scope: 'openid profile email',          allowedList: [           {             uri: 'http://localhost:3000/api/*',             tokenOptions: { authorizationParams: { audience: 'https://dataon-api' } }           }         ],"
+          },
+          {
+            "file": "src/frontend/src/app/app.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Component, OnInit } from '@angular/core'; import { AuthService } from '@auth0/auth0-angular'; import { HttpClient } from '@angular/common/http'; import { filter, switchMap, take } from 'rxjs'; export class App implements OnInit {    constructor(private auth: AuthService, private http: HttpC"
+          },
+          {
+            "file": "src/frontend/package.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    \"apexcharts\": \"^5.10.4\",     \"ng-apexcharts\": \"^2.3.0\","
+          },
+          {
+            "file": "tests/controllerTests/siteController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "     describe(\"create\", () => {         // ... (testes de erro 400 permanecem iguais)                 message: \"Upload received and queued for validation. Waiting for Admin approval.\", // MENSAGEM ATUALIZADA                 // jobId: \"job-1\", // REMOVIDO pois o controller não retorna mais jobId     "
+          },
+          {
+            "file": "tests/serviceTests/equiemPushService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    mockSiteRepo = new SiteRepository() as any;     mockPushLogRepo = new EquiemPushLogRepository() as any;          // Injetar mocks se necessário ou garantir que o singleton use os mocks   it(\"deve lançar erro se o site não for encontrado\", async () => {     mockSiteRepo.findById.mockResolvedValue"
+          },
+          {
+            "file": "package-lock.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.3753,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-96",
+          "author": "catarina.felipe",
+          "E": {
+            "value": 0.3,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.5133333333333333,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153491Z"
+        }
+      },
+      {
+        "mr_id": "MR-76",
+        "author": "henrique.diniz",
+        "title": "docs: enhance ConfigurationManagement with visual aids and troubleshooting",
+        "description": "## Summary\n\nThis MR enhances the ConfigurationManagement.md document with comprehensive improvements to make GitFlow policies clearer, more accessible, and easier to understand for all team members.\n\n## What's New\n\n### 1. GitFlow Visual Diagram (Section 2.1.1)\n\n- Added Mermaid diagram showing complete GitFlow workflow\n- Visual representation of feature, release, and hotfix branch flows\n- Clear flow summary for quick reference\n\n### 2. Branch Type Decision Tree (Section 2.2.1)\n\n- Interactive decision tree to help choose the correct branch type\n- Quick reference guide for common scenarios\n- Reduces confusion and mistakes in branch creation\n\n### 3. Semantic Versioning Guide (Section 4)\n\n- Detailed explanation of MAJOR.MINOR.PATCH versioning\n- Clear rules for when to increment each component\n- Practical examples with real-world scenarios\n- Version lifecycle examples\n- Tagging workflow procedures\n\n### 4. Troubleshooting Section (Section 8)\n\n- Solutions for merge conflicts\n- How to handle outdated branches\n- Fixing accidental commits (wrong branch, sensitive data)\n- Common Git issues and their solutions (8+ scenarios)\n- Emergency recovery procedures\n\n## Impact\n\n- **Lines added:** 437\n- **Lines modified:** 17 (section numbering updates only)\n- **Information removed:** 0 (all original content preserved)\n- **New sections:** 4 major sections + subsections\n\n## Benefits\n\n- Reduces onboarding time for new team members\n- Provides self-service troubleshooting resources\n- Improves consistency in version management\n- Decreases dependency on senior developers for basic Git issues\n- Aligns with PMO requirements for complete documentation\n\n## Checklist (DoD)\n\n- [x] Documentation updated and well-structured\n- [x] All sections properly formatted\n- [x] Practical examples and use cases included\n- [x] No breaking changes to existing content\n- [x] Follows project documentation standards\n- [x] All acceptance criteria met\n- [x] Content reviewed for clarity and accuracy\n\n## Acceptance Criteria\n\n:white_check_mark: Updated configuration management policies in ConfigurationManagement.md\\\n:white_check_mark: Documented and detailed Gitflow branch structure\\\n:white_check_mark: Defined naming conventions and branch procedures\\\n:white_check_mark: GitFlow practices aligned with project needs\\\n:white_check_mark: Practical examples included throughout\n\n## Risk Impact\n\n**No risk impact** - Documentation-only changes. No changes to code, infrastructure, or configurations.\n\n## Related Documentation\n\n- Follows conventions from [Git Flow](https://www.atlassian.com/br/git/tutorials/comparing-workflows/gitflow-workflow)\n- Implements [Semantic Versioning](https://semver.org/) best practices\n- Complements existing [Conventional Commits](https://www.conventionalcommits.org/) documentation",
+        "type_declared": "docs",
+        "opened_at": "2026-03-19T20:45:45.759Z",
+        "merged_at": "2026-03-25T20:47:35.162Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/ConfigurationManagement.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "4. [Semantic Versioning](#4-semantic-versioning)    - [4.1 Version Format](#41-version-format)    - [4.2 When to Increment Each Component](#42-when-to-increment-each-component)    - [4.3 Versioning Examples](#43-versioning-examples) 5. [Commit Standards](#5-commit-standards) 6. [Push and Pull Reques"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.0648,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-76",
+          "author": "henrique.diniz",
+          "E": {
+            "value": 0.1,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153496Z"
+        }
+      },
+      {
+        "mr_id": "MR-82",
+        "author": "henrique.diniz",
+        "title": "docs: add project execution video section",
+        "description": "Update Project documentation to include a direct link and embedded player for the project video, and align the table of contents with the new execution evidence section.",
+        "type_declared": "docs",
+        "opened_at": "2026-03-21T06:56:21.852Z",
+        "merged_at": "2026-03-25T20:45:05.330Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/Project.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    - [25.2 Project Execution Video](#252-project-execution-video)     - [25.3 Version Control and Gitflow (Branch Governance)](#253-version-control-and-gitflow-branch-governance) ### 25.2 Project Execution Video The project execution video is available at: - [Project Video (`video-projeto.mp4`)](./"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.0648,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-82",
+          "author": "henrique.diniz",
+          "E": {
+            "value": 0.1,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153501Z"
+        }
+      },
+      {
+        "mr_id": "MR-88",
+        "author": "henrique.diniz",
+        "title": "feat: add BullMQ benchmark scripts for math artifact",
+        "description": "- Add runBenchmark.js for measuring queue throughput\n- Add fitRegression.js for quadratic surface regression\n- Update package.json with benchmark:run and benchmark:regression scripts\n\nPart of Math Artifact (Appendix A)",
+        "type_declared": "feat",
+        "opened_at": "2026-03-25T18:18:33.626Z",
+        "merged_at": "2026-03-25T18:33:27.235Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "scripts/benchmark/fitRegression.js",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "/**  * Quadratic Surface Regression for Benchmark Data  *   * Fits the model: T(B,W) = aB² + cW² + dBW + eB + fW + g  * using Ordinary Least Squares (OLS) on real benchmark data.  *   * Usage: node scripts/benchmark/fitRegression.js  */  const fs = require('fs') const path = require('path')  functio"
+          },
+          {
+            "file": "scripts/benchmark/runBenchmark.js",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "/**  * Real Benchmark for BullMQ Queue System  *   * This script measures actual throughput of the queue processing system  * by varying Batch Size (B) and Worker Count (W).  *   * Usage: node scripts/benchmark/runBenchmark.js  * Requires: REDIS_URL environment variable  */  const { Queue, Worker } "
+          },
+          {
+            "file": "package.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    \"test\": \"jest\",     \"benchmark:run\": \"node scripts/benchmark/runBenchmark.js\",     \"benchmark:regression\": \"node scripts/benchmark/fitRegression.js\""
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.1437,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-88",
+          "author": "henrique.diniz",
+          "E": {
+            "value": 0.3,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153507Z"
+        }
+      },
+      {
+        "mr_id": "MR-77",
+        "author": "henrique.diniz",
+        "title": "Docs/correct userstories and fr nfr",
+        "description": "## Description\n\nThis merge request updates the **User Stories documentation** based on the defined **Functional Requirements (FR)** and **Non-Functional Requirements (NFR)** of the project.\n\n## Changes Made\n\n- Updated existing **User Stories** to align with the latest functional requirements.\n- Improved the description and structure of the stories.\n- Ensured consistency between **User Stories, FR, and NFR**.\n- Minor documentation corrections and organization improvements.\n\n## Objective\n\nEnsure that the **User Stories documentation accurately reflects the system requirements**, improving traceability between requirements and development tasks.\n\n## Impact\n\nDocumentation update only. No changes to system functionality.",
+        "type_declared": "unknown",
+        "opened_at": "2026-03-20T16:09:41.958Z",
+        "merged_at": "2026-03-24T20:16:47.346Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/Project.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "> **Personas referenced in this section** > - **Chloe Smith** – Office Manager / Customer Project Manager (external user responsible for submitting onboarding data on behalf of their organisation) > - **Mia King** – Onboarding Specialist / Analyst (internal Equiem user responsible for reviewing, val"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.0648,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-77",
+          "author": "henrique.diniz",
+          "E": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153512Z"
+        }
+      },
+      {
+        "mr_id": "MR-87",
+        "author": "nicole.silva",
+        "title": "Docs/ Cost Analysis and Effort Estimation",
+        "description": "This PR introduces the **Cost Analysis and Effort Estimation** section to the project documentation, as required by the project management guidelines.\n\nThe objective is to simulate the financial effort involved in developing the solution, based on real market data and consistent estimation methodologies.\n\n###  What was done\n\n- Added section **\"9. Cost Analysis and Effort Estimation\"** to `docs/ProjectManagement.md`\n- Calculated total project effort:\n  - 7 team members\n  - 5 sprints\n  - 16 hours per sprint\n  - Total: **560 hours**\n- Defined a **market-based hourly rate** using industry data (Glassdoor, PayScale, Indeed)\n- Estimated total labor cost in:\n  - USD\n  - BRL (currency conversion included)\n- Included:\n  - Financial summary table\n  - Tax simulation (6%)\n  - Cost considerations and risks\n- Documented methodology using academic-style justification\n\nThis analysis ensures that the project aligns with real-world software development practices by recognizing that even academic projects consume measurable resources. A **conservative estimation approach** was adopted to maintain realism without overestimating costs, especially considering the cross-functional nature of the team.\n\n### Files changed\n\n- `docs/ProjectManagement.md`\n\n###  Notes / Considerations\n\n- No real financial cost is incurred; this is a **simulated estimation**\n- Infrastructure costs are currently $0 due to free-tier usage\n- Future costs may arise with system scaling\n\n###  How to review\n\n- Verify calculation consistency (hours × rate)\n- Check clarity and structure of the documentation\n- Ensure alignment with project requirements",
+        "type_declared": "unknown",
+        "opened_at": "2026-03-24T14:11:13.873Z",
+        "merged_at": "2026-03-24T20:15:59.143Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/ProjectManagement.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "9. [Project Cost Analysis](#9-project-cost-analysis) | Project board (task visualization) | GitLab issue board | GitLab → Board | 🔲 To be maintained |  <br>  # 9. Cost Analysis and Effort Estimation  ## 9.1 Effort and Labor Scope  The team operates in a cross-functional model, where all members cont"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.0648,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-87",
+          "author": "nicole.silva",
+          "E": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153516Z"
+        }
+      },
+      {
+        "mr_id": "MR-75",
+        "author": "leonardo.vieira",
+        "title": "fix: stabilize the development branch and fix the file loss",
+        "description": "feat: add unit tests for CoworkingRatesPaymentMethodsController and CoworkingRatesPaymentMethodsService",
+        "type_declared": "fix",
+        "opened_at": "2026-03-18T20:57:16.904Z",
+        "merged_at": "2026-03-18T21:01:13.800Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/assets/Project/architecture-diagram.svg",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 960 560\" width=\"960\" height=\"560\">   <style>     .box { fill: #f4f6f8; stroke: #2f3e4d; stroke-width: 2; rx: 12; ry: 12; }     .title { font: 700 16px 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; fill: #102a43; }     .label { font: 400 13px 'S"
+          },
+          {
+            "file": "docs/DevelopmentStandardsGuide.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "docs/Project.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/config/auth.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import dotenv from 'dotenv' dotenv.config()  export const authConfig = {   domain: process.env.AUTH0_DOMAIN || '',   audience: process.env.AUTH0_AUDIENCE || '', }"
+          },
+          {
+            "file": "src/backend/config/db.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import dotenv from 'dotenv'  dotenv.config()  const databaseUrl = process.env.DATABASE_URL  if (!databaseUrl) {   throw new Error('Missing required environment variable: DATABASE_URL') }   connectionString: databaseUrl,   ssl: { rejectUnauthorized: false }, // obrigatório para Supabase   max: 10,   "
+          },
+          {
+            "file": "src/backend/config/redis.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import Redis from 'ioredis' export const redis = new Redis(process.env.REDIS_URL, {   maxRetriesPerRequest: null, })  redis.on('connect', () => {   console.log('Connected to Redis (Upstash)') })  redis.on('error', (err) => {   console.error('Error to connect to Redis:', err) })"
+          },
+          {
+            "file": "src/backend/controllers/buildingController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "\t\t\tname, \t\t\taddress, \t\t\tlevel, \t\t\tnumber, \t\t\tdaily_footfall, \t\t\ttype, \t\t\tis_active, \t\t\temployees \t\t\tlevel ?? null, \t\t\tnumber ?? null, \t\t\tdaily_footfall ?? null, \t\t\tis_active ?? true, \t\t\temployees ?? null"
+          },
+          {
+            "file": "src/backend/controllers/coworkingRatesPaymentMethodsController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      await this.coworkingRatesPaymentMethodsService.getCoworkingRatesPaymentMethodById(       await this.coworkingRatesPaymentMethodsService.createCoworkingRatesPaymentMethod(     await this.coworkingRatesPaymentMethodsService.deleteCoworkingRatesPaymentMethod("
+          },
+          {
+            "file": "src/backend/controllers/coworkingSpacesController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/controllers/hostsController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    const host = await this.hostsService.getHostById(id)     const host = await this.hostsService.createHost(req.body)     const host = await this.hostsService.updateHost(id, req.body)     await this.hostsService.deleteHost(id) }"
+          },
+          {
+            "file": "src/backend/controllers/hostsPaymentMethodsController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      await this.hostsPaymentMethodsService.getHostsPaymentMethodById(       await this.hostsPaymentMethodsService.createHostsPaymentMethod(req.body);     await this.hostsPaymentMethodsService.deleteHostsPaymentMethod("
+          },
+          {
+            "file": "src/backend/controllers/industryTypeController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      const industry = await this.industryService.getIndustryById(id);       const industry = await this.industryService.createIndustry(req.body);       // Captura os erros de validação do Service e retorna Status 400 (Bad Request)       const industry = await this.industryService.updateIndustry(id,"
+          },
+          {
+            "file": "src/backend/controllers/paymentMethodsController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      await this.paymentMethodsService.getPaymentMethodById(id);     const paymentMethod = await this.paymentMethodsService.createPaymentMethod(     const paymentMethod = await this.paymentMethodsService.updatePaymentMethod(     await this.paymentMethodsService.deletePaymentMethod(id);"
+          },
+          {
+            "file": "src/backend/controllers/siteController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "        buildingId: Number(buildingId),         industryTypeId: Number(industryTypeId),         buffer: Array.from(file.buffer),         buffer: Array.from(file.buffer),         importType: site.import_type, }"
+          },
+          {
+            "file": "src/backend/controllers/usersController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "export class UsersController {    private usersService: UsersService   constructor() {     this.usersService = new UsersService()   }     const users = await this.usersService.getAllUsers()     res.json(users)   }     const id = Number(req.params.id)      const user = await this.usersService.getUser"
+          },
+          {
+            "file": "src/backend/middlewares/authMiddleware.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { auth } from 'express-oauth2-jwt-bearer' import { authConfig } from '../config/auth'  export const authMiddleware = auth({   issuerBaseURL: `https://${authConfig.domain}`,   audience: authConfig.audience, })"
+          },
+          {
+            "file": "src/backend/middlewares/rolesMiddleware.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "}"
+          },
+          {
+            "file": "src/backend/middlewares/uploadMiddleware.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import multer, { FileFilterCallback } from 'multer' import { Request } from 'express'  const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {   if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {     cb(null, true)   } else "
+          },
+          {
+            "file": "src/backend/queues/siteQueue.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { redis } from '../config/redis'   connection: redis,       delay: 5000, console.log('Import-processing queue initialized')"
+          },
+          {
+            "file": "src/backend/queues/siteWorker.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Worker } from 'bullmq' import { redis } from '../config/redis' import { excelParserService } from '../services/excelParserService' import { siteService } from '../services/siteService' import { validationService } from '../services/validationService'       console.log(`Processing job ${job."
+          },
+          {
+            "file": "src/backend/repositories/buildingRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "\t\t\t[id] \t\t\t[type] \t\tname: string, \t\taddress: string, \t\tlevel: string | null, \t\tnumber: number | null, \t\tdailyFootfall: number | null, \t\ttype: string, \t\tisActive: boolean, \t\temployees: number | null \t\tid: number, \t\tname: string, \t\taddress: string, \t\tlevel: string | null, \t\tnumber: number | null, \t\tda"
+          },
+          {
+            "file": "src/backend/repositories/coworkingRatesPaymentMethodsRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      [coworkingRateId, paymentMethodId],       [coworkingRateId, paymentMethodId],       [coworkingRateId, paymentMethodId],"
+          },
+          {
+            "file": "src/backend/repositories/coworkingSpacesRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      [id]       [coworkingId]       [rateId]   // --- CRUD principal ---       [name, type, building_id, capacity, description]       [name, type, building_id, capacity, description, id]       [id]   // --- Upserts das subtabelas ---       [rateId, paymentMethodId]       [rateId, paymentMethodId]"
+          },
+          {
+            "file": "src/backend/repositories/equiemPushLogsRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  importJobId: number;   status: EquiemPushLogStatus;   responseMessage?: string | null;   id: number;   import_job_id: number;   status: EquiemPushLogStatus;   response_message: string | null;   pushed_at: Date;        WHERE import_job_id = $1        ORDER BY pushed_at DESC`,       [importJobId],"
+          },
+          {
+            "file": "src/backend/repositories/hostsPaymentMethodsRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      [hostId, paymentMethodId],       [hostId, paymentMethodId],       [hostId, paymentMethodId],"
+          },
+          {
+            "file": "src/backend/repositories/hostsRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    name: string,     company: string,     email: string,     building_id: number,     employees: number,       [name, company, email, building_id, employees],     id: number,     name: string,     company: string,     email: string,     building_id: number,     employees: number,       [name, compa"
+          },
+          {
+            "file": "src/backend/repositories/industryTypeRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      [id]       [type]       [type]       [type, id]       [id] }"
+          },
+          {
+            "file": "src/backend/repositories/paymentMethodsRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      [id],       [name],       [name, id],       [id],"
+          },
+          {
+            "file": "src/backend/repositories/siteRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  userId: number   buildingId: number   industryTypeId: number   importType: 'hosts' | 'coworking'   rowNumber: number;   columnName: string;   errorMessage: string;         u.name AS user_name,         u.email AS user_email,         b.name AS building_name,         it.type AS industry_type       JO"
+          },
+          {
+            "file": "src/backend/repositories/usersRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      [auth0Sub]       [name, email, password, role],       [auth0Sub, id]       [name, email, password, role, id],       [id], "
+          },
+          {
+            "file": "src/backend/services/buildingService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      name,       address,       level,       number,       daily_footfall,       type,       is_active,       employees       level ?? null,       number ?? null,       daily_footfall ?? null,       is_active ?? true,       employees ?? null"
+          },
+          {
+            "file": "src/backend/services/coworkingRatesPaymentMethodsService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/services/coworkingSpacesService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      ...coworkingSpace,       required_information: requiredInformation,       const coworkingId = coworkingSpace.id       return this.getCoworkingSpaceById(coworkingId)       await client.query('BEGIN')       await client.query('COMMIT')       await client.query('ROLLBACK')       client.release()"
+          },
+          {
+            "file": "src/backend/services/equiemPushService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "// import { SiteRepository } from \"../repositories/siteRepository\"; // import { //   EquiemPushLogRepository, //   EquiemPushLogStatus, // } from \"../repositories/equiemPushLogsRepository\";   // interface EquiemApiResponse { //   success: boolean; //   message?: string; // }   // class EquiemPushSer"
+          },
+          {
+            "file": "src/backend/services/excelParserService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "          const sheet = workbook.Sheets[sheetName]     }"
+          },
+          {
+            "file": "src/backend/services/hostsPaymentMethodsService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/services/hostsService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      name,       company,       email,       building_id,       employees       id, }"
+          },
+          {
+            "file": "src/backend/services/industryTypeService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    // 1. Valida se o campo não está vazio     // 2. Valida se já não existe uma indústria com esse nome     // Valida também na edição }"
+          },
+          {
+            "file": "src/backend/services/paymentMethodsService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/services/siteService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  if (role === 'admin') {     return this.siteRepository.findAll()   }   let user = await this.usersRepository.findByAuth0Sub(auth0Sub)   if (!user) {     const uniqueEmail = email || `${auth0Sub}@placeholder.com`     user = await this.usersRepository.create(name, uniqueEmail, '', 'client')     awai"
+          },
+          {
+            "file": "src/backend/services/usersService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  const users = await this.usersRepository.findAll();   return users.map(user => ({     ...user,     status: user.role === 'admin' ? 'Admin' : 'Approved'   })); } "
+          },
+          {
+            "file": "src/backend/services/validationService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  'meeting_room',   'open_space',   'private_office',   'conference_room',   'hot_desk',   const rowNumber = rowIndex + 2          rowErrors = validateHostRow(row, index)         rowErrors = validateCoworkingRow(row, index)"
+          },
+          {
+            "file": "src/backend/app.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { upload } from './middlewares/uploadMiddleware' import { authMiddleware } from './middlewares/authMiddleware' import { UsersController } from './controllers/usersController' import { PaymentMethodsController } from \"./controllers/paymentMethodsController\"; import { HostsPaymentMethodsControl"
+          },
+          {
+            "file": "src/backend/server.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import dotenv from 'dotenv' dotenv.config()  import './config/redis' import './queues/siteQueue'     const PORT = process.env.PORT || 3000     app.listen(PORT, () => {       console.log(`Server running on http://localhost:${PORT}`) bootstrap()"
+          },
+          {
+            "file": "src/frontend/.vscode/extensions.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846   \"recommendations\": [\"angular.ng-template\"] }"
+          },
+          {
+            "file": "src/frontend/.vscode/launch.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387   \"version\": \"0.2.0\",   \"configurations\": [     {       \"name\": \"ng serve\",       \"type\": \"chrome\",       \"request\": \"launch\",       \"preLaunchTask\": \"npm: start\",       \"url\": \"http://localhost:4200/\"     },     {   "
+          },
+          {
+            "file": "src/frontend/.vscode/mcp.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   // For more information, visit: https://angular.dev/ai/mcp   \"servers\": {     \"angular-cli\": {       \"command\": \"npx\",       \"args\": [\"-y\", \"@angular/cli\", \"mcp\"]     }   } }"
+          },
+          {
+            "file": "src/frontend/.vscode/tasks.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   // For more information, visit: https://go.microsoft.com/fwlink/?LinkId=733558   \"version\": \"2.0.0\",   \"tasks\": [     {       \"type\": \"npm\",       \"script\": \"start\",       \"isBackground\": true,       \"problemMatcher\": {         \"owner\": \"typescript\",         \"pattern\": \"$tsc\",         \"backgroun"
+          },
+          {
+            "file": "src/frontend/public/favicon.ico",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/components/header/header.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ".top-bar {    display: flex;    justify-content: space-between;    align-items: center;    padding: 16px 32px;    background: white;    border-bottom: 1px solid #e2e8f0;    font-family: 'Segoe UI', 'Inter', sans-serif;  .mode-badge {    padding: 4px 12px;    border-radius: 12px;    font-size: 12px; "
+          },
+          {
+            "file": "src/frontend/src/app/components/sidebar/sidebar.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ".sidebar {    width: 260px;    background: #0f172a;    color: #f8fafc;    display: flex;    flex-direction: column;    height: 100vh;    font-family: 'Segoe UI', sans-serif;    flex-shrink: 0;  } .logo-container {    padding: 24px;    display: flex;    align-items: center;    gap: 12px;    border-bo"
+          },
+          {
+            "file": "src/frontend/src/app/pages/dashboard/dashboard.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ":host {    display: flex;    flex: 1;    height: 100%;    width: 100%;  .dashboard-wrapper {    display: flex;    flex-direction: column;    flex: 1;    height: 100%;    width: 100%;  .page-header {    display: flex;    justify-content: space-between;    align-items: flex-start;    margin-bottom: 24"
+          },
+          {
+            "file": "src/frontend/src/app/pages/login/login.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/login/login.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/login/login.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/login/login.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/register/register.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/register/register.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/register/register.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/register/register.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/user/user.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/user/user.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/user/user.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/user/user.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/services/.gitkeep",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/services/auth.service.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/services/userService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/app.config.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/app.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/app.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/index.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/main.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/styles.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/.editorconfig",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/.gitignore",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/.prettierrc",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/README.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/tsconfig.app.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/tsconfig.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/tsconfig.spec.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/jest.config.js",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/building.controller.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/controllerHostsPaymentMethods.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/coworkingRatesPaymentMethodsController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/coworkingSpacesController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/hostsService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/industryTypeController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/paymentMethodsController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/siteController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/usersController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/repositoryTests/building.repository.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/repositoryTests/equiemPushLogsRepository.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/building.service.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/coworkingRatesPaymentMethodsService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/coworkingSpacesService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/equiemPushService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/excelParserService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/hostsService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/industryTypeService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/paymentMethodsService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/serviceHostsPaymentMethods.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/siteService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/usersService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/unit/buildingService.test.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/unit/excelParserService.test.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/unit/rolesMiddleware.test.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/unit/usersService.test.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/unit/validationService.test.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/setup.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": ".env.example",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": ".gitignore",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": ".gitlab-ci.yml",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "jest.config.cjs",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "jest.config.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "package-lock.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "package.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tsconfig.build.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tsconfig.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.4101,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-75",
+          "author": "leonardo.vieira",
+          "E": {
+            "value": 0.4,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.5398305084745769,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153589Z"
+        }
+      },
+      {
+        "mr_id": "MR-74",
+        "author": "leonardo.vieira",
+        "title": "docs: restore unit test documentation deleted during merge",
+        "description": "",
+        "type_declared": "docs",
+        "opened_at": "2026-03-18T20:16:50.726Z",
+        "merged_at": "2026-03-18T20:49:23.389Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/assets/Project/UML-deployment.png",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "docs/assets/Project/architecture-diagram.svg",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 960 560\" width=\"960\" height=\"560\">   <style>     .box { fill: #f4f6f8; stroke: #2f3e4d; stroke-width: 2; rx: 12; ry: 12; }     .title { font: 700 16px 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; fill: #102a43; }     .label { font: 400 13px 'S"
+          },
+          {
+            "file": "docs/ConfigurationManagement.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "6. [GitHub/GitLab Repository Policies](#6-githubgitlab-repository-policies)    - [6.1 Branch Protection and Merge Controls](#61-branch-protection-and-merge-controls)    - [6.2 Branch Creation and Lifecycle Policy](#62-branch-creation-and-lifecycle-policy)    - [6.3 Pull Request Template Policy](#63-"
+          },
+          {
+            "file": "docs/Project.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "docs/ProjectManagement.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "   - [2.3 Sprint Review 3 (Current Sprint)](#23-sprint-review-3-current-sprint)      - [2.3.1 Strengths](#231-strengths)      - [2.3.2 Weaknesses and Verifiable Improvement Actions](#232-weaknesses-and-verifiable-improvement-actions)      - [2.3.3 Improvement Plan for the Next Sprint](#233-improveme"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.1543,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-74",
+          "author": "leonardo.vieira",
+          "E": {
+            "value": 0.1,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153597Z"
+        }
+      },
+      {
+        "mr_id": "MR-73",
+        "author": "leonardo.vieira",
+        "title": "feat: backend Auth0 integration, middlewares, and unit test coverage",
+        "description": "feat: add unit tests for CoworkingRatesPaymentMethodsController and CoworkingRatesPaymentMethodsService",
+        "type_declared": "feat",
+        "opened_at": "2026-03-18T06:31:49.220Z",
+        "merged_at": "2026-03-18T17:35:14.483Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/assets/Project/UML-deployment.png",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "docs/ConfigurationManagement.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "| `feature/task-name` | Development of new features | `feature/data-automation` | | `docs/scope` | Documentation-only changes | `document/gitflow-update` | 3. `hotfix/*` branches derive from `main`. All other branches (`feature/`, `fix/`, `release/`, `document/`) derive from `develop`."
+          },
+          {
+            "file": "docs/DevelopmentStandardsGuide.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "docs/Project.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "docs/ProjectManagement.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "- [ ] The task has been assigned a T-shirt size (S / M / L). &ensp;In our project, we have established several workflows and policies to enhance team productivity and collaboration. Daily meetings follow the structured protocol defined in Section 5.1, lasting 15 minutes, allowing each member to shar"
+          },
+          {
+            "file": "src/backend/config/auth.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import dotenv from 'dotenv' dotenv.config()  export const authConfig = {   domain: process.env.AUTH0_DOMAIN || '',   audience: process.env.AUTH0_AUDIENCE || '', }"
+          },
+          {
+            "file": "src/backend/config/db.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import dotenv from 'dotenv'  dotenv.config()  const databaseUrl = process.env.DATABASE_URL  if (!databaseUrl) {   throw new Error('Missing required environment variable: DATABASE_URL') }   connectionString: databaseUrl,   ssl: { rejectUnauthorized: false }, // obrigatório para Supabase   max: 10,   "
+          },
+          {
+            "file": "src/backend/config/redis.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import Redis from 'ioredis' export const redis = new Redis(process.env.REDIS_URL, {   maxRetriesPerRequest: null, })  redis.on('connect', () => {   console.log('Connected to Redis (Upstash)') })  redis.on('error', (err) => {   console.error('Error to connect to Redis:', err) })"
+          },
+          {
+            "file": "src/backend/controllers/buildingController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "\t\t\tname, \t\t\taddress, \t\t\tlevel, \t\t\tnumber, \t\t\tdaily_footfall, \t\t\ttype, \t\t\tis_active, \t\t\temployees \t\t\tlevel ?? null, \t\t\tnumber ?? null, \t\t\tdaily_footfall ?? null, \t\t\tis_active ?? true, \t\t\temployees ?? null"
+          },
+          {
+            "file": "src/backend/controllers/coworkingRatesPaymentMethodsController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      await this.coworkingRatesPaymentMethodsService.getCoworkingRatesPaymentMethodById(       await this.coworkingRatesPaymentMethodsService.createCoworkingRatesPaymentMethod(     await this.coworkingRatesPaymentMethodsService.deleteCoworkingRatesPaymentMethod("
+          },
+          {
+            "file": "src/backend/controllers/coworkingSpacesController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/controllers/hostsController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    const host = await this.hostsService.getHostById(id)     const host = await this.hostsService.createHost(req.body)     const host = await this.hostsService.updateHost(id, req.body)     await this.hostsService.deleteHost(id) }"
+          },
+          {
+            "file": "src/backend/controllers/hostsPaymentMethodsController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      await this.hostsPaymentMethodsService.getHostsPaymentMethodById(       await this.hostsPaymentMethodsService.createHostsPaymentMethod(req.body);     await this.hostsPaymentMethodsService.deleteHostsPaymentMethod("
+          },
+          {
+            "file": "src/backend/controllers/industryTypeController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      const industry = await this.industryService.getIndustryById(id);       const industry = await this.industryService.createIndustry(req.body);       // Captura os erros de validação do Service e retorna Status 400 (Bad Request)       const industry = await this.industryService.updateIndustry(id,"
+          },
+          {
+            "file": "src/backend/controllers/paymentMethodsController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      await this.paymentMethodsService.getPaymentMethodById(id);     const paymentMethod = await this.paymentMethodsService.createPaymentMethod(     const paymentMethod = await this.paymentMethodsService.updatePaymentMethod(     await this.paymentMethodsService.deletePaymentMethod(id);"
+          },
+          {
+            "file": "src/backend/controllers/siteController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "        buildingId: Number(buildingId),         industryTypeId: Number(industryTypeId),         buffer: Array.from(file.buffer),         buffer: Array.from(file.buffer),         importType: site.import_type, }"
+          },
+          {
+            "file": "src/backend/controllers/usersController.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "export class UsersController {    private usersService: UsersService   constructor() {     this.usersService = new UsersService()   }     const users = await this.usersService.getAllUsers()     res.json(users)   }     const id = Number(req.params.id)      const user = await this.usersService.getUser"
+          },
+          {
+            "file": "src/backend/middlewares/authMiddleware.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { auth } from 'express-oauth2-jwt-bearer' import { authConfig } from '../config/auth'  export const authMiddleware = auth({   issuerBaseURL: `https://${authConfig.domain}`,   audience: authConfig.audience, })"
+          },
+          {
+            "file": "src/backend/middlewares/rolesMiddleware.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "}"
+          },
+          {
+            "file": "src/backend/middlewares/uploadMiddleware.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import multer, { FileFilterCallback } from 'multer' import { Request } from 'express'  const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {   if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {     cb(null, true)   } else "
+          },
+          {
+            "file": "src/backend/queues/siteQueue.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { redis } from '../config/redis'   connection: redis,       delay: 5000, console.log('Import-processing queue initialized')"
+          },
+          {
+            "file": "src/backend/queues/siteWorker.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Worker } from 'bullmq' import { redis } from '../config/redis' import { excelParserService } from '../services/excelParserService' import { siteService } from '../services/siteService' import { validationService } from '../services/validationService'       console.log(`Processing job ${job."
+          },
+          {
+            "file": "src/backend/repositories/buildingRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "\t\t\t[id] \t\t\t[type] \t\tname: string, \t\taddress: string, \t\tlevel: string | null, \t\tnumber: number | null, \t\tdailyFootfall: number | null, \t\ttype: string, \t\tisActive: boolean, \t\temployees: number | null \t\tid: number, \t\tname: string, \t\taddress: string, \t\tlevel: string | null, \t\tnumber: number | null, \t\tda"
+          },
+          {
+            "file": "src/backend/repositories/coworkingRatesPaymentMethodsRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      [coworkingRateId, paymentMethodId],       [coworkingRateId, paymentMethodId],       [coworkingRateId, paymentMethodId],"
+          },
+          {
+            "file": "src/backend/repositories/coworkingSpacesRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      [id]       [coworkingId]       [rateId]   // --- CRUD principal ---       [name, type, building_id, capacity, description]       [name, type, building_id, capacity, description, id]       [id]   // --- Upserts das subtabelas ---       [rateId, paymentMethodId]       [rateId, paymentMethodId]"
+          },
+          {
+            "file": "src/backend/repositories/equiemPushLogsRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  importJobId: number;   status: EquiemPushLogStatus;   responseMessage?: string | null;   id: number;   import_job_id: number;   status: EquiemPushLogStatus;   response_message: string | null;   pushed_at: Date;        WHERE import_job_id = $1        ORDER BY pushed_at DESC`,       [importJobId],"
+          },
+          {
+            "file": "src/backend/repositories/hostsPaymentMethodsRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      [hostId, paymentMethodId],       [hostId, paymentMethodId],       [hostId, paymentMethodId],"
+          },
+          {
+            "file": "src/backend/repositories/hostsRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    name: string,     company: string,     email: string,     building_id: number,     employees: number,       [name, company, email, building_id, employees],     id: number,     name: string,     company: string,     email: string,     building_id: number,     employees: number,       [name, compa"
+          },
+          {
+            "file": "src/backend/repositories/industryTypeRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      [id]       [type]       [type]       [type, id]       [id] }"
+          },
+          {
+            "file": "src/backend/repositories/paymentMethodsRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      [id],       [name],       [name, id],       [id],"
+          },
+          {
+            "file": "src/backend/repositories/siteRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  userId: number   buildingId: number   industryTypeId: number   importType: 'hosts' | 'coworking'   rowNumber: number;   columnName: string;   errorMessage: string;         u.name AS user_name,         u.email AS user_email,         b.name AS building_name,         it.type AS industry_type       JO"
+          },
+          {
+            "file": "src/backend/repositories/usersRepository.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      [auth0Sub]       [name, email, password, role],       [auth0Sub, id]       [name, email, password, role, id],       [id], "
+          },
+          {
+            "file": "src/backend/services/buildingService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      name,       address,       level,       number,       daily_footfall,       type,       is_active,       employees       level ?? null,       number ?? null,       daily_footfall ?? null,       is_active ?? true,       employees ?? null"
+          },
+          {
+            "file": "src/backend/services/coworkingRatesPaymentMethodsService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/services/coworkingSpacesService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      ...coworkingSpace,       required_information: requiredInformation,       const coworkingId = coworkingSpace.id       return this.getCoworkingSpaceById(coworkingId)       await client.query('BEGIN')       await client.query('COMMIT')       await client.query('ROLLBACK')       client.release()"
+          },
+          {
+            "file": "src/backend/services/equiemPushService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "// import { SiteRepository } from \"../repositories/siteRepository\"; // import { //   EquiemPushLogRepository, //   EquiemPushLogStatus, // } from \"../repositories/equiemPushLogsRepository\";   // interface EquiemApiResponse { //   success: boolean; //   message?: string; // }   // class EquiemPushSer"
+          },
+          {
+            "file": "src/backend/services/excelParserService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "          const sheet = workbook.Sheets[sheetName]     }"
+          },
+          {
+            "file": "src/backend/services/hostsPaymentMethodsService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/services/hostsService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "      name,       company,       email,       building_id,       employees       id, }"
+          },
+          {
+            "file": "src/backend/services/industryTypeService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "    // 1. Valida se o campo não está vazio     // 2. Valida se já não existe uma indústria com esse nome     // Valida também na edição }"
+          },
+          {
+            "file": "src/backend/services/paymentMethodsService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/services/siteService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  if (role === 'admin') {     return this.siteRepository.findAll()   }   let user = await this.usersRepository.findByAuth0Sub(auth0Sub)   if (!user) {     const uniqueEmail = email || `${auth0Sub}@placeholder.com`     user = await this.usersRepository.create(name, uniqueEmail, '', 'client')     awai"
+          },
+          {
+            "file": "src/backend/services/usersService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  const users = await this.usersRepository.findAll();   return users.map(user => ({     ...user,     status: user.role === 'admin' ? 'Admin' : 'Approved'   })); } "
+          },
+          {
+            "file": "src/backend/services/validationService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  'meeting_room',   'open_space',   'private_office',   'conference_room',   'hot_desk',   const rowNumber = rowIndex + 2          rowErrors = validateHostRow(row, index)         rowErrors = validateCoworkingRow(row, index)"
+          },
+          {
+            "file": "src/backend/app.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { upload } from './middlewares/uploadMiddleware' import { authMiddleware } from './middlewares/authMiddleware' import { UsersController } from './controllers/usersController' import { PaymentMethodsController } from \"./controllers/paymentMethodsController\"; import { HostsPaymentMethodsControl"
+          },
+          {
+            "file": "src/backend/server.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import dotenv from 'dotenv' dotenv.config()  import './config/redis' import './queues/siteQueue'     const PORT = process.env.PORT || 3000     app.listen(PORT, () => {       console.log(`Server running on http://localhost:${PORT}`) bootstrap()"
+          },
+          {
+            "file": "src/frontend/.vscode/extensions.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846   \"recommendations\": [\"angular.ng-template\"] }"
+          },
+          {
+            "file": "src/frontend/.vscode/launch.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387   \"version\": \"0.2.0\",   \"configurations\": [     {       \"name\": \"ng serve\",       \"type\": \"chrome\",       \"request\": \"launch\",       \"preLaunchTask\": \"npm: start\",       \"url\": \"http://localhost:4200/\"     },     {   "
+          },
+          {
+            "file": "src/frontend/.vscode/mcp.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   // For more information, visit: https://angular.dev/ai/mcp   \"servers\": {     \"angular-cli\": {       \"command\": \"npx\",       \"args\": [\"-y\", \"@angular/cli\", \"mcp\"]     }   } }"
+          },
+          {
+            "file": "src/frontend/.vscode/tasks.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "{   // For more information, visit: https://go.microsoft.com/fwlink/?LinkId=733558   \"version\": \"2.0.0\",   \"tasks\": [     {       \"type\": \"npm\",       \"script\": \"start\",       \"isBackground\": true,       \"problemMatcher\": {         \"owner\": \"typescript\",         \"pattern\": \"$tsc\",         \"backgroun"
+          },
+          {
+            "file": "src/frontend/public/favicon.ico",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/components/header/header.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ".top-bar {    display: flex;    justify-content: space-between;    align-items: center;    padding: 16px 32px;    background: white;    border-bottom: 1px solid #e2e8f0;    font-family: 'Segoe UI', 'Inter', sans-serif;  .mode-badge {    padding: 4px 12px;    border-radius: 12px;    font-size: 12px; "
+          },
+          {
+            "file": "src/frontend/src/app/components/sidebar/sidebar.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ".sidebar {    width: 260px;    background: #0f172a;    color: #f8fafc;    display: flex;    flex-direction: column;    height: 100vh;    font-family: 'Segoe UI', sans-serif;    flex-shrink: 0;  } .logo-container {    padding: 24px;    display: flex;    align-items: center;    gap: 12px;    border-bo"
+          },
+          {
+            "file": "src/frontend/src/app/pages/dashboard/dashboard.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/login/login.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/login/login.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/login/login.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/login/login.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/register/register.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/register/register.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/register/register.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/register/register.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/user/user.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/user/user.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/user/user.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/pages/user/user.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/services/.gitkeep",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/services/auth.service.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/services/userService.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/app.config.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/app.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/app/app.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/index.html",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/main.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/src/styles.css",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/.editorconfig",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/.gitignore",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/.prettierrc",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/README.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/tsconfig.app.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/tsconfig.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/tsconfig.spec.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/jest.config.js",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/building.controller.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/controllerHostsPaymentMethods.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/coworkingRatesPaymentMethodsController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/coworkingSpacesController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/hostsService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/industryTypeController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/paymentMethodsController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/siteController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/controllerTests/usersController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/repositoryTests/building.repository.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/repositoryTests/equiemPushLogsRepository.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/building.service.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/coworkingRatesPaymentMethodsService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/coworkingSpacesService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/equiemPushService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/excelParserService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/hostsService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/industryTypeService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/paymentMethodsService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/serviceHostsPaymentMethods.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/siteService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/serviceTests/usersService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/unit/buildingService.test.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/unit/excelParserService.test.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/unit/rolesMiddleware.test.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/unit/usersService.test.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/unit/validationService.test.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tests/setup.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": ".env.example",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": ".gitignore",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": ".gitlab-ci.yml",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "jest.config.cjs",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "jest.config.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "package-lock.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "package.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tsconfig.build.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "tsconfig.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.4101,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-73",
+          "author": "leonardo.vieira",
+          "E": {
+            "value": 0.3,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.5341666666666673,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153667Z"
+        }
+      },
+      {
+        "mr_id": "MR-72",
+        "author": "catarina.felipe",
+        "title": "feat: add unit tests for CoworkingRatesPaymentMethodsController",
+        "description": "feat: add unit tests for CoworkingRatesPaymentMethodsController and CoworkingRatesPaymentMethodsService",
+        "type_declared": "feat",
+        "opened_at": "2026-03-16T20:25:28.566Z",
+        "merged_at": "2026-03-18T06:27:31.191Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "docs/assets/Project/video-projeto.mp4",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "docs/DevelopmentStandardsGuide.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "# Development Standards Guide  ## 1. Purpose  This document defines the technical development standards for the project, covering:  - code conventions - architecture organization - adopted design patterns - quality rules for code review and merge  This guide complements `docs/CodingStandards.md` and"
+          },
+          {
+            "file": "docs/StandardDevelopmentGuide.md",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/config/.gitkeep",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/config/env.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "// Loads environment variables from the .env file into process.env import dotenv from 'dotenv' dotenv.config()  // Ensures DATABASE_URL is defined before startup — without it the app cannot connect to the database if (!process.env.DATABASE_URL) {   throw new Error('Missing required environment varia"
+          },
+          {
+            "file": "src/backend/controllers/.gitkeep",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/repositories/.gitkeep",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/backend/services/.gitkeep",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/package-lock.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/jest.config.js",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "/** @type {import('ts-jest').JestConfigWithTsJest} */ module.exports = {   preset: 'ts-jest',   testEnvironment: 'node',   roots: ['<rootDir>/src/backend'],    clearMocks: true,   collectCoverageFrom: [     \"src/backend/services/**/*.ts\",     \"src/backend/controllers/**/*.ts\"   ] };"
+          },
+          {
+            "file": "tests/controllerTests/building.controller.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Request, Response } from \"express\"; import { BuildingController } from \"../../src/backend/controllers/buildingController\"; // ajuste o caminho se necessário import { BuildingRepository } from \"../../src/backend/repositories/buildingRepository\";  // Como o Controller chama o Repository diret"
+          },
+          {
+            "file": "tests/controllerTests/controllerHostsPaymentMethods.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Request, Response } from \"express\"; // Mude o import abaixo se o nome do seu arquivo de controller for diferente! import { HostsPaymentMethodsController } from \"../../src/backend/controllers/hostsPaymentMethodsController\";  import { HostsPaymentMethodsService } from \"../../src/backend/servi"
+          },
+          {
+            "file": "tests/controllerTests/coworkingRatesPaymentMethodsController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Request, Response } from \"express\"; import { CoworkingRatesPaymentMethodsController } from \"../../src/backend/controllers/coworkingRatesPaymentMethodsController\"; import { CoworkingRatesPaymentMethodsService } from \"../../src/backend/services/coworkingRatesPaymentMethodsService\";  // Mock d"
+          },
+          {
+            "file": "tests/controllerTests/coworkingSpacesController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Request, Response } from \"express\"; import { CoworkingSpacesController } from \"../../src/backend/controllers/coworkingSpacesController\"; import { CoworkingSpacesService } from \"../../src/backend/services/coworkingSpacesService\";  // Mock do Service jest.mock(\"../../src/backend/services/cowo"
+          },
+          {
+            "file": "tests/controllerTests/hostsService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Request, Response } from \"express\"; import { HostsController } from \"../../src/backend/controllers/hostsController\"; import { HostsService } from \"../../src/backend/services/hostsService\";  // Mock do Service no padrão jest.mock(\"../../src/backend/services/hostsService\");  describe(\"HostsCo"
+          },
+          {
+            "file": "tests/controllerTests/industryTypeController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Request, Response } from \"express\"; import { IndustryController } from \"../../src/backend/controllers/industryTypeController\";  import { IndustryService } from \"../../src/backend/services/industryTypeService\";  // Mock do Service subindo duas pastas jest.mock(\"../../src/backend/services/ind"
+          },
+          {
+            "file": "tests/controllerTests/paymentMethodsController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Request, Response } from \"express\"; import { PaymentMethodsController } from \"../../src/backend/controllers/paymentMethodsController\"; import { PaymentMethodsService } from \"../../src/backend/services/paymentMethodsService\";  // Mock do Service usando o nome exato do seu arquivo jest.mock(\""
+          },
+          {
+            "file": "tests/controllerTests/siteController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Request, Response } from \"express\"; import { siteController } from \"../../src/backend/controllers/siteController\"; import { siteService } from \"../../src/backend/services/siteService\"; import { siteQueue } from \"../../src/backend/queues/siteQueue\";  jest.mock(\"../../src/backend/services/sit"
+          },
+          {
+            "file": "tests/controllerTests/usersController.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { Request, Response } from \"express\"; import { UsersController } from \"../../src/backend/controllers/usersController\"; import { UsersService } from \"../../src/backend/services/usersService\";  // Mock do Service (voltando duas pastas: ../../) jest.mock(\"../../src/backend/services/usersService\""
+          },
+          {
+            "file": "tests/repositoryTests/building.repository.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { BuildingRepository } from \"../../src/backend/repositories/buildingRepository\"; import pool from \"../../src/backend/config/db\";  jest.mock(\"../../src/backend/config/db\", () => ({   query: jest.fn(), }));  describe(\"BuildingRepository\", () => {   let repository: BuildingRepository;    beforeE"
+          },
+          {
+            "file": "tests/repositoryTests/equiemPushLogsRepository.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { EquiemPushLogRepository } from \"../../src/backend/repositories/equiemPushLogsRepository\"; import pool from \"../../src/backend/config/db\";  // Mock do pool de conexão do banco jest.mock(\"../../src/backend/config/db\", () => ({   query: jest.fn(), }));  describe(\"EquiemPushLogRepository\", () ="
+          },
+          {
+            "file": "tests/serviceTests/building.service.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { BuildingService } from \"../../src/backend/services/buildingService\"; import { BuildingRepository } from \"../../src/backend/repositories/buildingRepository\";  // Mock do Repository jest.mock(\"../../src/backend/repositories/buildingRepository\");  describe(\"BuildingService\", () => {   let serv"
+          },
+          {
+            "file": "tests/serviceTests/coworkingRatesPaymentMethodsService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { CoworkingRatesPaymentMethodsService } from \"../../src/backend/services/coworkingRatesPaymentMethodsService\"; import { CoworkingRatesPaymentMethodsRepository } from \"../../src/backend/repositories/coworkingRatesPaymentMethodsRepository\";  // Mock do repositório no padrão correto jest.mock(\"."
+          },
+          {
+            "file": "tests/serviceTests/coworkingSpacesService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { CoworkingSpacesService } from \"../../src/backend/services/coworkingSpacesService\"; import { CoworkingSpacesRepository } from \"../../src/backend/repositories/coworkingSpacesRepository\"; import pool from \"../../src/backend/config/db\";  // Mock do Repository jest.mock(\"../../src/backend/reposi"
+          },
+          {
+            "file": "tests/serviceTests/equiemPushService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { equiemPushService } from \"../../src/backend/services/equiemPushService\"; import { SiteRepository } from \"../../src/backend/repositories/siteRepository\"; import { EquiemPushLogRepository } from \"../../src/backend/repositories/equiemPushLogsRepository\";  jest.mock(\"../../src/backend/repositor"
+          },
+          {
+            "file": "tests/serviceTests/excelParserService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { excelParserService } from \"../../src/backend/services/excelParserService\";  import * as XLSX from \"xlsx\";  jest.mock(\"xlsx\", () => ({   read: jest.fn(),   utils: {     sheet_to_json: jest.fn(),   }, }));  describe(\"excelParserService\", () => {   const mockBuffer = Buffer.from(\"fake-excel-da"
+          },
+          {
+            "file": "tests/serviceTests/hostsService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { HostsService } from \"../../src/backend/services/hostsService\"; import { HostsRepository } from \"../../src/backend/repositories/hostsRepository\";  // Mock do repositório no padrão cravado jest.mock(\"../../src/backend/repositories/hostsRepository\");  describe(\"HostsService\", () => {   let hos"
+          },
+          {
+            "file": "tests/serviceTests/industryTypeService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { IndustryService } from \"../../src/backend/services/industryTypeService\"; import { IndustryRepository } from \"../../src/backend/repositories/industryTypeRepository\";  // Mock do repositório subindo duas pastas jest.mock(\"../../src/backend/repositories/industryTypeRepository\");  describe(\"Ind"
+          },
+          {
+            "file": "tests/serviceTests/paymentMethodsService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { PaymentMethodsService } from \"../../src/backend/services/paymentMethodsService\"; import { PaymentMethodsRepository } from \"../../src/backend/repositories/paymentMethodsRepository\";  // Mock do repositório usando o nome exato do seu arquivo jest.mock(\"../../src/backend/repositories/paymentMe"
+          },
+          {
+            "file": "tests/serviceTests/serviceHostsPaymentMethods.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { HostsPaymentMethodsService } from \"../../src/backend/services/hostsPaymentMethodsService\"; import { HostsPaymentMethodsRepository } from \"../../src/backend/repositories/hostsPaymentMethodsRepository\";  // Mock do repositório usando o nome exato jest.mock(\"../../src/backend/repositories/host"
+          },
+          {
+            "file": "tests/serviceTests/siteService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { siteService } from \"../../src/backend/services/siteService\";  const mockSiteRepository = {   findAll: jest.fn(),   findAllByUser: jest.fn(),   findById: jest.fn(),   findErrorsByImportJob: jest.fn(),   create: jest.fn(),   updateStatus: jest.fn(),   updateStatusWithProcessedAt: jest.fn(),  "
+          },
+          {
+            "file": "tests/serviceTests/usersService.spec.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "import { UsersService } from \"../../src/backend/services/usersService\"; import { UsersRepository } from \"../../src/backend/repositories/usersRepository\";  // Mock do repositório (voltando duas pastas: ../../) jest.mock(\"../../src/backend/repositories/usersRepository\");  describe(\"UsersService\", () ="
+          },
+          {
+            "file": "tests/setup.ts",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "process.env.DATABASE_URL = 'postgresql://mock:mock@localhost:5432/mockdb'; process.env.REDIS_URL = 'redis://localhost:6379';"
+          },
+          {
+            "file": ".gitignore",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": " src/frontend/.angular/"
+          },
+          {
+            "file": "coworking-spaces.http",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "jest.config.cjs",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  setupFiles: ['<rootDir>/tests/setup.ts'],"
+          },
+          {
+            "file": "package-lock.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "package.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  \"main\": \"dist/server.js\",   \"src/frontend\"     \"dotenv\": \"^16.4.5\",     \"ioredis\": \"^5.9.3\",     \"@types/ioredis\": \"^5.0.0\",     \"@types/jest\": \"^29.5.14\",     \"ts-jest\": \"^29.4.6\","
+          },
+          {
+            "file": "tsconfig.json",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": "  \"include\": [\"src/backend/**/*\", \"tests\"],"
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.4041,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-72",
+          "author": "catarina.felipe",
+          "E": {
+            "value": 0.3,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.5948717948717945,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153691Z"
+        }
+      },
+      {
+        "mr_id": "MR-70",
+        "author": "nicole.silva",
+        "title": "Correcting src/ frontend folders",
+        "description": "",
+        "type_declared": "unknown",
+        "opened_at": "2026-03-16T17:49:17.796Z",
+        "merged_at": "2026-03-16T17:51:22.566Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "src/frontend/components/.gitkeep",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/config/.gitkeep",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/services/.gitkeep",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.114,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-70",
+          "author": "nicole.silva",
+          "E": {
+            "value": 0.2,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153699Z"
+        }
+      },
+      {
+        "mr_id": "MR-69",
+        "author": "gabriel.reis",
+        "title": "refactor: making the directiories clearer by deleting unecessary folders",
+        "description": "",
+        "type_declared": "refactor",
+        "opened_at": "2026-03-16T17:43:43.290Z",
+        "merged_at": "2026-03-16T17:46:51.878Z",
+        "deadline": null,
+        "linked_issues": [],
+        "diff_summary": [
+          {
+            "file": "src/frontend/components/.gitkeep",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/config/.gitkeep",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          },
+          {
+            "file": "src/frontend/services/.gitkeep",
+            "additions": 0,
+            "deletions": 0,
+            "content_excerpt": ""
+          }
+        ],
+        "review_comments": [],
+        "reviewers": [],
+        "quantitative": {
+          "X": 0.114,
+          "S": 1.0,
+          "Q": 0.5
+        },
+        "estimates": {
+          "mr_id": "MR-69",
+          "author": "gabriel.reis",
+          "E": {
+            "value": 0.3,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "A": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "T_review": {
+            "value": 0.0,
+            "level": "ausente",
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "P": {
+            "value": 0.5,
+            "confidence": "medium",
+            "reasoning": "mock"
+          },
+          "llm_model": "dry_run",
+          "estimated_at": "2026-04-03T22:25:25.153705Z"
+        }
+      }
+    ]
+  },
+  "estimates": {
+    "total_estimates": 21,
+    "estimates": [
+      {
+        "mr_id": "MR-112",
+        "author": "nicole.silva",
+        "E": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153387Z"
+      },
+      {
+        "mr_id": "MR-108",
+        "author": "henrique.diniz",
+        "E": {
+          "value": 0.1,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153399Z"
+      },
+      {
+        "mr_id": "MR-106",
+        "author": "henrique.diniz",
+        "E": {
+          "value": 0.1,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153410Z"
+      },
+      {
+        "mr_id": "MR-105",
+        "author": "henrique.diniz",
+        "E": {
+          "value": 0.3,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153417Z"
+      },
+      {
+        "mr_id": "MR-93",
+        "author": "henrique.diniz",
+        "E": {
+          "value": 0.1,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.44000000000000006,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153428Z"
+      },
+      {
+        "mr_id": "MR-91",
+        "author": "henrique.diniz",
+        "E": {
+          "value": 0.1,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.425,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153437Z"
+      },
+      {
+        "mr_id": "MR-90",
+        "author": "henrique.diniz",
+        "E": {
+          "value": 0.1,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.41428571428571426,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153445Z"
+      },
+      {
+        "mr_id": "MR-92",
+        "author": "henrique.diniz",
+        "E": {
+          "value": 0.1,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.43333333333333335,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153455Z"
+      },
+      {
+        "mr_id": "MR-89",
+        "author": "henrique.diniz",
+        "E": {
+          "value": 0.1,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153462Z"
+      },
+      {
+        "mr_id": "MR-96",
+        "author": "catarina.felipe",
+        "E": {
+          "value": 0.3,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.5133333333333333,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153491Z"
+      },
+      {
+        "mr_id": "MR-76",
+        "author": "henrique.diniz",
+        "E": {
+          "value": 0.1,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153496Z"
+      },
+      {
+        "mr_id": "MR-82",
+        "author": "henrique.diniz",
+        "E": {
+          "value": 0.1,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153501Z"
+      },
+      {
+        "mr_id": "MR-88",
+        "author": "henrique.diniz",
+        "E": {
+          "value": 0.3,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153507Z"
+      },
+      {
+        "mr_id": "MR-77",
+        "author": "henrique.diniz",
+        "E": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153512Z"
+      },
+      {
+        "mr_id": "MR-87",
+        "author": "nicole.silva",
+        "E": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153516Z"
+      },
+      {
+        "mr_id": "MR-75",
+        "author": "leonardo.vieira",
+        "E": {
+          "value": 0.4,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.5398305084745769,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153589Z"
+      },
+      {
+        "mr_id": "MR-74",
+        "author": "leonardo.vieira",
+        "E": {
+          "value": 0.1,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153597Z"
+      },
+      {
+        "mr_id": "MR-73",
+        "author": "leonardo.vieira",
+        "E": {
+          "value": 0.3,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.5341666666666673,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153667Z"
+      },
+      {
+        "mr_id": "MR-72",
+        "author": "catarina.felipe",
+        "E": {
+          "value": 0.3,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.5948717948717945,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153691Z"
+      },
+      {
+        "mr_id": "MR-70",
+        "author": "nicole.silva",
+        "E": {
+          "value": 0.2,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153699Z"
+      },
+      {
+        "mr_id": "MR-69",
+        "author": "gabriel.reis",
+        "E": {
+          "value": 0.3,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "A": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "T_review": {
+          "value": 0.0,
+          "level": "ausente",
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "P": {
+          "value": 0.5,
+          "confidence": "medium",
+          "reasoning": "mock"
+        },
+        "llm_model": "dry_run",
+        "estimated_at": "2026-04-03T22:25:25.153705Z"
+      }
+    ]
+  },
+  "scores": {
+    "members": {
+      "catarina.felipe": {
+        "mr_contributions": [
+          {
+            "mr_id": "MR-96",
+            "role": "author",
+            "W": 0.2646743,
+            "T": 0.7,
+            "contribution": 0.18527200999999996
+          },
+          {
+            "mr_id": "MR-72",
+            "role": "author",
+            "W": 0.2901624846153846,
+            "T": 0.7,
+            "contribution": 0.2031137392307692
+          }
+        ],
+        "S": 0.3883857492307692,
+        "Abs": 1.0,
+        "Rel": 0.32729553105186543,
+        "nota": 0.8990943296577798
+      },
+      "gabriel.reis": {
+        "mr_contributions": [
+          {
+            "mr_id": "MR-69",
+            "role": "author",
+            "W": 0.22867499999999996,
+            "T": 0.7,
+            "contribution": 0.16007249999999995
+          }
+        ],
+        "S": 0.16007249999999995,
+        "Abs": 0.44464583333333324,
+        "Rel": 0.13489427456610997,
+        "nota": 0.39818309951824976
+      },
+      "henrique.diniz": {
+        "mr_contributions": [
+          {
+            "mr_id": "MR-108",
+            "role": "author",
+            "W": 0.009200999999999999,
+            "T": 0.7,
+            "contribution": 0.006440699999999999
+          },
+          {
+            "mr_id": "MR-106",
+            "role": "author",
+            "W": 0.19425375,
+            "T": 0.7,
+            "contribution": 0.135977625
+          },
+          {
+            "mr_id": "MR-105",
+            "role": "author",
+            "W": 0.23647125,
+            "T": 0.7,
+            "contribution": 0.165529875
+          },
+          {
+            "mr_id": "MR-93",
+            "role": "author",
+            "W": 0.21147375000000002,
+            "T": 0.7,
+            "contribution": 0.148031625
+          },
+          {
+            "mr_id": "MR-91",
+            "role": "author",
+            "W": 0.19472624999999996,
+            "T": 0.7,
+            "contribution": 0.13630837499999995
+          },
+          {
+            "mr_id": "MR-90",
+            "role": "author",
+            "W": 0.1882125,
+            "T": 0.7,
+            "contribution": 0.13174875
+          },
+          {
+            "mr_id": "MR-92",
+            "role": "author",
+            "W": 0.2003,
+            "T": 0.7,
+            "contribution": 0.14021
+          },
+          {
+            "mr_id": "MR-89",
+            "role": "author",
+            "W": 0.19425375,
+            "T": 0.7,
+            "contribution": 0.135977625
+          },
+          {
+            "mr_id": "MR-76",
+            "role": "author",
+            "W": 0.009200999999999999,
+            "T": 0.7,
+            "contribution": 0.006440699999999999
+          },
+          {
+            "mr_id": "MR-82",
+            "role": "author",
+            "W": 0.009200999999999999,
+            "T": 0.7,
+            "contribution": 0.006440699999999999
+          },
+          {
+            "mr_id": "MR-88",
+            "role": "author",
+            "W": 0.23647125,
+            "T": 0.7,
+            "contribution": 0.165529875
+          },
+          {
+            "mr_id": "MR-77",
+            "role": "author",
+            "W": 0.011451,
+            "T": 0.7,
+            "contribution": 0.008015699999999999
+          }
+        ],
+        "S": 1.1866515499999999,
+        "Abs": 1.0,
+        "Rel": 1.0,
+        "nota": 1.0
+      },
+      "leonardo.vieira": {
+        "mr_contributions": [
+          {
+            "mr_id": "MR-75",
+            "role": "author",
+            "W": 0.2986339474576273,
+            "T": 0.7,
+            "contribution": 0.20904376322033907
+          },
+          {
+            "mr_id": "MR-74",
+            "role": "author",
+            "W": 0.011550375000000002,
+            "T": 0.7,
+            "contribution": 0.0080852625
+          },
+          {
+            "mr_id": "MR-73",
+            "role": "author",
+            "W": 0.2775256000000001,
+            "T": 0.7,
+            "contribution": 0.19426792000000007
+          }
+        ],
+        "S": 0.41139694572033914,
+        "Abs": 1.0,
+        "Rel": 0.3466872357941463,
+        "nota": 0.9020030853691219
+      },
+      "nicole.silva": {
+        "mr_contributions": [
+          {
+            "mr_id": "MR-112",
+            "role": "author",
+            "W": 0.011451,
+            "T": 0.7,
+            "contribution": 0.008015699999999999
+          },
+          {
+            "mr_id": "MR-87",
+            "role": "author",
+            "W": 0.011451,
+            "T": 0.7,
+            "contribution": 0.008015699999999999
+          },
+          {
+            "mr_id": "MR-70",
+            "role": "author",
+            "W": 0.206175,
+            "T": 0.7,
+            "contribution": 0.1443225
+          }
+        ],
+        "S": 0.1603539,
+        "Abs": 0.4454275,
+        "Rel": 0.1351314124184138,
+        "nota": 0.398883086862762
+      }
+    }
+  },
+  "analysis": {}
+}
