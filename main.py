@@ -10,6 +10,13 @@ Usage:
                    [--output-dir output] \
                    [--skip-stage2b] \
                    [--direct-committers <usernames>]
+
+For real gitlab data (cycle 2), configure .env or use:
+    python main.py --since 2024-09-01 \
+                   --until 2024-12-01 \
+                   --members usuario1 usuario2 usuario3 usuario4 \
+                   --deadline 2024-12-01T23:59:00Z
+    # Credentials loaded from .env automatically
 """
 
 import argparse
@@ -18,12 +25,17 @@ import os
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 import loader
 import llm_stage2a
 import llm_stage2b
 import model
 import scorer
 import report
+
+# Load environment variables from .env file (if it exists)
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(
@@ -41,8 +53,9 @@ def main():
 
     parser.add_argument(
         "--fixture",
-        required=True,
-        help="Path to MR artifacts fixture (JSON)"
+        required=False,
+        default=None,
+        help="Path to MR artifacts fixture (JSON) — optional if using GitLab (cycle 2)"
     )
 
     parser.add_argument(
@@ -89,19 +102,112 @@ def main():
         help="List of members who made direct commits (zero out their scores)"
     )
 
+    # ===== Cycle 2: Real GitLab integration =====
+    parser.add_argument(
+        "--gitlab-url",
+        default=os.getenv("GITLAB_URL"),
+        help="GitLab instance URL (e.g., https://gitlab.com) — can read from GITLAB_URL env var"
+    )
+
+    parser.add_argument(
+        "--project-id",
+        default=os.getenv("GITLAB_PROJECT"),
+        help="GitLab project ID or namespace/repo — can read from GITLAB_PROJECT env var"
+    )
+
+    parser.add_argument(
+        "--token",
+        default=os.getenv("GITLAB_TOKEN"),
+        help="GitLab Personal Access Token — can read from GITLAB_TOKEN env var (NEVER in CLI!)"
+    )
+
+    parser.add_argument(
+        "--repo-path",
+        default=os.getenv("REPO_PATH"),
+        help="Absolute path to cloned repository — can read from REPO_PATH env var"
+    )
+
+    parser.add_argument(
+        "--no-ssl-verify",
+        action="store_true",
+        default=os.getenv("GITLAB_SSL_VERIFY", "true").lower() == "false",
+        help="Disable SSL verification (for self-signed certificates)"
+    )
+
+    parser.add_argument(
+        "--since",
+        default=None,
+        help="ISO 8601 start date (e.g., 2024-09-01T00:00:00Z)"
+    )
+
+    parser.add_argument(
+        "--until",
+        default=None,
+        help="ISO 8601 end date (e.g., 2024-12-01T23:59:59Z)"
+    )
+
     args = parser.parse_args()
 
-    # ===== STAGE 0: Load artifacts =====
-    logger.info("=" * 60)
-    logger.info("Stage 0: Loading artifacts")
+    # Validate required GitLab parameters if not using fixture
+    use_gitlab = all([
+        args.gitlab_url,
+        args.project_id,
+        args.token,
+        args.repo_path,
+        args.since,
+        args.until,
+    ])
+
+    if not use_gitlab and not args.fixture:
+        parser.error(
+            "Either --fixture must be provided (cycle 1) or all GitLab "
+            "parameters must be set (gitlab-url, project-id, token, repo-path, since, until). "
+            "Configure .env or pass as arguments. See .env.example for details."
+        )
+
+    # ===== STAGE 0: Load or collect artifacts =====
     logger.info("=" * 60)
 
-    try:
-        mr_artifacts = loader.load_artifacts(args.fixture)
-        logger.info(f"Loaded {len(mr_artifacts)} MR artifacts")
-    except Exception as e:
-        logger.error(f"Failed to load artifacts: {e}")
-        sys.exit(1)
+    # Determine if using fixture or collecting from GitLab
+    use_gitlab = all([
+        args.gitlab_url,
+        args.project_id,
+        args.token,
+        args.repo_path,
+        args.since,
+        args.until,
+    ])
+
+    if use_gitlab:
+        logger.info("Stage 0: Collecting artifacts from GitLab")
+        logger.info("=" * 60)
+
+        try:
+            from collector import collect
+            mr_artifacts = collect(
+                gitlab_url=args.gitlab_url,
+                project_id=args.project_id,
+                token=args.token,
+                repo_path=args.repo_path,
+                since=args.since,
+                until=args.until,
+                output_path=os.path.join(args.output_dir, "mr_artifacts.json"),
+                ssl_verify=not args.no_ssl_verify
+            )
+            logger.info(f"Collected {len(mr_artifacts)} MR artifacts")
+        except Exception as e:
+            logger.error(f"Failed to collect artifacts from GitLab: {e}")
+            sys.exit(1)
+    else:
+        logger.info("Stage 0: Loading artifacts from fixture")
+        logger.info("=" * 60)
+
+        try:
+            mr_artifacts = loader.load_artifacts(args.fixture)
+            logger.info(f"Loaded {len(mr_artifacts)} MR artifacts")
+        except Exception as e:
+            logger.error(f"Failed to load artifacts: {e}")
+            sys.exit(1)
 
     # ===== STAGE 1: Extract quantitative (already in fixture) =====
     logger.info("=" * 60)

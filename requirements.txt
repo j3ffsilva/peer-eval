@@ -4,6 +4,9 @@
 # Core dependencies
 anthropic>=0.25.0        # Anthropic Claude API (for cycle 2+)
 python-gitlab>=3.15.0    # GitLab API client (for cycle 2+)
+gitpython>=3.1.40        # Git repository operations (for cycle 2+)
+tenacity>=8.2.0          # Retry logic with exponential backoff (for cycle 2+)
+python-dotenv>=1.0.0     # Environment variables from .env (for cycle 2+)
 
 # Testing
 pytest>=8.0.0            # Testing framework
