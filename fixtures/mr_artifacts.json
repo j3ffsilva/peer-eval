@@ -1,0 +1,378 @@
+[
+  {
+    "mr_id": "MR-1",
+    "author": "ana",
+    "title": "fix: correct discount calculation edge case",
+    "description": "Corrige o cálculo de desconto quando quantidade é zero. Fecha #12.",
+    "type_declared": "fix",
+    "opened_at": "2024-11-20T10:00:00Z",
+    "merged_at": "2024-11-20T14:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [
+      {
+        "id": 12,
+        "title": "Bug no cálculo de desconto",
+        "created_at": "2024-11-15T09:00:00Z",
+        "mr_opened_at": "2024-11-20T10:00:00Z"
+      }
+    ],
+    "diff_summary": [
+      {
+        "file": "domain/discount.py",
+        "additions": 8,
+        "deletions": 2,
+        "content_excerpt": "def calculate_discount(price, qty):\n    if qty == 0:\n        return 0.0\n    return price * (1 - discount_rate)"
+      }
+    ],
+    "review_comments": [
+      {
+        "author": "bruno",
+        "type": "comment",
+        "body": "Bom catch. Considerar também qty negativo?",
+        "created_at": "2024-11-20T11:00:00Z"
+      },
+      {
+        "author": "bruno",
+        "type": "approval",
+        "body": "Aprovado.",
+        "created_at": "2024-11-20T13:00:00Z"
+      }
+    ],
+    "reviewers": ["bruno"],
+    "quantitative": {
+      "X": 0.103,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-2",
+    "author": "ana",
+    "title": "feat: add user profile preferences API",
+    "description": "Implementa endpoints para gerenciar preferências do usuário (tema, idioma, notificações). Integrado com teste de integração.",
+    "type_declared": "feat",
+    "opened_at": "2024-11-21T09:00:00Z",
+    "merged_at": "2024-11-22T16:30:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [
+      {
+        "id": 15,
+        "title": "User preferences feature",
+        "created_at": "2024-11-18T08:00:00Z",
+        "mr_opened_at": "2024-11-21T09:00:00Z"
+      }
+    ],
+    "diff_summary": [
+      {
+        "file": "api/routes.py",
+        "additions": 45,
+        "deletions": 0,
+        "content_excerpt": "@router.get('/users/{id}/preferences')\ndef get_preferences(id: int):\n    ..."
+      },
+      {
+        "file": "domain/user_preferences.py",
+        "additions": 72,
+        "deletions": 0,
+        "content_excerpt": "class UserPreferences:\n    def __init__(self, user_id: int):\n        ..."
+      },
+      {
+        "file": "tests/test_user_preferences.py",
+        "additions": 89,
+        "deletions": 0,
+        "content_excerpt": "def test_get_preferences():\n    ..."
+      }
+    ],
+    "review_comments": [
+      {
+        "author": "bruno",
+        "type": "comment",
+        "body": "Faltou validar se user existe antes de guardar prefs. Qual é o status code se não existir?",
+        "created_at": "2024-11-21T14:00:00Z"
+      },
+      {
+        "author": "bruno",
+        "type": "comment",
+        "body": "Também seria bom adicionar cache pra essas queries. Vê se é viável?",
+        "created_at": "2024-11-21T14:30:00Z"
+      },
+      {
+        "author": "bruno",
+        "type": "approval",
+        "body": "Ótimo, ficou bem estruturado. Aprovado.",
+        "created_at": "2024-11-22T16:00:00Z"
+      }
+    ],
+    "reviewers": ["bruno"],
+    "quantitative": {
+      "X": 0.487,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-3",
+    "author": "bruno",
+    "title": "feat: implement advanced filtering engine",
+    "description": "Novo motor de busca com suporte a filtros complexos, agregações e facetas. Inclui índice de performance.",
+    "type_declared": "feat",
+    "opened_at": "2024-11-19T08:00:00Z",
+    "merged_at": "2024-11-21T15:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [
+      {
+        "id": 8,
+        "title": "Advanced search feature",
+        "created_at": "2024-11-10T10:00:00Z",
+        "mr_opened_at": "2024-11-19T08:00:00Z"
+      }
+    ],
+    "diff_summary": [
+      {
+        "file": "services/search_engine.py",
+        "additions": 187,
+        "deletions": 0,
+        "content_excerpt": "class SearchEngine:\n    def __init__(self):\n        self.filters = {}\n    def apply_filter(self, field, value):\n        ..."
+      },
+      {
+        "file": "domain/filter_builder.py",
+        "additions": 94,
+        "deletions": 0,
+        "content_excerpt": "class FilterBuilder:\n    def complex_filter(self):\n        ..."
+      },
+      {
+        "file": "tests/test_search_engine.py",
+        "additions": 156,
+        "deletions": 0,
+        "content_excerpt": "def test_complex_filters():\n    ..."
+      },
+      {
+        "file": "docs/search_api.md",
+        "additions": 52,
+        "deletions": 0,
+        "content_excerpt": "# Search API\n\n## Complex Filters\n..."
+      }
+    ],
+    "review_comments": [
+      {
+        "author": "carla",
+        "type": "comment",
+        "body": "Performance looks good, mas fez benchmark com dataset real?",
+        "created_at": "2024-11-19T15:00:00Z"
+      },
+      {
+        "author": "carla",
+        "type": "approval",
+        "body": "Excelente trabalho. Approved.",
+        "created_at": "2024-11-21T14:00:00Z"
+      }
+    ],
+    "reviewers": ["carla"],
+    "quantitative": {
+      "X": 0.742,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-4",
+    "author": "bruno",
+    "title": "refactor: decouple service layer from HTTP handlers",
+    "description": "Refactora a camada de serviços para remover dependências circulares com handlers HTTP. Melhora testabilidade.",
+    "type_declared": "refactor",
+    "opened_at": "2024-11-22T10:00:00Z",
+    "merged_at": "2024-11-23T12:00:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [],
+    "diff_summary": [
+      {
+        "file": "services/payment_service.py",
+        "additions": 42,
+        "deletions": 35,
+        "content_excerpt": "class PaymentService:\n    def process(self, amount, currency):\n        return {'status': 'ok'}\n    ..."
+      },
+      {
+        "file": "services/order_service.py",
+        "additions": 38,
+        "deletions": 31,
+        "content_excerpt": "class OrderService:\n    def __init__(self):\n        ..."
+      },
+      {
+        "file": "tests/test_services.py",
+        "additions": 28,
+        "deletions": 15,
+        "content_excerpt": "def test_payment_isolated():\n    ..."
+      }
+    ],
+    "review_comments": [],
+    "reviewers": [],
+    "quantitative": {
+      "X": 0.289,
+      "S": 1.0,
+      "Q": 0.5
+    }
+  },
+  {
+    "mr_id": "MR-5",
+    "author": "carla",
+    "title": "feat: add authentication middleware",
+    "description": "Middleware de autenticação com suporte a JWT e refresh tokens.",
+    "type_declared": "feat",
+    "opened_at": "2024-11-27T22:00:00Z",
+    "merged_at": "2024-11-28T10:30:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [
+      {
+        "id": 20,
+        "title": "Authentication required",
+        "created_at": "2024-11-22T11:00:00Z",
+        "mr_opened_at": "2024-11-27T22:00:00Z"
+      }
+    ],
+    "diff_summary": [
+      {
+        "file": "core/auth_middleware.py",
+        "additions": 76,
+        "deletions": 0,
+        "content_excerpt": "class AuthMiddleware:\n    def verify_token(self, token):\n        ..."
+      },
+      {
+        "file": "domain/jwt_handler.py",
+        "additions": 55,
+        "deletions": 0,
+        "content_excerpt": "def encode_token(user_id):\n    ..."
+      }
+    ],
+    "review_comments": [
+      {
+        "author": "diego",
+        "type": "comment",
+        "body": "LGTM",
+        "created_at": "2024-11-28T10:00:00Z"
+      }
+    ],
+    "reviewers": ["diego"],
+    "quantitative": {
+      "X": 0.351,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-6",
+    "author": "carla",
+    "title": "feat: implement caching layer",
+    "description": "Adiciona Redis para caching de queries frequentes e sessões.",
+    "type_declared": "feat",
+    "opened_at": "2024-11-28T23:00:00Z",
+    "merged_at": "2024-11-29T09:15:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [
+      {
+        "id": 25,
+        "title": "Performance: add caching",
+        "created_at": "2024-11-20T14:00:00Z",
+        "mr_opened_at": "2024-11-28T23:00:00Z"
+      }
+    ],
+    "diff_summary": [
+      {
+        "file": "infra/cache_handler.py",
+        "additions": 68,
+        "deletions": 0,
+        "content_excerpt": "class CacheHandler:\n    def __init__(self, redis_url):\n        ..."
+      },
+      {
+        "file": "api/decorators.py",
+        "additions": 31,
+        "deletions": 0,
+        "content_excerpt": "def cacheable(ttl=3600):\n    def decorator(func):\n        ..."
+      }
+    ],
+    "review_comments": [
+      {
+        "author": "ana",
+        "type": "comment",
+        "body": "Looks good",
+        "created_at": "2024-11-29T08:30:00Z"
+      }
+    ],
+    "reviewers": ["ana"],
+    "quantitative": {
+      "X": 0.301,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-7",
+    "author": "diego",
+    "title": "docs: update README with new API endpoints",
+    "description": "Atualiza documentação com os novos endpoints de busca avançada.",
+    "type_declared": "docs",
+    "opened_at": "2024-11-28T14:00:00Z",
+    "merged_at": "2024-11-28T16:30:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [],
+    "diff_summary": [
+      {
+        "file": "README.md",
+        "additions": 42,
+        "deletions": 5,
+        "content_excerpt": "# API Documentation\n\n## Search Endpoints\n..."
+      }
+    ],
+    "review_comments": [
+      {
+        "author": "ana",
+        "type": "approval",
+        "body": "OK",
+        "created_at": "2024-11-28T16:00:00Z"
+      }
+    ],
+    "reviewers": ["ana"],
+    "quantitative": {
+      "X": 0.058,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  },
+  {
+    "mr_id": "MR-8",
+    "author": "diego",
+    "title": "test: add integration tests for payment flow",
+    "description": "Testes de integração para o fluxo completo de pagamento, cobrindo happy path e edge cases.",
+    "type_declared": "test",
+    "opened_at": "2024-11-25T13:00:00Z",
+    "merged_at": "2024-11-26T17:45:00Z",
+    "deadline": "2024-11-29T23:59:00Z",
+    "linked_issues": [],
+    "diff_summary": [
+      {
+        "file": "tests/integration/test_payment_flow.py",
+        "additions": 134,
+        "deletions": 0,
+        "content_excerpt": "def test_payment_happy_path():\n    # full payment flow\n    ...\n\ndef test_payment_insufficient_funds():\n    ..."
+      }
+    ],
+    "review_comments": [
+      {
+        "author": "ana",
+        "type": "comment",
+        "body": "Good coverage. Could add test for timeout scenarios?",
+        "created_at": "2024-11-26T13:00:00Z"
+      },
+      {
+        "author": "ana",
+        "type": "approval",
+        "body": "Approved",
+        "created_at": "2024-11-26T17:30:00Z"
+      }
+    ],
+    "reviewers": ["ana"],
+    "quantitative": {
+      "X": 0.414,
+      "S": 1.0,
+      "Q": 1.0
+    }
+  }
+]

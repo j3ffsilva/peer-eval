@@ -1,0 +1,15 @@
+# Contribution Factor Model v3.0 - Requirements
+# Python 3.8+
+
+# Core dependencies
+anthropic>=0.25.0        # Anthropic Claude API (for cycle 2+)
+python-gitlab>=3.15.0    # GitLab API client (for cycle 2+)
+
+# Testing
+pytest>=8.0.0            # Testing framework
+pytest-cov>=4.0.0        # Coverage plugin for pytest
+
+# Development
+black>=23.0.0            # Code formatter
+flake8>=6.0.0            # Linter
+mypy>=1.0.0              # Type checker
