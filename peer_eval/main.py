@@ -83,27 +83,32 @@ def _extract_members_from_artifacts(mr_artifacts: List[Dict]) -> List[str]:
     return sorted(list(members))
 
 
-def _extract_repo_name(project_id: str) -> str:
+def _extract_repo_name(project_id: Optional[str]) -> str:
     """
-    Extract repository name from project_id.
+    Extract repository name from project_id or use current directory name.
 
     Examples:
         "graduacao/2026-1a/t17/g03" → "g03"
         "group/project" → "project"
         "123" → "project_123"
+        None → basename of current working directory
 
     Args:
-        project_id: GitLab project ID or namespace/repo
+        project_id: GitLab project ID or namespace/repo (optional)
 
     Returns:
-        Repository name (last segment if path, otherwise the ID)
+        Repository name (last segment if path, directory name, or the ID)
     """
+    # If no project_id, use current directory name
+    if not project_id:
+        return os.path.basename(os.getcwd())
+
     if project_id.isdigit():
         return f"project_{project_id}"
 
     # Split by / and return last segment
     parts = project_id.split("/")
-    return parts[-1] if parts else "project"
+    return parts[-1] if parts else os.path.basename(os.getcwd())
 
 
 def _prepare_output_dir(base_dir: str, project_id: Optional[str]) -> str:
@@ -117,11 +122,9 @@ def _prepare_output_dir(base_dir: str, project_id: Optional[str]) -> str:
     Returns:
         Final output directory path
     """
-    if project_id:
-        repo_name = _extract_repo_name(project_id)
-        output_dir = os.path.join(base_dir, repo_name)
-    else:
-        output_dir = base_dir
+    # Always extract repo name for organization, using cwd if project_id is None
+    repo_name = _extract_repo_name(project_id)
+    output_dir = os.path.join(base_dir, repo_name)
 
     os.makedirs(output_dir, exist_ok=True)
     return output_dir
@@ -208,7 +211,13 @@ def main():
     parser.add_argument(
         "--repo-path",
         default=os.getenv("REPO_PATH"),
-        help="Absolute path to cloned repository — can read from REPO_PATH env var"
+        help="Absolute path to cloned repository — can read from REPO_PATH env var, defaults to current directory"
+    )
+
+    parser.add_argument(
+        "--use-cwd",
+        action="store_true",
+        help="Use current working directory as repository path (ignores REPO_PATH env var)"
     )
 
     parser.add_argument(
@@ -231,6 +240,11 @@ def main():
     )
 
     args = parser.parse_args()
+
+    # Use current working directory if --use-cwd is specified or REPO_PATH not in .env
+    if args.use_cwd or not args.repo_path:
+        args.repo_path = os.getcwd()
+        logger.info(f"Using current working directory as repository path: {args.repo_path}")
 
     # Validate required GitLab parameters if not using fixture
     use_gitlab = all([
