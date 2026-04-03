@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "peer-eval"
+version = "3.0.0"
+description = "Contribution Factor Model v3.0 — Evaluate student contributions in collaborative projects"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Jefferson Silva", email = "silva.o.jefferson@gmail.com"},
+]
+requires-python = ">=3.8"
+dependencies = [
+    "anthropic>=0.25.0",
+    "python-gitlab>=3.15.0",
+    "gitpython>=3.1.40",
+    "tenacity>=8.2.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/inteli-perf-eng/peer-eval"
+Documentation = "https://github.com/inteli-perf-eng/peer-eval/blob/main/README.md"
+Repository = "https://github.com/inteli-perf-eng/peer-eval.git"
+Issues = "https://github.com/inteli-perf-eng/peer-eval/issues"
+
+[project.scripts]
+peer-eval = "peer_eval.cli:cli"
+
+[tool.setuptools]
+packages = ["peer_eval"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=peer_eval --cov-report=html"
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false

@@ -1,167 +1,199 @@
-# Contribution Factor Model v3.0
+# Peer-Eval: Contribution Factor Model v3.0
 
-## ✨ Setup - Ambiente Virtual
+Automated evaluation of student contributions in collaborative projects using GitLab merge requests, code analysis, and survival metrics.
 
-### 1. Criar e Ativar o Ambiente Virtual
+## Features
 
-O projeto inclui um ambiente virtual pré-configurado chamado `venv`. Para começar:
+- 🔗 **Real GitLab Integration**: Collects data directly from GitLab.com or self-hosted instances
+- 📊 **Quantitative Metrics**: Analyzes effort (X), survival (S), and CI quality (Q)
+- 👥 **Auto-Member Detection**: Automatically extracts contributors from MR authors and reviewers
+- 📁 **Repository Organization**: Organizes output by project for multi-repo evaluation
+- 🔄 **Fixture Support**: Cycle 1 mode with fixture-based evaluation for validation
+- 🚀 **CLI Tool**: Easy-to-use command-line interface
 
-**No Linux/macOS:**
-```bash
-source venv/bin/activate
-```
+## Installation
 
-**No Windows:**
-```bash
-venv\Scripts\activate
-```
-
-Você saberá que o ambiente está ativo quando vir `(venv)` no inicio do seu prompt.
-
-### 2. Instalar Dependências (se necessário)
-
-Se o venv foi recém-criado ou você precisa atualizar:
+### From Source (Development)
 
 ```bash
-pip install -U pip setuptools wheel
-pip install -r requirements.txt
+git clone https://github.com/inteli-perf-eng/peer-eval.git
+cd peer-eval
+
+# Install in development mode
+pip install -e .
 ```
 
-### 3. Rodar o Projeto
+### From PyPI (When Published)
 
 ```bash
-python main.py --fixture fixtures/mr_artifacts.json \
-               --members ana bruno carla diego \
-               --deadline 2024-11-29T23:59:00Z \
-               --output-dir output
+pip install peer-eval
 ```
 
-### 4. Rodar os Testes
+## Quick Start
+
+### Step 1: Configure `.env`
+
+Copy the template and fill in your GitLab credentials:
 
 ```bash
-pytest tests/ -v
+cp .env.example .env
 ```
 
-Com cobertura:
-```bash
-pytest tests/ -v --cov=. --cov-report=html
+Edit `.env` with your values:
+
+```dotenv
+GITLAB_URL=https://git.inteli.edu.br
+GITLAB_TOKEN=glpat-your-token-here
+GITLAB_PROJECT=namespace/project
+REPO_PATH=/path/to/cloned/repo
+GITLAB_SSL_VERIFY=true
 ```
 
----
-
-## 📁 Estrutura do Projeto
-
-```
-peer-eval/
-├── venv/                       # Ambiente virtual (não committar no Git)
-├── fixtures/
-│   └── mr_artifacts.json       # Dados de teste com 8 MRs
-├── output/                     # Relatórios gerados
-│   ├── mr_llm_estimates.json   # Estimativas LLM
-│   ├── group_report.json       # Análise de padrões
-│   └── full_report.json        # Relatório completo
-├── prompts/
-│   └── avaliacao_llm.md        # System prompts para LLM
-├── tests/
-│   ├── test_model.py           # Testes do modelo
-│   ├── test_loader.py          # Testes de I/O
-│   └── test_scorer.py          # Testes de scoring
-├── config.py                   # Configuração centralizada
-├── exceptions.py               # Exceções customizadas
-├── model.py                    # Cálculos puros
-├── loader.py                   # Operações de arquivo
-├── scorer.py                   # Agregação de scores
-├── llm_stage2a.py              # Avaliação por MR
-├── llm_stage2b.py              # Detecção de padrões
-├── report.py                   # Formatação de saída
-├── main.py                     # Orquestração principal
-├── requirements.txt            # Dependências
-└── README.md                   # Este arquivo
-```
-
----
-
-## 🚀 Uso do CLI
+### Step 2: Run Evaluation
 
 ```bash
-python main.py [OPTIONS]
-
-OPTIONS:
-  --fixture PATH                Caminho para mr_artifacts.json (obrigatório)
-  --members NAMES               Lista de nomes dos membros (obrigatório)
-  --deadline ISO8601            Data limite do projeto (obrigatório)
-  --llm-estimates PATH          Caminho para estimativas pré-computadas (opcional)
-  --overrides PATH              Caminho para overrides do professor (opcional)
-  --output-dir DIR              Diretório de saída (padrão: output)
-  --skip-stage2b                Pular detecção de padrões (opcional)
-  --direct-committers NAMES     Membros com commits diretos (opcional)
+# Evaluate a range of merge requests
+peer-eval --since 2026-03-16 \
+          --until 2026-03-27 \
+          --deadline 2026-03-27T23:59:00Z
 ```
 
----
+That's it! Members are auto-extracted and reports are saved to `output/[repo-name]/`.
 
-## 📊 Exemplo de Saída
+## Usage
 
-```
-┌─────────────────────────────────────────────┐
-│  RESULTADO — Modelo de Contribuição v3.0    │
-├──────────┬───────┬───────┬───────┬──────────┤
-│  Aluno   │  S(p) │  Abs  │  Rel  │  Nota    │
-├──────────┼───────┼───────┼───────┼──────────┤
-│ ana      │  1.07 │  1.00 │  1.00 │  100.0%  │
-│ carla    │  0.90 │  1.00 │  0.84 │   97.6%  │
-│ bruno    │  0.87 │  1.00 │  0.82 │   97.3%  │
-│ diego    │  0.49 │  1.00 │  0.46 │   91.9%  │
-└──────────┴───────┴───────┴───────┴──────────┘
+### With Real GitLab Data (Cycle 2)
 
-⚠️  ALERTAS DETECTADOS:
-
-🟡 BURST_DE_VESPERA - carla
-   MRs: MR-5, MR-6
-   Evidência: 2 of 2 MRs em últimos 3 dias
-   Alternativa legítima: Planejamento pobre ou sprint final legítimo
-```
-
----
-
-## 📦 Dependências
-
-### Principais
-- **anthropic**: API Anthropic Claude (para ciclo 2+)
-- **python-gitlab**: Cliente GitLab API (para ciclo 2+)
-
-### Testes
-- **pytest**: Framework de testes
-- **pytest-cov**: Plugin de cobertura
-
-### Desenvolvimento
-- **black**: Formatador de código
-- **flake8**: Linter
-- **mypy**: Type checker
-
----
-
-## 🛠️ Desenvolvimento com Black e Flake8
-
-Formatar código:
 ```bash
-black *.py tests/
+peer-eval --since 2026-03-16 \
+          --until 2026-03-27 \
+          --deadline 2026-03-27T23:59:00Z \
+          --output-dir output/
 ```
 
-Verificar linting:
+Credentials loaded automatically from `.env`.
+
+### With Fixture (Cycle 1)
+
 ```bash
-flake8 *.py tests/
+peer-eval --fixture fixtures/scenarios/set1_s1_so_review.json \
+          --deadline 2026-03-27T23:59:00Z
 ```
 
-Type checking:
+### Override Member List
+
+If you need to specify members instead of auto-extraction:
+
 ```bash
-mypy *.py --ignore-missing-imports
+peer-eval --since 2026-03-16 \
+          --until 2026-03-27 \
+          --members alice bob charlie \
+          --deadline 2026-03-27T23:59:00Z
 ```
 
----
+### Advanced Options
 
-## 📝 Notas
+```bash
+peer-eval --help
+```
 
-- **Ciclo 1**: Funciona com fixtures JSON
-- **Ciclo 2+**: Integrará com APIs reais (Anthropic, GitLab)
-- Porta Python: 3.8+
-- Todos os valores numéricos estão centralizados em `config.py`
+## Output
+
+Reports are saved to `output/[repo-name]/`:
+
+- `mr_artifacts.json` — Collected MR data with quantitative metrics
+- `mr_llm_estimates.json` — LLM component estimates (Cycle 2+)
+- `full_report.json` — Complete evaluation report
+- Terminal summary table with scores per member
+
+## Architecture
+
+### Cycles
+
+- **Cycle 1**: Fixture-based validation with heuristic models
+- **Cycle 2**: Real GitLab data collection with survival analysis
+- **Cycle 3**: LLM-powered quality estimation (future)
+
+### Stages
+
+1. **Stage 0**: Load artifacts (fixture or GitLab)
+2. **Stage 1**: Extract quantitative metrics
+3. **Stage 2a**: LLM component estimation
+4. **Stage 2b**: Cross-MR pattern detection
+5. **Stage 3**: Compute per-member scores
+6. **Stage 4**: Generate reports
+
+## Configuration
+
+### Environment Variables
+
+```dotenv
+# GitLab Instance
+GITLAB_URL=https://gitlab.com
+
+# Credentials
+GITLAB_TOKEN=glpat-xxxxxxxxxxxxxxxxxxxx
+GITLAB_PROJECT=namespace/project
+
+# Local Repository
+REPO_PATH=/absolute/path/to/repo
+
+# SSL (for self-signed certificates)
+GITLAB_SSL_VERIFY=true  # false to disable
+```
+
+### Command-Line Arguments
+
+See `peer-eval --help` for all options.
+
+## Development
+
+### Install Development Dependencies
+
+```bash
+pip install -e ".[dev]"
+```
+
+### Run Tests
+
+```bash
+pytest
+```
+
+### Run Tests with Coverage
+
+```bash
+pytest --cov=peer_eval --cov-report=html
+```
+
+## Troubleshooting
+
+### "SSL: CERTIFICATE_VERIFY_FAILED"
+
+For self-hosted GitLab with self-signed certificates:
+
+```bash
+peer-eval --no-ssl-verify ...
+# or in .env
+GITLAB_SSL_VERIFY=false
+```
+
+### "Project not found"
+
+Check that `GITLAB_PROJECT` is correct (format: `namespace/project` or numeric ID).
+
+### "Repository not found"
+
+Ensure `REPO_PATH` is an absolute path to the cloned repository.
+
+## License
+
+MIT License — see LICENSE file for details.
+
+## Author
+
+Jefferson Silva — [silva.o.jefferson@gmail.com](mailto:silva.o.jefferson@gmail.com)
+
+## Contributing
+
+Contributions welcome! Please fork and submit pull requests.
