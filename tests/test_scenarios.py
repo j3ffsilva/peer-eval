@@ -9,8 +9,8 @@ Run with: pytest tests/test_scenarios.py -v
 
 import pytest
 from pathlib import Path
-from scorer import compute_scores
-from loader import load_artifacts
+from peer_eval.scorer import compute_scores
+from peer_eval.loader import load_artifacts
 
 FIXTURES_DIR = Path("fixtures/scenarios")
 

@@ -4,8 +4,8 @@ Tests for model.py functions.
 
 import pytest
 import math
-import model
-import config
+from peer_eval import model
+from peer_eval import config
 
 
 class TestSat:

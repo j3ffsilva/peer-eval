@@ -6,8 +6,8 @@ import pytest
 import json
 import os
 import tempfile
-import loader
-from exceptions import FixtureNotFoundError
+from peer_eval import loader
+from peer_eval.exceptions import FixtureNotFoundError
 
 
 class TestLoadArtifacts:

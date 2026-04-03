@@ -4,8 +4,8 @@ Tests for scorer.py functions.
 
 import pytest
 from typing import Optional, List
-import scorer
-import config
+from peer_eval import scorer
+from peer_eval import config
 
 
 class TestComputeScores:
