@@ -24,6 +24,7 @@ import logging
 import os
 import sys
 from pathlib import Path
+from typing import List, Dict, Optional
 
 from dotenv import load_dotenv
 
@@ -45,6 +46,88 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+# ============================================================
+# Helper functions for auto-extraction and path handling
+# ============================================================
+
+
+def _extract_members_from_artifacts(mr_artifacts: List[Dict]) -> List[str]:
+    """
+    Extract unique member usernames from MR artifacts.
+
+    Collects all authors and reviewers from the artifacts.
+    Returns sorted list of unique usernames.
+
+    Args:
+        mr_artifacts: List of MR artifact dicts
+
+    Returns:
+        Sorted list of unique member usernames
+    """
+    members = set()
+
+    for mr in mr_artifacts:
+        # Add author
+        if mr.get("author"):
+            members.add(mr["author"])
+
+        # Add reviewers
+        for reviewer in mr.get("reviewers", []):
+            members.add(reviewer)
+
+        # Add reviewers from comments
+        for comment in mr.get("review_comments", []):
+            if comment.get("author"):
+                members.add(comment["author"])
+
+    return sorted(list(members))
+
+
+def _extract_repo_name(project_id: str) -> str:
+    """
+    Extract repository name from project_id.
+
+    Examples:
+        "graduacao/2026-1a/t17/g03" → "g03"
+        "group/project" → "project"
+        "123" → "project_123"
+
+    Args:
+        project_id: GitLab project ID or namespace/repo
+
+    Returns:
+        Repository name (last segment if path, otherwise the ID)
+    """
+    if project_id.isdigit():
+        return f"project_{project_id}"
+
+    # Split by / and return last segment
+    parts = project_id.split("/")
+    return parts[-1] if parts else "project"
+
+
+def _prepare_output_dir(base_dir: str, project_id: Optional[str]) -> str:
+    """
+    Prepare output directory, creating repo-specific subdirectory if using GitLab.
+
+    Args:
+        base_dir: Base output directory
+        project_id: GitLab project ID (optional)
+
+    Returns:
+        Final output directory path
+    """
+    if project_id:
+        repo_name = _extract_repo_name(project_id)
+        output_dir = os.path.join(base_dir, repo_name)
+    else:
+        output_dir = base_dir
+
+    os.makedirs(output_dir, exist_ok=True)
+    return output_dir
+
+
+
 def main():
     """Main execution flow."""
     parser = argparse.ArgumentParser(
@@ -60,9 +143,10 @@ def main():
 
     parser.add_argument(
         "--members",
-        required=True,
-        nargs="+",
-        help="List of team member usernames"
+        required=False,
+        nargs="*",
+        default=None,
+        help="List of team member usernames (optional — auto-extracted from MRs if omitted)"
     )
 
     parser.add_argument(
@@ -195,6 +279,11 @@ def main():
                 ssl_verify=not args.no_ssl_verify
             )
             logger.info(f"Collected {len(mr_artifacts)} MR artifacts")
+
+            # Prepare output directory with repo name
+            args.output_dir = _prepare_output_dir(args.output_dir, args.project_id)
+            logger.info(f"Output directory: {args.output_dir}")
+
         except Exception as e:
             logger.error(f"Failed to collect artifacts from GitLab: {e}")
             sys.exit(1)
@@ -208,6 +297,15 @@ def main():
         except Exception as e:
             logger.error(f"Failed to load artifacts: {e}")
             sys.exit(1)
+
+    # ===== Auto-extract members if not provided =====
+    if not args.members:
+        args.members = _extract_members_from_artifacts(mr_artifacts)
+        logger.info(f"Auto-extracted {len(args.members)} unique members from artifacts:")
+        logger.info(f"  {', '.join(args.members)}")
+    else:
+        logger.info(f"Using {len(args.members)} provided members:")
+        logger.info(f"  {', '.join(args.members)}")
 
     # ===== STAGE 1: Extract quantitative (already in fixture) =====
     logger.info("=" * 60)
