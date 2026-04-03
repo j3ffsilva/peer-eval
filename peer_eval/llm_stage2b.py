@@ -130,9 +130,9 @@ def _mock_group_report(
                         "mr_ids": [mr1["mr_id"], mr2["mr_id"]],
                         "evidence": f"{mr1['mr_id']} e {mr2['mr_id']} abertos com {delta:.1f}h de intervalo, {len(overlap)} arquivos em comum",
                         "alternative": "Múltiplos PRs independentes para refatoração em paralelo",
-                        "suspicion_level": "bajo"
+                        "suspicion_level": "baixo"
                     })
-                    flags_by_level["bajo"] += 1
+                    flags_by_level["baixo"] += 1
 
     # ===== Check for commit_inflado =====
     for member in members:

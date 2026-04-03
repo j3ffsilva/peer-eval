@@ -57,9 +57,9 @@ def print_summary(scores: dict, group_report: Optional[dict] = None) -> None:
             mrs = ", ".join(flag.get("mr_ids", []))
             evidence = flag.get("evidence", "")
             alternative = flag.get("alternative", "")
-            level = flag.get("suspicion_level", "bajo")
+            level = flag.get("suspicion_level", "baixo")
 
-            level_emoji = {"alto": "🔴", "medio": "🟡", "bajo": "🟢"}.get(level, "⚪")
+            level_emoji = {"alto": "🔴", "medio": "🟡", "baixo": "🟢"}.get(level, "⚪")
 
             print(f"{level_emoji} {flag_type.upper()} - {persons}")
             print(f"   MRs: {mrs}")
@@ -71,7 +71,7 @@ def print_summary(scores: dict, group_report: Optional[dict] = None) -> None:
         summary_str = f"Total: {summary.get('total_mrs')} MRs, {summary.get('total_persons')} membros"
         flags_summary = summary.get("flags_by_level", {})
         if any(flags_summary.values()):
-            summary_str += f" | Flags: 🔴 {flags_summary.get('alto', 0)} 🟡 {flags_summary.get('medio', 0)} 🟢 {flags_summary.get('bajo', 0)}"
+            summary_str += f" | Flags: 🔴 {flags_summary.get('alto', 0)} 🟡 {flags_summary.get('medio', 0)} 🟢 {flags_summary.get('baixo', 0)}"
         print(summary_str)
         print()
 

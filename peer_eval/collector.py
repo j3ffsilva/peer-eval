@@ -123,6 +123,10 @@ def collect(
         logger.info(f"  Processing MR-{mr.iid}: {mr.title[:50]}")
 
         try:
+            # Fetch full MR object to get all attributes (diff_refs, approvals, etc.)
+            # list() returns lightweight objects; we need get() for full data
+            mr = _api_call_with_retry(lambda iid=mr.iid: project.mergerequests.get(iid))
+
             changes = _fetch_changes(project, mr)
             approvals = _fetch_approvals(project, mr)
             comments = _fetch_comments(project, mr)
@@ -265,20 +269,28 @@ def _fetch_approvals(project, mr) -> List[str]:
 
     Args:
         project: python-gitlab Project object
-        mr: python-gitlab MergeRequest object
+        mr: python-gitlab MergeRequest object (should be full object from get())
 
     Returns:
         List of usernames (strings)
     """
     try:
-        mr_obj = _api_call_with_retry(
-            lambda: project.mergerequests.get(mr.iid, lazy=True)
-        )
-        approvals = _api_call_with_retry(lambda: mr_obj.approvals.get())
+        # Note: mr should be a full object from get(), not from list()
+        # Access approvals directly from the MR object
+        approvals_data = getattr(mr, "approvals", None)
+
+        if not approvals_data:
+            return []
+
+        # approvals_data can be a dict or object
+        if isinstance(approvals_data, dict):
+            approved_by = approvals_data.get("approved_by", [])
+        else:
+            approved_by = getattr(approvals_data, "approved_by", [])
 
         usernames = [
-            u["user"]["username"]
-            for u in approvals.get("approved_by", [])
+            u.get("user", u)["username"] if isinstance(u, dict) else u.user.username
+            for u in approved_by
         ]
         return usernames
 

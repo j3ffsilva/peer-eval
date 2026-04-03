@@ -1,0 +1,104 @@
+{
+  "project": "peer-eval-project",
+  "analyzed_at": "2026-04-03T22:56:11.452408Z",
+  "flags": [
+    {
+      "type": "burst_de_vespera",
+      "persons": [
+        "henrique.diniz"
+      ],
+      "mr_ids": [
+        "MR-108",
+        "MR-106",
+        "MR-105",
+        "MR-93",
+        "MR-91",
+        "MR-90",
+        "MR-92",
+        "MR-89",
+        "MR-88"
+      ],
+      "evidence": "9 of 12 MRs em últimos 3 dias, T_review médio=0.0",
+      "alternative": "Planejamento pobre ou sprint final intenso legítimo",
+      "suspicion_level": "medio"
+    },
+    {
+      "type": "fragmentacao_artificial",
+      "persons": [
+        "henrique.diniz"
+      ],
+      "mr_ids": [
+        "MR-89",
+        "MR-90"
+      ],
+      "evidence": "MR-89 e MR-90 abertos com 0.0h de intervalo, 5 arquivos em comum",
+      "alternative": "Múltiplos PRs independentes para refatoração em paralelo",
+      "suspicion_level": "baixo"
+    },
+    {
+      "type": "fragmentacao_artificial",
+      "persons": [
+        "henrique.diniz"
+      ],
+      "mr_ids": [
+        "MR-90",
+        "MR-91"
+      ],
+      "evidence": "MR-90 e MR-91 abertos com 0.0h de intervalo, 7 arquivos em comum",
+      "alternative": "Múltiplos PRs independentes para refatoração em paralelo",
+      "suspicion_level": "baixo"
+    },
+    {
+      "type": "fragmentacao_artificial",
+      "persons": [
+        "henrique.diniz"
+      ],
+      "mr_ids": [
+        "MR-91",
+        "MR-92"
+      ],
+      "evidence": "MR-91 e MR-92 abertos com 0.0h de intervalo, 8 arquivos em comum",
+      "alternative": "Múltiplos PRs independentes para refatoração em paralelo",
+      "suspicion_level": "baixo"
+    },
+    {
+      "type": "fragmentacao_artificial",
+      "persons": [
+        "henrique.diniz"
+      ],
+      "mr_ids": [
+        "MR-92",
+        "MR-93"
+      ],
+      "evidence": "MR-92 e MR-93 abertos com 0.0h de intervalo, 9 arquivos em comum",
+      "alternative": "Múltiplos PRs independentes para refatoração em paralelo",
+      "suspicion_level": "baixo"
+    },
+    {
+      "type": "fragmentacao_artificial",
+      "persons": [
+        "leonardo.vieira"
+      ],
+      "mr_ids": [
+        "MR-74",
+        "MR-75"
+      ],
+      "evidence": "MR-74 e MR-75 abertos com 0.7h de intervalo, 2 arquivos em comum",
+      "alternative": "Múltiplos PRs independentes para refatoração em paralelo",
+      "suspicion_level": "baixo"
+    }
+  ],
+  "observations": [
+    "Análise de 21 MRs de 5 membros",
+    "Padrões: fragmentação artificial, burst de véspera, commits inflados, padding de volume"
+  ],
+  "summary": {
+    "total_mrs": 21,
+    "total_persons": 5,
+    "flags_by_level": {
+      "alto": 0,
+      "medio": 1,
+      "baixo": 5
+    }
+  }
+}

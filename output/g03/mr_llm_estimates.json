@@ -3,7 +3,7 @@
     "mr_id": "MR-112",
     "author": "nicole.silva",
     "E": {
-      "value": 0.2,
+      "value": 0.4,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -24,13 +24,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153387Z"
+    "estimated_at": "2026-04-03T22:56:11.451272Z"
   },
   {
     "mr_id": "MR-108",
     "author": "henrique.diniz",
     "E": {
-      "value": 0.1,
+      "value": 0.30000000000000004,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -51,13 +51,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153399Z"
+    "estimated_at": "2026-04-03T22:56:11.451285Z"
   },
   {
     "mr_id": "MR-106",
     "author": "henrique.diniz",
     "E": {
-      "value": 0.1,
+      "value": 0.30000000000000004,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -78,13 +78,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153410Z"
+    "estimated_at": "2026-04-03T22:56:11.451297Z"
   },
   {
     "mr_id": "MR-105",
     "author": "henrique.diniz",
     "E": {
-      "value": 0.3,
+      "value": 0.5,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -105,13 +105,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153417Z"
+    "estimated_at": "2026-04-03T22:56:11.451305Z"
   },
   {
     "mr_id": "MR-93",
     "author": "henrique.diniz",
     "E": {
-      "value": 0.1,
+      "value": 0.30000000000000004,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -132,13 +132,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153428Z"
+    "estimated_at": "2026-04-03T22:56:11.451317Z"
   },
   {
     "mr_id": "MR-91",
     "author": "henrique.diniz",
     "E": {
-      "value": 0.1,
+      "value": 0.30000000000000004,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -159,13 +159,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153437Z"
+    "estimated_at": "2026-04-03T22:56:11.451327Z"
   },
   {
     "mr_id": "MR-90",
     "author": "henrique.diniz",
     "E": {
-      "value": 0.1,
+      "value": 0.30000000000000004,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -186,7 +186,7 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153445Z"
+    "estimated_at": "2026-04-03T22:56:11.451335Z"
   },
   {
     "mr_id": "MR-92",
@@ -213,13 +213,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153455Z"
+    "estimated_at": "2026-04-03T22:56:11.451345Z"
   },
   {
     "mr_id": "MR-89",
     "author": "henrique.diniz",
     "E": {
-      "value": 0.1,
+      "value": 0.30000000000000004,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -240,13 +240,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153462Z"
+    "estimated_at": "2026-04-03T22:56:11.451352Z"
   },
   {
     "mr_id": "MR-96",
     "author": "catarina.felipe",
     "E": {
-      "value": 0.3,
+      "value": 0.5,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -267,13 +267,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153491Z"
+    "estimated_at": "2026-04-03T22:56:11.451376Z"
   },
   {
     "mr_id": "MR-76",
     "author": "henrique.diniz",
     "E": {
-      "value": 0.1,
+      "value": 0.30000000000000004,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -294,13 +294,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153496Z"
+    "estimated_at": "2026-04-03T22:56:11.451381Z"
   },
   {
     "mr_id": "MR-82",
     "author": "henrique.diniz",
     "E": {
-      "value": 0.1,
+      "value": 0.30000000000000004,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -321,13 +321,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153501Z"
+    "estimated_at": "2026-04-03T22:56:11.451386Z"
   },
   {
     "mr_id": "MR-88",
     "author": "henrique.diniz",
     "E": {
-      "value": 0.3,
+      "value": 0.5,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -348,13 +348,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153507Z"
+    "estimated_at": "2026-04-03T22:56:11.451393Z"
   },
   {
     "mr_id": "MR-77",
     "author": "henrique.diniz",
     "E": {
-      "value": 0.2,
+      "value": 0.4,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -375,13 +375,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153512Z"
+    "estimated_at": "2026-04-03T22:56:11.451397Z"
   },
   {
     "mr_id": "MR-87",
     "author": "nicole.silva",
     "E": {
-      "value": 0.2,
+      "value": 0.4,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -402,13 +402,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153516Z"
+    "estimated_at": "2026-04-03T22:56:11.451401Z"
   },
   {
     "mr_id": "MR-75",
     "author": "leonardo.vieira",
     "E": {
-      "value": 0.4,
+      "value": 0.6000000000000001,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -429,13 +429,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153589Z"
+    "estimated_at": "2026-04-03T22:56:11.451483Z"
   },
   {
     "mr_id": "MR-74",
     "author": "leonardo.vieira",
     "E": {
-      "value": 0.1,
+      "value": 0.30000000000000004,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -456,13 +456,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153597Z"
+    "estimated_at": "2026-04-03T22:56:11.451492Z"
   },
   {
     "mr_id": "MR-73",
     "author": "leonardo.vieira",
     "E": {
-      "value": 0.3,
+      "value": 0.5,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -483,13 +483,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153667Z"
+    "estimated_at": "2026-04-03T22:56:11.451565Z"
   },
   {
     "mr_id": "MR-72",
     "author": "catarina.felipe",
     "E": {
-      "value": 0.3,
+      "value": 0.5,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -510,13 +510,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153691Z"
+    "estimated_at": "2026-04-03T22:56:11.451590Z"
   },
   {
     "mr_id": "MR-70",
     "author": "nicole.silva",
     "E": {
-      "value": 0.2,
+      "value": 0.4,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -537,13 +537,13 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153699Z"
+    "estimated_at": "2026-04-03T22:56:11.451597Z"
   },
   {
     "mr_id": "MR-69",
     "author": "gabriel.reis",
     "E": {
-      "value": 0.3,
+      "value": 0.5,
       "confidence": "medium",
       "reasoning": "mock"
     },
@@ -564,6 +564,6 @@
       "reasoning": "mock"
     },
     "llm_model": "dry_run",
-    "estimated_at": "2026-04-03T22:25:25.153705Z"
+    "estimated_at": "2026-04-03T22:56:11.451603Z"
   }
 ]
