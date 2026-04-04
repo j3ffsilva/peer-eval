@@ -54,7 +54,7 @@ class GitLabCommand(BaseCommand):
         provider = GitLabProvider(
             project_id=args.project_id,
             url=args.url,
-            token=args.token,
+            token=args.token or os.getenv("GITLAB_TOKEN"),
             repo_path=args.repo_path,
             since=args.since,
             until=args.until,
@@ -78,13 +78,16 @@ class GitLabCommand(BaseCommand):
 
             logger.info(f"Collected {len(artifacts)} MRs")
 
+            # Resolve anthropic_key: CLI args > environment > None
+            anthropic_key = args.anthropic_key or os.getenv("ANTHROPIC_API_KEY")
+
             # Run evaluation pipeline
             scores = run_evaluation(
                 artifacts=artifacts,
                 members=members,
                 deadline=args.deadline,
                 llm_mode=args.llm_mode,
-                anthropic_key=None,  # Will get from env if needed
+                anthropic_key=anthropic_key,
                 output_dir=args.output_dir,
                 overrides=args.overrides,
                 skip_stage2b=args.skip_stage2b,

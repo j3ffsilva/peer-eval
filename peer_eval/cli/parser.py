@@ -74,6 +74,12 @@ def add_common_arguments(parser: argparse.ArgumentParser) -> None:
     )
 
     parser.add_argument(
+        "--anthropic-key",
+        default=None,
+        help="Anthropic API key (or set ANTHROPIC_API_KEY env var)"
+    )
+
+    parser.add_argument(
         "--skip-stage2b",
         action="store_true",
         default=False,
