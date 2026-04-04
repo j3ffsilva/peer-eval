@@ -83,6 +83,43 @@ def _extract_members_from_artifacts(mr_artifacts: List[Dict]) -> List[str]:
     return sorted(list(members))
 
 
+def _infer_project_id_from_cwd(gitlab_project_template: Optional[str] = None) -> Optional[str]:
+    """
+    Infer GitLab project ID from current working directory name.
+
+    If cwd is "G02", tries to construct project ID by replacing the last segment
+    of the template project ID with the lowercased directory name.
+
+    Examples:
+        - cwd="/path/G02", template="graduacao/2026-1a/t17/g03"
+          → "graduacao/2026-1a/t17/g02"
+        - cwd="/path/G02", template=None
+          → None (can't infer without template)
+
+    Args:
+        gitlab_project_template: Template project ID to use as base (e.g., from .env)
+
+    Returns:
+        Inferred project ID, or None if impossible to infer
+    """
+    if not gitlab_project_template:
+        return None
+
+    # Get current directory name (e.g., "G02")
+    cwd_name = os.path.basename(os.getcwd()).lower()
+
+    if not cwd_name:
+        return gitlab_project_template
+
+    # Split template and replace last segment with cwd name
+    parts = gitlab_project_template.split("/")
+    if len(parts) > 0:
+        parts[-1] = cwd_name
+        return "/".join(parts)
+
+    return gitlab_project_template
+
+
 def _extract_repo_name(project_id: Optional[str]) -> str:
     """
     Extract repository name from project_id or use current directory name.
@@ -245,6 +282,13 @@ def main():
     if args.use_cwd or not args.repo_path:
         args.repo_path = os.getcwd()
         logger.info(f"Using current working directory as repository path: {args.repo_path}")
+
+    # If using --use-cwd, infer project-id from directory name (replaces template from .env)
+    if args.use_cwd:
+        original_project_id = args.project_id
+        args.project_id = _infer_project_id_from_cwd(args.project_id)
+        if args.project_id != original_project_id:
+            logger.info(f"Inferred project ID from directory: {original_project_id} → {args.project_id}")
 
     # Validate required GitLab parameters if not using fixture
     use_gitlab = all([
