@@ -83,43 +83,6 @@ def _extract_members_from_artifacts(mr_artifacts: List[Dict]) -> List[str]:
     return sorted(list(members))
 
 
-def _infer_project_id_from_cwd(gitlab_project_template: Optional[str] = None) -> Optional[str]:
-    """
-    Infer GitLab project ID from current working directory name.
-
-    If cwd is a group directory name, tries to construct project ID by replacing
-    the last segment of the template project ID with the lowercased directory name.
-
-    Examples:
-        - cwd="/path/groupB", template="organization/course/sprint/groupa"
-          → "organization/course/sprint/groupb"
-        - cwd="/path/project", template=None
-          → None (can't infer without template)
-
-    Args:
-        gitlab_project_template: Template project ID to use as base (e.g., from .env)
-
-    Returns:
-        Inferred project ID, or None if impossible to infer
-    """
-    if not gitlab_project_template:
-        return None
-
-    # Get current directory name (e.g., "G02")
-    cwd_name = os.path.basename(os.getcwd()).lower()
-
-    if not cwd_name:
-        return gitlab_project_template
-
-    # Split template and replace last segment with cwd name
-    parts = gitlab_project_template.split("/")
-    if len(parts) > 0:
-        parts[-1] = cwd_name
-        return "/".join(parts)
-
-    return gitlab_project_template
-
-
 def _extract_repo_name(project_id: Optional[str]) -> str:
     """
     Extract repository name from project_id or use current directory name.
@@ -235,8 +198,9 @@ def main():
 
     parser.add_argument(
         "--project-id",
-        default=os.getenv("GITLAB_PROJECT"),
-        help="GitLab project ID or namespace/repo — can read from GITLAB_PROJECT env var"
+        default=None,
+        help="GitLab project ID or namespace/repo (e.g., 'group/project' or 'org/course/group/team'). "
+             "If omitted, uses current directory name as last segment identifier"
     )
 
     parser.add_argument(
@@ -247,14 +211,8 @@ def main():
 
     parser.add_argument(
         "--repo-path",
-        default=os.getenv("REPO_PATH"),
-        help="Absolute path to cloned repository — can read from REPO_PATH env var, defaults to current directory"
-    )
-
-    parser.add_argument(
-        "--use-cwd",
-        action="store_true",
-        help="Use current working directory as repository path (ignores REPO_PATH env var)"
+        default=None,
+        help="Absolute path to cloned repository (default: current working directory)"
     )
 
     parser.add_argument(
@@ -278,17 +236,17 @@ def main():
 
     args = parser.parse_args()
 
-    # Use current working directory if --use-cwd is specified or REPO_PATH not in .env
-    if args.use_cwd or not args.repo_path:
+    # Always use current working directory as repository path (default behavior)
+    if not args.repo_path:
         args.repo_path = os.getcwd()
-        logger.info(f"Using current working directory as repository path: {args.repo_path}")
+        logger.debug(f"Using current working directory as repository path: {args.repo_path}")
 
-    # If using --use-cwd, infer project-id from directory name (replaces template from .env)
-    if args.use_cwd:
-        original_project_id = args.project_id
-        args.project_id = _infer_project_id_from_cwd(args.project_id)
-        if args.project_id != original_project_id:
-            logger.info(f"Inferred project ID from directory: {original_project_id} → {args.project_id}")
+    # If project-id not provided, use current directory name as identifier
+    # This allows running peer-eval from any group directory without explicit --project-id
+    if not args.project_id:
+        cwd_name = os.path.basename(os.getcwd())
+        args.project_id = cwd_name
+        logger.info(f"Using current directory name as project identifier: {args.project_id}")
 
     # Validate required GitLab parameters if not using fixture
     use_gitlab = all([
