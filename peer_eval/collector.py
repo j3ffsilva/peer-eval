@@ -165,12 +165,17 @@ def collect(
             logger.warning(f"  ✗ MR-{mr.iid} failed: {e}")
             continue
 
-    # Save artifacts
-    _save_artifacts(artifacts, output_path)
+    # Save artifacts only when an output path is provided
+    if output_path is not None:
+        _save_artifacts(artifacts, output_path)
 
-    logger.info("=" * 70)
-    logger.info(f"✓ Artifacts saved to {output_path}")
-    logger.info("=" * 70)
+        logger.info("=" * 70)
+        logger.info(f"✓ Artifacts saved to {output_path}")
+        logger.info("=" * 70)
+    else:
+        logger.info("=" * 70)
+        logger.info("✓ Artifacts collected (no intermediate file requested)")
+        logger.info("=" * 70)
 
     return artifacts
 
@@ -643,6 +648,9 @@ def _save_artifacts(artifacts: List[Dict], output_path: str) -> None:
         artifacts: List of mr_artifact dicts
         output_path: Path to save JSON
     """
+    if output_path is None:
+        return
+
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
