@@ -35,8 +35,17 @@ from . import model
 from . import scorer
 from . import report
 
-# Load environment variables from .env file (if it exists)
-load_dotenv()
+# Load environment variables from .env file
+# Search in: current dir → package dir → parent of current dir
+_env_paths = [
+    Path.cwd() / ".env",  # Current working directory (for local overrides)
+    Path(__file__).parent.parent / ".env",  # Package root directory
+    Path.cwd().parent / ".env",  # Parent of current directory
+]
+for env_path in _env_paths:
+    if env_path.exists():
+        load_dotenv(env_path)
+        break
 
 # Configure logging
 logging.basicConfig(
