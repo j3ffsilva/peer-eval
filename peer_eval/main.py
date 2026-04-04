@@ -87,13 +87,13 @@ def _infer_project_id_from_cwd(gitlab_project_template: Optional[str] = None) ->
     """
     Infer GitLab project ID from current working directory name.
 
-    If cwd is "G02", tries to construct project ID by replacing the last segment
-    of the template project ID with the lowercased directory name.
+    If cwd is a group directory name, tries to construct project ID by replacing
+    the last segment of the template project ID with the lowercased directory name.
 
     Examples:
-        - cwd="/path/G02", template="graduacao/2026-1a/t17/g03"
-          → "graduacao/2026-1a/t17/g02"
-        - cwd="/path/G02", template=None
+        - cwd="/path/groupB", template="organization/course/sprint/groupa"
+          → "organization/course/sprint/groupb"
+        - cwd="/path/project", template=None
           → None (can't infer without template)
 
     Args:
@@ -125,7 +125,7 @@ def _extract_repo_name(project_id: Optional[str]) -> str:
     Extract repository name from project_id or use current directory name.
 
     Examples:
-        "graduacao/2026-1a/t17/g03" → "g03"
+        "organization/course/sprint/groupA" → "groupA"
         "group/project" → "project"
         "123" → "project_123"
         None → basename of current working directory
