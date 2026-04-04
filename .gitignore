@@ -42,7 +42,12 @@ htmlcov/
 
 # Output directories (but keep structure for docs)
 output/*.json
+output/cache/
 !output/.gitkeep
+
+# Cache directories
+cache/
+.cache/
 
 # Environment files
 .env

@@ -2,19 +2,27 @@
 Stage 2a: MR-level qualitative evaluation (E, A, T_review, P estimation).
 
 Cycle 1: dry_run mode returns structured mock estimates derived heuristically.
-Cycle 2+: Will call Anthropic Claude API for real evaluation.
+Cycle 2+: Will call Anthropic Claude API for real evaluation with caching and fallback.
 """
 
+import anthropic
 import json
 import logging
 import re
-from datetime import datetime
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Optional, List, Dict
+
 from . import config
 from . import model
 from .exceptions import LLMParseError
 
 logger = logging.getLogger(__name__)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Prompt Loading
+# ═══════════════════════════════════════════════════════════════════════════
 
 
 def load_prompt(section: str, prompt_path: str = config.PROMPT_FILE) -> str:
@@ -49,6 +57,113 @@ def load_prompt(section: str, prompt_path: str = config.PROMPT_FILE) -> str:
         raise ValueError(f"Section 'System Prompt — {section}' not found in {prompt_path}")
 
     return match.group(1).strip()
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# LLM Client & Response Parsing
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+def _get_client(api_key: str) -> anthropic.Anthropic:
+    """Create and return Anthropic client."""
+    return anthropic.Anthropic(api_key=api_key)
+
+
+def _parse_llm_response(raw: str, mr_id: str) -> Optional[dict]:
+    """
+    Extract JSON from LLM response, handling various formats.
+
+    Tries in order:
+      1. Direct JSON parse
+      2. JSON in ```json ... ``` block
+      3. JSON in ``` ... ``` block
+      4. First {...} substring
+
+    Returns None if no JSON found or invalid.
+    """
+    # Case 1: Direct JSON
+    try:
+        return json.loads(raw.strip())
+    except json.JSONDecodeError:
+        pass
+
+    # Case 2 & 3: Markdown code blocks
+    patterns = [
+        r'```json\s*([\s\S]*?)\s*```',
+        r'```\s*([\s\S]*?)\s*```',
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, raw)
+        if match:
+            try:
+                return json.loads(match.group(1).strip())
+            except json.JSONDecodeError:
+                continue
+
+    # Case 4: Extract first {...} object
+    match = re.search(r'\{[\s\S]*\}', raw)
+    if match:
+        try:
+            return json.loads(match.group(0))
+        except json.JSONDecodeError:
+            pass
+
+    logger.warning(f"[{mr_id}] Could not parse LLM response: {raw[:200]}")
+    return None
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Fallback Heuristics
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+def _fallback_estimate(mr_artifact: dict, reason: str = "fallback") -> dict:
+    """
+    Return heuristic estimate when LLM fails or confidence is low.
+
+    Uses model.py functions as base.
+    """
+    files = [f["file"] for f in mr_artifact.get("diff_summary", [])]
+    type_declared = mr_artifact.get("type_declared", "unknown")
+    has_reviewers = len(mr_artifact.get("reviewers", [])) > 0
+    has_ci = mr_artifact.get("quantitative", {}).get("Q", 0.5) == 1.0
+    has_issues = len(mr_artifact.get("linked_issues", [])) > 0
+
+    e_value = model.calc_e_heuristic(type_declared, has_ci, has_issues)
+    a_value = model.calc_a_heuristic(files)
+
+    return {
+        "mr_id": mr_artifact["mr_id"],
+        "author": mr_artifact["author"],
+        "E": {
+            "value": e_value,
+            "confidence": "low",
+            "reasoning": f"Heuristic fallback ({reason})"
+        },
+        "A": {
+            "value": a_value,
+            "confidence": "low",
+            "reasoning": f"Heuristic fallback ({reason})"
+        },
+        "T_review": {
+            "value": config.T_REVIEWER_MAX if has_reviewers else 0.0,
+            "level": "absent" if not has_reviewers else "superficial",
+            "confidence": "low",
+            "reasoning": f"Heuristic fallback ({reason})"
+        },
+        "P": {
+            "value": 0.5,
+            "confidence": "low",
+            "reasoning": f"Heuristic fallback ({reason})"
+        },
+        "llm_model": "heuristic",
+        "estimated_at": datetime.now(timezone.utc).isoformat() + "Z"
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Mock Estimate (for dry_run)
+# ═══════════════════════════════════════════════════════════════════════════
 
 
 def _mock_estimate(mr_artifact: dict) -> dict:
@@ -180,37 +295,155 @@ def _mock_estimate(mr_artifact: dict) -> dict:
     }
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# Caching
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+def _cache_path(mr_id: str, cache_dir: str = "output/cache") -> Path:
+    """Return Path to cached estimate file."""
+    return Path(cache_dir) / f"{mr_id}.json"
+
+
+def _load_from_cache(mr_id: str, cache_dir: str = "output/cache") -> Optional[dict]:
+    """Load estimate from cache, return None if not found or invalid."""
+    path = _cache_path(mr_id, cache_dir)
+    if path.exists():
+        try:
+            result = json.loads(path.read_text(encoding="utf-8"))
+            logger.debug(f"[{mr_id}] Loaded from cache")
+            return result
+        except Exception as e:
+            logger.warning(f"[{mr_id}] Cache load error: {e}")
+    return None
+
+
+def _save_to_cache(estimate: dict, cache_dir: str = "output/cache") -> None:
+    """Save estimate to cache file."""
+    path = _cache_path(estimate["mr_id"], cache_dir)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(estimate, ensure_ascii=False, indent=2),
+        encoding="utf-8"
+    )
+    logger.debug(f"[{estimate['mr_id']}] Saved to cache")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Core Estimation Logic
+# ═══════════════════════════════════════════════════════════════════════════
+
+
 def estimate_mr(
     mr_artifact: dict,
     system_prompt: str = "",
-    dry_run: bool = True
+    api_key: Optional[str] = None,
+    dry_run: bool = True,
+    cache_dir: str = "output/cache"
 ) -> dict:
     """
     Estimate E, A, T_review, P for a single MR.
 
     Args:
         mr_artifact: MR artifact dict
-        system_prompt: System prompt (unused in cycle 1)
+        system_prompt: System prompt for API
+        api_key: Anthropic API key (required if dry_run=False)
         dry_run: If True, return mock estimate; if False, call API (cycle 2+)
+        cache_dir: Directory for caching estimates
 
     Returns:
         Estimate dict with E, A, T_review, P values
 
     Raises:
-        LLMParseError: If response cannot be parsed
+        ValueError: If dry_run=False and api_key is None
     """
+    mr_id = mr_artifact["mr_id"]
+
+    # Dry run: return mock
     if dry_run:
         return _mock_estimate(mr_artifact)
 
-    # Cycle 2: Call Anthropic API
-    # Placeholder for future implementation
-    raise NotImplementedError("Real LLM calls in cycle 2")
+    # Real LLM path
+    if not api_key:
+        raise ValueError("api_key required when dry_run=False")
+
+    # Check cache first
+    cached = _load_from_cache(mr_id, cache_dir)
+    if cached:
+        return cached
+
+    # Build message
+    user_message = (
+        "Avalie o Merge Request abaixo e retorne apenas o JSON de saída "
+        "conforme especificado no system prompt. Nenhum texto fora do JSON.\n\n"
+        + json.dumps(mr_artifact, ensure_ascii=False, indent=2)
+    )
+
+    try:
+        client = _get_client(api_key)
+        logger.info(f"[{mr_id}] Calling LLM...")
+
+        response = client.messages.create(
+            model=config.LLM_MODEL,
+            max_tokens=config.LLM_MAX_TOKENS,
+            temperature=config.LLM_TEMPERATURE,
+            system=system_prompt,
+            messages=[{"role": "user", "content": user_message}]
+        )
+
+        raw = response.content[0].text
+        parsed = _parse_llm_response(raw, mr_id)
+
+        if parsed is None:
+            logger.warning(f"[{mr_id}] Parse failed — using fallback heuristic")
+            result = _fallback_estimate(mr_artifact, reason="parse error")
+        else:
+            # Ensure required fields
+            result = {
+                "mr_id": mr_id,
+                "author": mr_artifact["author"],
+                **parsed,
+                "llm_model": config.LLM_MODEL,
+                "estimated_at": datetime.now(timezone.utc).isoformat() + "Z"
+            }
+            logger.info(
+                f"[{mr_id}] OK — "
+                f"E={result['E']['value']:.2f}({result['E']['confidence']}) "
+                f"A={result['A']['value']:.2f}({result['A']['confidence']}) "
+                f"T={result['T_review']['value']:.2f}({result['T_review']['level']}) "
+                f"P={result['P']['value']:.2f}({result['P']['confidence']})"
+            )
+
+    except anthropic.APIStatusError as e:
+        logger.error(f"[{mr_id}] API error ({e.status_code}): {e.message}")
+        if e.status_code in (401, 403):
+            raise  # Invalid key — stop immediately
+        result = _fallback_estimate(mr_artifact, reason=f"API error {e.status_code}")
+
+    except anthropic.APIConnectionError as e:
+        logger.error(f"[{mr_id}] Connection error: {e}")
+        result = _fallback_estimate(mr_artifact, reason="connection error")
+
+    except Exception as e:
+        logger.error(f"[{mr_id}] Unexpected error: {e}")
+        result = _fallback_estimate(mr_artifact, reason=f"unexpected error: {type(e).__name__}")
+
+    # Save to cache regardless of source
+    _save_to_cache(result, cache_dir)
+    return result
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Stage 2a Orchestration
+# ═══════════════════════════════════════════════════════════════════════════
 
 
 def run_stage2a(
     mr_artifacts: List[Dict],
+    api_key: Optional[str] = None,
     prompt_path: str = config.PROMPT_FILE,
     dry_run: bool = True,
+    cache_dir: str = "output/cache",
     output_path: str = "output/mr_llm_estimates.json"
 ) -> List[Dict]:
     """
@@ -218,26 +451,36 @@ def run_stage2a(
 
     Args:
         mr_artifacts: List of MR artifacts
+        api_key: Anthropic API key (required if dry_run=False)
         prompt_path: Path to prompts markdown file
         dry_run: If True, return mock estimates
+        cache_dir: Directory for caching estimates
         output_path: Where to save estimates JSON
 
     Returns:
         List of estimate dicts
     """
-    logger.info(f"Running Stage 2a (dry_run={dry_run}) on {len(mr_artifacts)} MRs")
+    logger.info(f"Stage 2a: Processing {len(mr_artifacts)} MRs (dry_run={dry_run})")
 
-    # Load system prompt if not dry_run (will be used in cycle 2)
+    # Load system prompt
     system_prompt = ""
     if not dry_run:
         try:
             system_prompt = load_prompt("Stage 2a", prompt_path)
         except (FileNotFoundError, ValueError) as e:
-            logger.warning(f"Could not load prompt: {e}")
+            logger.error(f"Could not load prompt: {e}")
+            raise
 
     estimates = []
-    for mr_artifact in mr_artifacts:
-        estimate = estimate_mr(mr_artifact, system_prompt, dry_run=dry_run)
+    for i, mr_artifact in enumerate(mr_artifacts, 1):
+        logger.info(f"Stage 2a [{i}/{len(mr_artifacts)}] {mr_artifact['mr_id']} — {mr_artifact['title'][:60]}")
+        estimate = estimate_mr(
+            mr_artifact=mr_artifact,
+            system_prompt=system_prompt,
+            api_key=api_key,
+            dry_run=dry_run,
+            cache_dir=cache_dir
+        )
         estimates.append(estimate)
 
     # Save to disk

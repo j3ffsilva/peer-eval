@@ -234,7 +234,35 @@ def main():
         help="ISO 8601 end date (e.g., 2024-12-01T23:59:59Z)"
     )
 
+    # ===== Cycle 3: Anthropic LLM integration =====
+    parser.add_argument(
+        "--anthropic-key",
+        default=os.getenv("ANTHROPIC_API_KEY"),
+        help="Anthropic API key — can read from ANTHROPIC_API_KEY env var (NEVER in CLI!)"
+    )
+
+    parser.add_argument(
+        "--dry-run-llm",
+        action="store_true",
+        default=False,
+        help="Use mock estimates instead of calling Anthropic API (cycle 1 mode)"
+    )
+
+    parser.add_argument(
+        "--skip-llm",
+        action="store_true",
+        default=False,
+        help="Skip Stage 2a entirely (useful for testing downstream stages)"
+    )
+
     args = parser.parse_args()
+
+    # Validate LLM configuration
+    if not args.skip_llm and not args.dry_run_llm and not args.anthropic_key:
+        parser.error(
+            "Either --dry-run-llm must be set (for testing) or --anthropic-key must be provided "
+            "(or set ANTHROPIC_API_KEY in .env). See .env.example for details."
+        )
 
     # Always use current working directory as repository path (default behavior)
     if not args.repo_path:
@@ -341,15 +369,22 @@ def main():
     logger.info("Stage 2a: LLM component estimation (E, A, T_review, P)")
     logger.info("=" * 60)
 
-    if args.llm_estimates and os.path.exists(args.llm_estimates):
+    llm_estimates = []
+    if args.skip_llm:
+        logger.info("Skipping Stage 2a (--skip-llm flag set)")
+    elif args.llm_estimates and os.path.exists(args.llm_estimates):
         logger.info(f"Loading pre-computed LLM estimates from {args.llm_estimates}")
         llm_estimates = loader.load_llm_estimates(args.llm_estimates)
     else:
         logger.info("Running Stage 2a to estimate components...")
         output_path = os.path.join(args.output_dir, "mr_llm_estimates.json")
+        cache_dir = os.path.join(args.output_dir, "cache")
         llm_estimates = llm_stage2a.run_stage2a(
             mr_artifacts,
-            dry_run=True,  # Cycle 1: dry_run only
+            api_key=args.anthropic_key if not args.dry_run_llm else None,
+            prompt_path=os.path.join(os.path.dirname(__file__), "..", "prompts", "avaliacao_llm.md"),
+            dry_run=args.dry_run_llm,
+            cache_dir=cache_dir,
             output_path=output_path
         )
 
@@ -379,7 +414,9 @@ def main():
             llm_estimates if llm_estimates else [],
             args.members,
             args.deadline,
-            dry_run=True,  # Cycle 1: dry_run only
+            prompt_path=os.path.join(os.path.dirname(__file__), "..", "prompts", "avaliacao_llm.md"),
+            api_key=args.anthropic_key if not args.dry_run_llm else None,
+            dry_run=args.dry_run_llm,
             output_path=output_path
         )
 

@@ -5,6 +5,7 @@ Cycle 1: dry_run mode with heuristic pattern detection.
 Cycle 2+: Will call Anthropic Claude API for detailed analysis.
 """
 
+import anthropic
 import json
 import logging
 from datetime import datetime, timedelta
@@ -179,12 +180,180 @@ def _mock_group_report(
     }
 
 
+def _get_client(api_key: str) -> anthropic.Anthropic:
+    """Create and return Anthropic client."""
+    return anthropic.Anthropic(api_key=api_key)
+
+
+def _consolidate_group_data(
+    mr_artifacts: List[Dict],
+    llm_estimates: List[Dict],
+    members: List[str],
+    deadline: str
+) -> str:
+    """
+    Consolidate MR and estimate data into a compact format for group-level analysis.
+
+    Reduces token usage by summarizing key patterns and metrics.
+    """
+    # Build efficient summary
+    summary = {
+        "deadline": deadline,
+        "group_size": len(members),
+        "total_mrs": len(mr_artifacts),
+        "mrs_by_member": {}
+    }
+
+    # Create lookup
+    est_by_id = {est["mr_id"]: est for est in llm_estimates}
+
+    # Group MRs by author
+    for member in members:
+        member_mrs = [mr for mr in mr_artifacts if mr.get("author") == member]
+        if not member_mrs:
+            continue
+
+        # Summarize for this member
+        member_summary = []
+        for mr in member_mrs:
+            est = est_by_id.get(mr["mr_id"], {})
+            mr_summary = {
+                "mr_id": mr["mr_id"],
+                "title": mr.get("title", "")[:60],
+                "opened_at": mr.get("opened_at", ""),
+                "merged_at": mr.get("merged_at", ""),
+                "diff_summary": mr.get("diff_summary", [])[:3],  # Top 3 files
+                "reviewers": mr.get("reviewers", []),
+                "review_comments_count": len(mr.get("review_comments", [])),
+                "E": est.get("E", {}),
+                "A": est.get("A", {}),
+                "T_review": est.get("T_review", {}),
+                "P": est.get("P", {}),
+            }
+            member_summary.append(mr_summary)
+
+        summary["mrs_by_member"][member] = member_summary
+
+    return json.dumps(summary, ensure_ascii=False, indent=2)
+
+
+def _parse_group_report(raw: str, group_name: str = "group") -> Optional[dict]:
+    """
+    Extract group report JSON from LLM response, handling various formats.
+
+    Tries in order:
+      1. Direct JSON parse
+      2. JSON in ```json ... ``` block
+      3. JSON in ``` ... ``` block
+      4. First {...} substring
+
+    Returns None if no JSON found or invalid.
+    """
+    import re
+
+    # Case 1: Direct JSON
+    try:
+        return json.loads(raw.strip())
+    except json.JSONDecodeError:
+        pass
+
+    # Case 2 & 3: Markdown code blocks
+    patterns = [
+        r'```json\s*([\s\S]*?)\s*```',
+        r'```\s*([\s\S]*?)\s*```',
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, raw)
+        if match:
+            try:
+                return json.loads(match.group(1).strip())
+            except json.JSONDecodeError:
+                continue
+
+    # Case 4: Extract first {...} object
+    match = re.search(r'\{[\s\S]*\}', raw)
+    if match:
+        try:
+            return json.loads(match.group(0))
+        except json.JSONDecodeError:
+            pass
+
+    logger.warning(f"[{group_name}] Could not parse LLM response: {raw[:200]}")
+    return None
+
+
+def _call_llm_group_analysis(
+    mr_artifacts: List[Dict],
+    llm_estimates: List[Dict],
+    members: List[str],
+    deadline: str,
+    system_prompt: str,
+    api_key: str
+) -> dict:
+    """
+    Call Anthropic API for group-level pattern detection.
+
+    Falls back to mock report on API error.
+    """
+    try:
+        client = _get_client(api_key)
+        logger.info("Calling LLM for group analysis...")
+
+        # Consolidate data for efficient API call
+        group_data = _consolidate_group_data(mr_artifacts, llm_estimates, members, deadline)
+
+        user_message = (
+            "Analise o relatório do grupo abaixo e retorne apenas o JSON de saída "
+            "conforme especificado no system prompt. Nenhum texto fora do JSON.\n\n"
+            + group_data
+        )
+
+        response = client.messages.create(
+            model=config.LLM_MODEL,
+            max_tokens=config.LLM_MAX_TOKENS,
+            temperature=config.LLM_TEMPERATURE,
+            system=system_prompt,
+            messages=[{"role": "user", "content": user_message}]
+        )
+
+        raw = response.content[0].text
+        parsed = _parse_group_report(raw, "group")
+
+        if parsed is None:
+            logger.warning("Parse failed — using fallback mock report")
+            return _mock_group_report(mr_artifacts, llm_estimates, members, deadline)
+
+        # Ensure required fields
+        result = {
+            **parsed,
+            "llm_model": config.LLM_MODEL,
+            "analyzed_at": datetime.now(datetime.now().astimezone().tzinfo).isoformat()
+        }
+        logger.info("Group analysis OK")
+        return result
+
+    except anthropic.APIStatusError as e:
+        logger.error(f"API error ({e.status_code}): {e.message}")
+        if e.status_code in (401, 403):
+            raise  # Fatal
+        return _mock_group_report(mr_artifacts, llm_estimates, members, deadline)
+
+    except anthropic.APIConnectionError as e:
+        logger.error(f"Connection error: {e}")
+        return _mock_group_report(mr_artifacts, llm_estimates, members, deadline)
+
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        return _mock_group_report(mr_artifacts, llm_estimates, members, deadline)
+
+
 def detect_patterns(
     mr_artifacts: List[Dict],
     llm_estimates: List[Dict],
     members: List[str],
     deadline: str,
     prompt_path: str = config.PROMPT_FILE,
+    api_key: Optional[str] = None,
     dry_run: bool = True,
     output_path: str = "output/group_report.json"
 ) -> dict:
@@ -197,6 +366,7 @@ def detect_patterns(
         members: List of team members
         deadline: Deadline ISO string
         prompt_path: Path to prompts markdown file
+        api_key: Anthropic API key (required if dry_run=False)
         dry_run: If True, return mock report
         output_path: Where to save report JSON
 
@@ -217,8 +387,19 @@ def detect_patterns(
     if dry_run:
         report = _mock_group_report(mr_artifacts, llm_estimates, members, deadline)
     else:
-        # Cycle 2: Call Anthropic API
-        raise NotImplementedError("Real LLM calls in cycle 2")
+        # Cycle 3: Call Anthropic API
+        if not api_key:
+            logger.warning("api_key not provided for real LLM call — using mock report")
+            report = _mock_group_report(mr_artifacts, llm_estimates, members, deadline)
+        else:
+            report = _call_llm_group_analysis(
+                mr_artifacts,
+                llm_estimates,
+                members,
+                deadline,
+                system_prompt,
+                api_key
+            )
 
     # Save to disk
     from . import loader
@@ -226,3 +407,4 @@ def detect_patterns(
 
     logger.info(f"Stage 2b complete: saved report to {output_path}")
     return report
+
