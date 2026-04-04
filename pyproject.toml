@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -30,16 +30,31 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/inteli-perf-eng/peer-eval"
-Documentation = "https://github.com/inteli-perf-eng/peer-eval/blob/main/README.md"
-Repository = "https://github.com/inteli-perf-eng/peer-eval.git"
-Issues = "https://github.com/inteli-perf-eng/peer-eval/issues"
+Homepage = "https://github.com/j3ffsilva/peer-eval"
+Documentation = "https://github.com/j3ffsilva/peer-eval/blob/main/README.md"
+Repository = "https://github.com/j3ffsilva/peer-eval"
+Issues = "https://github.com/j3ffsilva/peer-eval/issues"
 
 [project.scripts]
 peer-eval = "peer_eval.cli:cli"
 
+# -------------------------
+# SETUPTOOLS CONFIG
+# -------------------------
+
 [tool.setuptools]
-packages = ["peer_eval"]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["peer_eval*"]
+
+[tool.setuptools.package-data]
+peer_eval = ["prompts/*.md"]
+
+# -------------------------
+# DEV TOOLS
+# -------------------------
 
 [tool.black]
 line-length = 100
