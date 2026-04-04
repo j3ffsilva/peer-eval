@@ -9,4 +9,14 @@ This module provides the refactored subcommand-based interface:
 - peer-eval fixture
 """
 
-__all__ = []
+import sys
+
+
+def cli():
+    """Entry point for the peer-eval CLI command."""
+    from .dispatcher import main as cli_main
+    exit_code = cli_main()
+    sys.exit(exit_code)
+
+
+__all__ = ["cli"]
