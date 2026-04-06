@@ -226,6 +226,19 @@ def run_evaluation(
         output_path=full_report_path,
     )
 
+    # Narrative report (live mode only)
+    if llm_mode == "live" and anthropic_key:
+        logger.info("Generating narrative report...")
+        narrative_path = os.path.join(output_dir, "narrative_report.txt")
+        report.generate_narrative_report(
+            artifacts,
+            llm_estimates if llm_estimates else [],
+            scores,
+            group_report,
+            api_key=anthropic_key,
+            output_path=narrative_path,
+        )
+
     logger.info("=" * 60)
     logger.info("Pipeline completed successfully")
     logger.info("=" * 60)

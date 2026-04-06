@@ -8,12 +8,45 @@ Cycle 2+: Will call Anthropic Claude API for detailed analysis.
 import anthropic
 import json
 import logging
+import re
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict
 from . import config
 from .llm_stage2a import load_prompt
 
 logger = logging.getLogger(__name__)
+
+
+def _extract_commit_type(message: str) -> str:
+    """Extract conventional commit type from the first line of a commit message."""
+    match = re.match(r'^(feat|fix|refactor|revert|docs|test|chore|ci)[\(:! ]', message.lower())
+    return match.group(1) if match else "unknown"
+
+
+def _build_cross_mr_timeline(mr_artifacts: List[Dict]) -> List[Dict]:
+    """
+    Build a global timeline of all commits across all MRs, sorted by authored_at.
+
+    MRs without commit_log (e.g., fixture data) are skipped gracefully.
+
+    Returns:
+        List of {sha, author, authored_at, message, type, files_touched, mr_id}
+        sorted chronologically.
+    """
+    timeline = []
+    for mr in mr_artifacts:
+        for commit in mr.get("commit_log", []):
+            timeline.append({
+                "sha": commit["sha"],
+                "author": commit.get("author", mr.get("author", "unknown")),
+                "authored_at": commit["authored_at"],
+                "message": commit["message"],
+                "type": _extract_commit_type(commit["message"]),
+                "files_touched": commit.get("files_touched", []),
+                "mr_id": mr["mr_id"],
+            })
+    timeline.sort(key=lambda c: c["authored_at"])
+    return timeline
 
 
 def _mock_group_report(
@@ -164,8 +197,59 @@ def _mock_group_report(
             })
             flags_by_level["medio"] += 1
 
+    # ===== Check for cascata_de_fixes =====
+    timeline = _build_cross_mr_timeline(mr_artifacts)
+    if timeline:
+        for i, commit_a in enumerate(timeline):
+            if commit_a["type"] not in ("feat", "refactor"):
+                continue
+            files_a = set(commit_a["files_touched"])
+            if not files_a:
+                continue
+
+            try:
+                dt_a = datetime.fromisoformat(commit_a["authored_at"])
+            except ValueError:
+                continue
+
+            author_a = commit_a["author"]
+            cascade_commits = []
+
+            for commit_b in timeline[i + 1:]:
+                try:
+                    dt_b = datetime.fromisoformat(commit_b["authored_at"])
+                except ValueError:
+                    continue
+
+                if (dt_b - dt_a).total_seconds() > 48 * 3600:
+                    break  # timeline sorted — no point continuing
+
+                if commit_b["author"] == author_a:
+                    continue
+                if commit_b["type"] not in ("fix", "revert"):
+                    continue
+                if set(commit_b["files_touched"]) & files_a:
+                    cascade_commits.append(commit_b)
+
+            if len(cascade_commits) >= 3:
+                authors_b = list({c["author"] for c in cascade_commits})
+                suspicion = "alto" if len(cascade_commits) >= 5 else "medio"
+                flags.append({
+                    "type": "cascata_de_fixes",
+                    "persons": [author_a] + authors_b,
+                    "mr_ids": list({c["mr_id"] for c in [commit_a] + cascade_commits}),
+                    "evidence": (
+                        f"Commit {commit_a['sha']} ({commit_a['type']}) de {author_a} "
+                        f"seguido de {len(cascade_commits)} fix/revert(s) de "
+                        f"{', '.join(authors_b)} nos mesmos arquivos em 48h"
+                    ),
+                    "alternative": "Refatoração legítima com ajustes subsequentes planejados",
+                    "suspicion_level": suspicion
+                })
+                flags_by_level[suspicion] += 1
+
     observations.append(f"Análise de {len(mr_artifacts)} MRs de {len(members)} membros")
-    observations.append("Padrões: fragmentação artificial, burst de véspera, commits inflados, padding de volume")
+    observations.append("Padrões: fragmentação artificial, burst de véspera, commits inflados, padding de volume, cascata de fixes")
 
     return {
         "project": "peer-eval-project",
@@ -217,6 +301,15 @@ def _consolidate_group_data(
         member_summary = []
         for mr in member_mrs:
             est = est_by_id.get(mr["mr_id"], {})
+            commit_log_summary = [
+                {
+                    "sha": c["sha"],
+                    "authored_at": c.get("authored_at", "")[:16],
+                    "message": c.get("message", "")[:80],
+                    "files_touched": c.get("files_touched", [])[:5],
+                }
+                for c in mr.get("commit_log", [])
+            ]
             mr_summary = {
                 "mr_id": mr["mr_id"],
                 "title": mr.get("title", "")[:60],
@@ -225,6 +318,7 @@ def _consolidate_group_data(
                 "diff_summary": mr.get("diff_summary", [])[:3],  # Top 3 files
                 "reviewers": mr.get("reviewers", []),
                 "review_comments_count": len(mr.get("review_comments", [])),
+                "commit_log": commit_log_summary,
                 "E": est.get("E", {}),
                 "A": est.get("A", {}),
                 "T_review": est.get("T_review", {}),

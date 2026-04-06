@@ -85,6 +85,7 @@ PADRÕES:
 - commit_inflado: E(k) < 0.4 em MRs feat/fix sistematicamente.
 - review_reciproco_vazio: A aprova todos de B e vice-versa, ambos cosméticos.
 - padding_de_volume: X(k) alto + A(k) e E(k) < 0.35 consistentemente.
+- cascata_de_fixes: commit de refactor/feat de membro A seguido de ≥3 commits de fix/revert de membro B nos mesmos arquivos nas 48h seguintes, sugerindo que o trabalho de A gerou trabalho não planejado para B.
 
 FORMATO DE SAÍDA (JSON estrito):
 {

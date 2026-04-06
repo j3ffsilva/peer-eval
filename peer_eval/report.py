@@ -4,6 +4,7 @@ Report generation and output formatting.
 
 import json
 import logging
+from pathlib import Path
 from typing import Optional, List, Dict
 from datetime import datetime
 from . import config
@@ -150,3 +151,126 @@ def export_full_report(
     loader.save_json(report, output_path)
 
     logger.info(f"Full report exported to {output_path}")
+
+
+def generate_narrative_report(
+    mr_artifacts: List[Dict],
+    llm_estimates: Optional[List[Dict]],
+    scores: Dict,
+    group_report: Optional[Dict],
+    api_key: str,
+    output_path: str = "output/narrative_report.txt"
+) -> Optional[str]:
+    """
+    Generate a narrative text report via a single Claude API call (live mode only).
+
+    Produces a human-readable analysis in the style of a conversational session:
+    per-member qualitative breakdown, incident chains, alerts, and recommendations.
+    Saved as plain text separate from the auditable JSON reports.
+
+    Args:
+        mr_artifacts: List of MR artifacts (with commit_log if available)
+        llm_estimates: List of LLM estimates (E, A, T_review, P per MR)
+        scores: Per-member scores from scorer.compute_scores()
+        group_report: Group report with flags from Stage 2b
+        api_key: Anthropic API key
+        output_path: Where to save the narrative text file
+
+    Returns:
+        Generated narrative text, or None if the API call fails
+    """
+    import anthropic
+
+    est_by_id = {e["mr_id"]: e for e in (llm_estimates or [])}
+
+    # Compact MR summary
+    mr_summaries = []
+    for mr in mr_artifacts:
+        est = est_by_id.get(mr["mr_id"], {})
+        mr_summaries.append({
+            "mr_id": mr["mr_id"],
+            "author": mr.get("author"),
+            "title": mr.get("title", "")[:80],
+            "type": mr.get("type_declared"),
+            "opened_at": mr.get("opened_at", "")[:10],
+            "merged_at": mr.get("merged_at", "")[:10],
+            "reviewers": mr.get("reviewers", []),
+            "X": mr.get("quantitative", {}).get("X"),
+            "E": est.get("E", {}).get("value"),
+            "A": est.get("A", {}).get("value"),
+            "T_review": est.get("T_review", {}).get("value"),
+        })
+
+    # Compact scores
+    scores_summary = {
+        member: {
+            "nota": round(s["nota"], 3),
+            "Abs": round(s["Abs"], 3),
+            "Rel": round(s["Rel"], 3),
+        }
+        for member, s in scores.items()
+    }
+
+    # Commit timeline (capped at 100 entries to control token usage)
+    timeline_entries = []
+    for mr in mr_artifacts:
+        for c in mr.get("commit_log", []):
+            timeline_entries.append({
+                "authored_at": c.get("authored_at", "")[:16],
+                "author": c.get("author"),
+                "message": c.get("message", "")[:80],
+                "mr_id": mr["mr_id"],
+            })
+    timeline_entries.sort(key=lambda c: c["authored_at"])
+
+    data = {
+        "mrs": mr_summaries,
+        "scores": scores_summary,
+        "flags": group_report.get("flags", []) if group_report else [],
+        "commit_timeline": timeline_entries[:100],
+    }
+
+    system_prompt = (
+        "Você é um analista de contribuições em projetos de software acadêmicos.\n"
+        "Recebe dados estruturados de um sprint e gera um relatório narrativo completo em português.\n\n"
+        "SEÇÕES OBRIGATÓRIAS:\n"
+        "1. Visão geral do período (datas, total de MRs, membros ativos)\n"
+        "2. Tabela de contribuição por membro (MRs, nota, tipo predominante)\n"
+        "3. Análise qualitativa individual (por membro: pontos fortes e padrões observados)\n"
+        "4. Cadeia de problemas identificada (somente se houver flags cascata_de_fixes "
+        "ou burst_de_vespera — caso contrário, omita a seção)\n"
+        "5. Sinais de alerta e boas práticas\n"
+        "6. Conclusão e recomendações\n\n"
+        "REGRAS:\n"
+        "- Use linguagem direta e objetiva.\n"
+        "- Cite MR IDs e usernames como evidência.\n"
+        "- Não invente dados. Se uma seção não tiver evidências, diga explicitamente.\n"
+        "- Não repita os dados brutos — interprete-os.\n"
+        "- Seção 4 deve reconstruir a cadeia causal (quem causou trabalho para quem e quando)."
+    )
+
+    user_message = (
+        "Gere o relatório narrativo com base nos dados abaixo:\n\n"
+        + json.dumps(data, ensure_ascii=False, indent=2)
+    )
+
+    try:
+        client = anthropic.Anthropic(api_key=api_key)
+        response = client.messages.create(
+            model=config.LLM_MODEL,
+            max_tokens=4096,
+            system=system_prompt,
+            messages=[{"role": "user", "content": user_message}]
+        )
+        narrative = response.content[0].text
+
+        output_path_obj = Path(output_path)
+        output_path_obj.parent.mkdir(parents=True, exist_ok=True)
+        output_path_obj.write_text(narrative, encoding="utf-8")
+
+        logger.info(f"Narrative report saved to {output_path}")
+        return narrative
+
+    except Exception as e:
+        logger.error(f"Failed to generate narrative report: {e}")
+        return None

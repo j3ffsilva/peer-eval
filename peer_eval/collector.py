@@ -132,6 +132,7 @@ def collect(
             comments = _fetch_comments(project, mr)
             linked_issues = _fetch_linked_issues(project, mr)
             quantitative = _compute_quantitative(changes, mr, repo)
+            commit_log = _collect_commit_log(repo, mr)
 
             mr_id = f"MR-{mr.iid}"
             type_declared = _extract_type_declared(mr.title)
@@ -151,6 +152,7 @@ def collect(
                 "review_comments": comments,
                 "reviewers": approvals,
                 "quantitative": quantitative,
+                "commit_log": commit_log,
             }
 
             logger.debug(
@@ -501,6 +503,41 @@ def _compute_survival(changes: List[Dict], mr, repo: git.Repo) -> float:
     except Exception as e:
         logger.warning(f"  Could not compute survival for MR-{mr.iid}: {e}")
         return 1.0
+
+
+def _collect_commit_log(repo: git.Repo, mr) -> List[Dict[str, Any]]:
+    """
+    Collect commit-level log for an MR.
+
+    Returns metadata for each commit: sha (short), author name, authored_at (ISO),
+    first line of message, files touched, additions, deletions.
+    Uses gitpython commit.stats — no extra API calls required.
+    """
+    commits = _get_mr_commits(repo, mr)
+    log = []
+
+    for commit in commits:
+        try:
+            files_info = commit.stats.files
+            files_touched = list(files_info.keys())
+            additions = sum(f.get("insertions", 0) for f in files_info.values())
+            deletions = sum(f.get("deletions", 0) for f in files_info.values())
+        except Exception:
+            files_touched = []
+            additions = 0
+            deletions = 0
+
+        log.append({
+            "sha": commit.hexsha[:8],
+            "author": commit.author.name,
+            "authored_at": datetime.utcfromtimestamp(commit.authored_date).isoformat(),
+            "message": commit.message.strip().split("\n")[0],
+            "files_touched": files_touched,
+            "additions": additions,
+            "deletions": deletions,
+        })
+
+    return log
 
 
 def _get_mr_commits(repo: git.Repo, mr) -> List[git.Commit]:

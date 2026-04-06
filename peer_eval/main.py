@@ -465,6 +465,19 @@ def main():
         output_path=full_report_path
     )
 
+    # Narrative report (live mode only)
+    if not args.dry_run_llm and not args.skip_llm and args.anthropic_key:
+        logger.info("Generating narrative report...")
+        narrative_path = os.path.join(args.output_dir, "narrative_report.txt")
+        report.generate_narrative_report(
+            mr_artifacts,
+            llm_estimates if llm_estimates else [],
+            scores,
+            group_report,
+            api_key=args.anthropic_key,
+            output_path=narrative_path
+        )
+
     logger.info("=" * 60)
     logger.info("Pipeline completed successfully")
     logger.info("=" * 60)
