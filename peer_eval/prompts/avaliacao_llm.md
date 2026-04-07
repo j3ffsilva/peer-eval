@@ -24,12 +24,20 @@ REGRAS:
 5. Reasoning: 2 a 4 frases, cite elementos concretos do artefato.
 6. Retorne APENAS o JSON. Nenhum texto fora do JSON.
 
+NOTA SOBRE OS DADOS:
+O campo diff_summary pode ter additions=0 e deletions=0 em todos os arquivos
+(limitação da API GitLab — o endpoint /changes não retorna essas estatísticas).
+Quando isso ocorrer, use commit_log (campos "additions"/"deletions" por commit,
+gerados pelo gitpython) como fonte primária para estimar volume e inferir P(k).
+O content_excerpt continua sendo a fonte primária para A(k) e E(k).
+
 E(k) [0.0–1.0]:
   a) Correspondência tipo × conteúdo: o tipo declarado corresponde ao diff?
+     Se type_declared = "unknown", avalie apenas (b) e (c); não penalize por (a).
   b) Autenticidade da issue: created_at da issue < mr_opened_at?
   c) Qualidade da descrição: explica o quê e o porquê?
   Âncoras: 0.9–1.0 tipo+issue+descrição ok; 0.6–0.8 tipo+descrição ok;
-           0.3–0.5 tipo parcial/vago; 0.0–0.2 tipo incorreto.
+           0.3–0.5 tipo parcial/vago; 0.0–0.2 tipo incorreto ou claramente falso.
 
 A(k) [0.0–1.0]:
   Peso real dos arquivos no contexto do projeto (não só pelo nome do diretório).
@@ -46,7 +54,9 @@ P(k) [0.0–1.0]:
   Alta (0.7–1.0): define interfaces/contratos/componentes reutilizáveis.
   Média (0.4–0.6): implementação usável sem contrato formal.
   Baixa (0.1–0.4): código terminal, fix pontual, documentação.
-  Se diff insuficiente: retorne 0.5.
+  Se todos os arquivos têm additions=0 E deletions=0 no diff_summary
+  (independente do content_excerpt), considere diff insuficiente e retorne 0.5.
+  Use commit_log como evidência secundária para ajustar acima ou abaixo de 0.5.
 
 FORMATO DE SAÍDA (JSON estrito):
 {

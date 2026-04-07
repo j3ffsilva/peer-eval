@@ -75,6 +75,7 @@ COMMIT_SIGNALS = {
     "test": 0.2,
     "ci": 0.2,
     "docs": 0.1,
+    "unknown": 0.25,  # neutral — absent data, not a mistake by the student
 }
 
 E_BONUS_CI = 0.2      # bonus for passing CI

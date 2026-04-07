@@ -309,6 +309,13 @@ def resolve_components(
     result["R"] = calc_r(result["S"], result["P"], result["Q"])
     result["W"] = calc_w(result["V"], result["R"], result["A"], result["X"])
 
+    # Track whether any qualitative component used the heuristic fallback.
+    # "degraded" means at least one of E/A/T_review/P fell back to heuristics
+    # (e.g. due to LLM parse error or 429 rate limit) — review manually.
+    result["estimation_quality"] = "degraded" if any(
+        src == "heuristic" for src in [E_source, A_source, T_review_source, P_source]
+    ) else "full"
+
     return result
 
 

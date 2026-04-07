@@ -9,6 +9,7 @@ import anthropic
 import json
 import logging
 import re
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, List, Dict
@@ -418,6 +419,11 @@ def estimate_mr(
         logger.error(f"[{mr_id}] API error ({e.status_code}): {e.message}")
         if e.status_code in (401, 403):
             raise  # Invalid key — stop immediately
+        if e.status_code == 429:
+            # Rate limited: wait before falling back so the professor can re-run
+            # without losing this MR to a heuristic estimate permanently.
+            logger.warning(f"[{mr_id}] Rate limited (429), waiting 60s before fallback...")
+            time.sleep(60)
         result = _fallback_estimate(mr_artifact, reason=f"API error {e.status_code}")
 
     except anthropic.APIConnectionError as e:

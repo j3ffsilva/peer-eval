@@ -14,6 +14,8 @@ import sys
 
 def cli():
     """Entry point for the peer-eval CLI command."""
+    from dotenv import load_dotenv
+    load_dotenv()
     from .dispatcher import main as cli_main
     exit_code = cli_main()
     sys.exit(exit_code)

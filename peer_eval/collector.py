@@ -98,7 +98,7 @@ def collect(
                 "⚠️  SSL verification is DISABLED. "
                 "Use only in trusted academic environments with self-signed certificates."
             )
-    except gitlab.exceptions.GitlabAuthError as e:
+    except gitlab.exceptions.GitlabAuthenticationError as e:
         raise RuntimeError(f"GitLab auth failed (401): {e}")
     except gitlab.exceptions.GitlabGetError as e:
         raise RuntimeError(f"GitLab connection failed (404): {e}")
@@ -250,12 +250,18 @@ def _fetch_changes(project, mr) -> List[Dict[str, Any]]:
         if _should_ignore(file_path):
             continue
 
-        # Extract additions/deletions
-        additions = change.get("additions", 0)
-        deletions = change.get("deletions", 0)
-
-        # Extract content excerpt from diff
+        # Parse additions/deletions from diff text.
+        # The /merge_requests/:id/changes endpoint does NOT return these as
+        # separate fields — change.get("additions", 0) always returns 0.
         diff_text = change.get("diff", "")
+        additions = sum(
+            1 for line in diff_text.splitlines()
+            if line.startswith("+") and not line.startswith("+++")
+        )
+        deletions = sum(
+            1 for line in diff_text.splitlines()
+            if line.startswith("-") and not line.startswith("---")
+        )
         content_excerpt = _extract_content_excerpt(diff_text)
 
         diff_summary.append(

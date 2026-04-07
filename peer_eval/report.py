@@ -4,6 +4,7 @@ Report generation and output formatting.
 
 import json
 import logging
+import time
 from pathlib import Path
 from typing import Optional, List, Dict
 from datetime import datetime
@@ -118,6 +119,27 @@ def export_full_report(
                 mr_copy["estimates"] = est
         enriched_mrs.append(mr_copy)
 
+    # Build quality_warnings: list degraded MRs per member so the professor
+    # knows which estimates need manual review (caused by LLM fallback to heuristics).
+    quality_warnings: Dict[str, list] = {}
+    if llm_estimates:
+        for est in llm_estimates:
+            # A fallback estimate uses llm_model="heuristic" or has all confidence="low"
+            is_degraded = (
+                est.get("llm_model") == "heuristic"
+                or all(
+                    est.get(k, {}).get("confidence") == "low"
+                    for k in ("E", "A", "T_review", "P")
+                    if k in est
+                )
+            )
+            if is_degraded:
+                author = est.get("author", "unknown")
+                quality_warnings.setdefault(author, []).append({
+                    "mr_id": est["mr_id"],
+                    "reason": est.get("E", {}).get("reasoning", "heuristic fallback")
+                })
+
     # Build full report
     report = {
         "generated_at": datetime.utcnow().isoformat() + "Z",
@@ -143,6 +165,7 @@ def export_full_report(
         "scores": {
             "members": scores
         },
+        "quality_warnings": quality_warnings,
         "analysis": group_report if group_report else {}
     }
 
@@ -211,7 +234,7 @@ def generate_narrative_report(
         for member, s in scores.items()
     }
 
-    # Commit timeline (capped at 100 entries to control token usage)
+    # Resumo agregado por autor — cobre todos os commits sem explodir tokens
     timeline_entries = []
     for mr in mr_artifacts:
         for c in mr.get("commit_log", []):
@@ -219,15 +242,30 @@ def generate_narrative_report(
                 "authored_at": c.get("authored_at", "")[:16],
                 "author": c.get("author"),
                 "message": c.get("message", "")[:80],
-                "mr_id": mr["mr_id"],
             })
     timeline_entries.sort(key=lambda c: c["authored_at"])
+
+    timeline_by_author = {}
+    for entry in timeline_entries:
+        author = entry["author"]
+        if author not in timeline_by_author:
+            timeline_by_author[author] = {
+                "total_commits": 0,
+                "first_commit": entry["authored_at"],
+                "last_commit": entry["authored_at"],
+                "sample_messages": [],
+            }
+        s = timeline_by_author[author]
+        s["total_commits"] += 1
+        s["last_commit"] = entry["authored_at"]
+        if len(s["sample_messages"]) < 5:
+            s["sample_messages"].append(entry["message"])
 
     data = {
         "mrs": mr_summaries,
         "scores": scores_summary,
         "flags": group_report.get("flags", []) if group_report else [],
-        "commit_timeline": timeline_entries[:100],
+        "commit_timeline_by_author": timeline_by_author,
     }
 
     system_prompt = (
@@ -255,6 +293,8 @@ def generate_narrative_report(
     )
 
     try:
+        logger.info("Aguardando 60s para respeitar rate limit de tokens/min antes do narrative report...")
+        time.sleep(60)
         client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
             model=config.LLM_MODEL,
