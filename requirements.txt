@@ -27,3 +27,5 @@ pytest-cov>=4.0.0        # Coverage plugin for pytest
 black>=23.0.0            # Code formatter
 flake8>=6.0.0            # Linter
 mypy>=1.0.0              # Type checker
+
+build>=0.7.0              # Build tool for packaging

@@ -138,6 +138,17 @@ def collect(
             type_declared = _extract_type_declared(mr.title)
             author = mr.author["username"] if mr.author else "unknown"
 
+            # Split diff_summary: files with excerpt carry full data;
+            # files without excerpt (empty diff or binary) are stored as a
+            # flat list of paths to avoid sending useless zero-field objects
+            # to the LLM.
+            changes_with_excerpt = [
+                c for c in changes if c.get("content_excerpt", "").strip()
+            ]
+            changes_other_files = [
+                c["file"] for c in changes if not c.get("content_excerpt", "").strip()
+            ]
+
             artifact = {
                 "mr_id": mr_id,
                 "author": author,
@@ -148,7 +159,8 @@ def collect(
                 "merged_at": mr.merged_at,
                 "deadline": None,  # provided via CLI
                 "linked_issues": linked_issues,
-                "diff_summary": changes,
+                "diff_summary": changes_with_excerpt,
+                "diff_summary_other_files": changes_other_files,
                 "review_comments": comments,
                 "reviewers": approvals,
                 "quantitative": quantitative,
@@ -513,37 +525,38 @@ def _compute_survival(changes: List[Dict], mr, repo: git.Repo) -> float:
 
 def _collect_commit_log(repo: git.Repo, mr) -> List[Dict[str, Any]]:
     """
-    Collect commit-level log for an MR.
+    Collect commit-level log for an MR (substantive commits only, max 15).
 
-    Returns metadata for each commit: sha (short), author name, authored_at (ISO),
-    first line of message, files touched, additions, deletions.
-    Uses gitpython commit.stats — no extra API calls required.
+    Skips merge commits (noise, no code intent). Drops author, authored_at and
+    files_touched — redundant with diff_summary and MR metadata — to keep the
+    LLM payload small. Uses gitpython commit.stats (no extra API calls).
     """
     commits = _get_mr_commits(repo, mr)
     log = []
 
     for commit in commits:
+        message = commit.message.strip().split("\n")[0]
+
+        # Skip merge commits — pure noise for E/A/T/P estimation
+        if message.lower().startswith("merge"):
+            continue
+
         try:
             files_info = commit.stats.files
-            files_touched = list(files_info.keys())
             additions = sum(f.get("insertions", 0) for f in files_info.values())
             deletions = sum(f.get("deletions", 0) for f in files_info.values())
         except Exception:
-            files_touched = []
             additions = 0
             deletions = 0
 
         log.append({
             "sha": commit.hexsha[:8],
-            "author": commit.author.name,
-            "authored_at": datetime.utcfromtimestamp(commit.authored_date).isoformat(),
-            "message": commit.message.strip().split("\n")[0],
-            "files_touched": files_touched,
+            "message": message,
             "additions": additions,
             "deletions": deletions,
         })
 
-    return log
+    return log[:15]
 
 
 def _get_mr_commits(repo: git.Repo, mr) -> List[git.Commit]:
