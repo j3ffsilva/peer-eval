@@ -10,6 +10,7 @@ import sys
 from argparse import Namespace
 
 from ..parser import add_common_arguments, add_gitlab_arguments
+from ..resolution import load_project_config, resolve_gitlab_options
 from ...providers.gitlab import GitLabProvider
 from ..runners.shared import run_evaluation
 from .base import BaseCommand
@@ -50,14 +51,29 @@ class GitLabCommand(BaseCommand):
         logger.info("Peer-Eval: GitLab Mode")
         logger.info("=" * 60)
 
+        try:
+            config = load_project_config()
+            resolved = resolve_gitlab_options(args, config)
+        except ValueError as e:
+            logger.error(str(e))
+            return 1
+
+        if resolved["sprint_numbers"]:
+            logger.info(
+                "Resolved sprint window %s -> %s from sprint(s) %s",
+                resolved["since"],
+                resolved["until"],
+                ", ".join(str(number) for number in resolved["sprint_numbers"]),
+            )
+
         # Create provider
         provider = GitLabProvider(
             project_id=args.project_id,
             url=args.url,
             token=args.token or os.getenv("GITLAB_TOKEN"),
             repo_path=args.repo_path,
-            since=args.since,
-            until=args.until,
+            since=resolved["since"],
+            until=resolved["until"],
             ssl_verify=not args.no_ssl_verify,
         )
 
@@ -85,7 +101,7 @@ class GitLabCommand(BaseCommand):
             scores = run_evaluation(
                 artifacts=artifacts,
                 members=members,
-                deadline=args.deadline,
+                deadline=resolved["deadline"],
                 llm_mode=args.llm_mode,
                 anthropic_key=anthropic_key,
                 output_dir=args.output_dir,

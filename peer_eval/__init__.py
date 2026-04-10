@@ -18,7 +18,7 @@ Usage:
               --deadline 2026-03-27T23:59:00Z \\
               --output-dir output/
 
-Environment Variables (.env):
+Environment Variables (.peer-eval.env):
     GITLAB_URL: GitLab instance URL
     GITLAB_TOKEN: Personal Access Token
     GITLAB_PROJECT: Project ID or namespace/repo

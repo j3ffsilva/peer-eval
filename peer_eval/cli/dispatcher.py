@@ -35,6 +35,14 @@ def create_parser() -> argparse.ArgumentParser:
         version="%(prog)s 2.0.0"  # TODO: Read from __version__
     )
 
+    parser.add_argument(
+        "--env-file",
+        help=(
+            "Load credentials from a specific env file. "
+            "If omitted, peer-eval tries .peer-eval.env and then .env in the current directory."
+        ),
+    )
+
     # Create subparsers for commands
     subparsers = parser.add_subparsers(
         dest="command",

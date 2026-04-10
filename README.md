@@ -25,6 +25,23 @@ cd peer-eval
 pip install -e .
 ```
 
+### Build Wheel (Distribution)
+
+To install outside a virtual environment or share with others without access to the source:
+
+```bash
+# Install build tool (once)
+pip install build
+
+# Build the wheel
+python -m build
+
+# Install from the generated wheel
+pip install dist/peer_eval-*.whl
+```
+
+The wheel file (`dist/peer_eval-*.whl`) can be copied and installed on any machine with a compatible Python version.
+
 ### From PyPI (When Published)
 
 ```bash
@@ -42,15 +59,11 @@ peer-eval init
 
 This creates `.peer-eval.toml` with default settings for your project.
 
-### Step 2: Configure Credentials (`.env`)
+### Step 2: Configure Credentials (`.peer-eval.env`)
 
 Copy the template and fill in your credentials:
 
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
+Create `.peer-eval.env`:
 
 ```dotenv
 GITLAB_URL=https://git.inteli.edu.br
@@ -80,7 +93,7 @@ Package
 
 Configuration
   .peer-eval.toml: ✓
-  .env: ✓
+  env file: ✓ .peer-eval.env
 
 Credentials
   GITLAB_TOKEN: ✓
@@ -96,7 +109,7 @@ Credentials
 peer-eval fixture \
   --input fixtures/scenarios/set1_s1_so_review.json \
   --deadline 2024-12-01T23:59:00Z \
-  --llm-mode skip
+  --llm skip
 ```
 
 **Option B: GitLab mode (collect real data)**
@@ -107,10 +120,19 @@ peer-eval gitlab \
   --since 2024-09-01T00:00:00Z \
   --until 2024-12-01T23:59:59Z \
   --deadline 2024-12-01T23:59:00Z \
-  --llm-mode dry-run
+  --llm dry-run
 ```
 
 Done! Reports are saved to `output/[project-id]/`.
+
+If your project follows a sprint calendar, you can use the configured sprints instead of typing dates manually:
+
+```bash
+peer-eval gitlab \
+  --project-id 123 \
+  --sprints 1,2,3 \
+  --llm dry-run
+```
 
 ---
 
@@ -129,8 +151,8 @@ peer-eval init
 Creates a template configuration file with:
 - Project ID (auto-detected from directory name)
 - Placeholder for deadlines and date ranges
+- Sprint calendar defaults (`start_date`, `length_days`, `count`)
 - Provider config sections (GitLab, GitHub)
-- Auth env var settings
 
 #### 2. `peer-eval doctor`
 
@@ -143,7 +165,7 @@ peer-eval doctor
 Checks:
 - Python version and virtual environment
 - Package installation
-- Config files found (`.peer-eval.toml`, `.env`)
+- Config files found (`.peer-eval.toml`, `.peer-eval.env` or `.env`)
 - Credentials available (GITLAB_TOKEN, ANTHROPIC_API_KEY)
 
 #### 3. `peer-eval gitlab`
@@ -156,24 +178,35 @@ peer-eval gitlab \
   --since 2024-09-01T00:00:00Z \
   --until 2024-12-01T23:59:59Z \
   --deadline 2024-12-01T23:59:00Z \
-  --llm-mode dry-run
+  --llm dry-run
+```
+
+Or use the sprint calendar from `.peer-eval.toml`:
+
+```bash
+peer-eval gitlab \
+  --project-id namespace/project \
+  --sprints 1,2,3 \
+  --llm dry-run
 ```
 
 **Arguments:**
 
 *Required:*
 - `--project-id`: GitLab project ID (numeric or `namespace/project`)
-- `--deadline`: Project deadline (ISO 8601 format)
+- `--deadline`: Project deadline (ISO 8601 format), unless derived from `--sprint` or `--sprints`
 
 *Optional:*
 - `--since`: Start date for MR collection (ISO 8601)
 - `--until`: End date for MR collection (ISO 8601)
+- `--sprint`: Select one sprint from the configured calendar (repeatable)
+- `--sprints`: Select multiple sprints from the configured calendar (`1,2,3`)
 - `--url`: GitLab instance URL (default: `https://gitlab.com`)
 - `--token`: Personal access token (reads GITLAB_TOKEN env if omitted)
 - `--repo-path`: Path to cloned repository (default: `.`)
 - `--members`: Team member list (auto-extracted if omitted)
 - `--output-dir`: Output directory (default: `output`)
-- `--llm-mode`: live|dry-run|skip (default: dry-run)
+- `--llm`: live|dry-run|skip (default: dry-run)
 - `--overrides`: Path to professor overrides JSON
 - `--skip-stage2b`: Skip cross-MR pattern detection
 - `--direct-committers`: Members to zero out
@@ -181,7 +214,7 @@ peer-eval gitlab \
 
 **Examples:**
 
-Simple (using .env credentials):
+Simple (using `.peer-eval.env` or `.env` credentials):
 ```bash
 peer-eval gitlab --project-id 123 --deadline 2024-12-01T23:59:00Z
 ```
@@ -193,7 +226,7 @@ peer-eval gitlab \
   --since 2024-09-01T00:00:00Z \
   --until 2024-12-01T23:59:59Z \
   --deadline 2024-12-01T23:59:00Z \
-  --llm-mode dry-run
+  --llm dry-run
 ```
 
 With LLM (requires ANTHROPIC_API_KEY):
@@ -201,7 +234,15 @@ With LLM (requires ANTHROPIC_API_KEY):
 peer-eval gitlab \
   --project-id 123 \
   --deadline 2024-12-01T23:59:00Z \
-  --llm-mode live
+  --llm live
+```
+
+With sprint calendar from `.peer-eval.toml`:
+```bash
+peer-eval gitlab \
+  --project-id 123 \
+  --sprint 4 \
+  --llm dry-run
 ```
 
 #### 4. `peer-eval fixture`
@@ -212,19 +253,21 @@ Evaluate using a local JSON fixture (no API calls):
 peer-eval fixture \
   --input fixtures/scenarios/scenario1.json \
   --deadline 2024-12-01T23:59:00Z \
-  --llm-mode skip
+  --llm skip
 ```
 
 **Arguments:**
 
 *Required:*
 - `--input`: Path to MR artifacts JSON file
-- `--deadline`: Project deadline (ISO 8601)
+- `--deadline`: Project deadline (ISO 8601), unless derived from `--sprint` or `--sprints`
 
 *Optional:*
 - `--members`: Team member list (auto-extracted if omitted)
 - `--output-dir`: Output directory (default: `output`)
-- `--llm-mode`: live|dry-run|skip (default: dry-run)
+- `--llm`: live|dry-run|skip (default: dry-run)
+- `--sprint`: Use the deadline of one configured sprint
+- `--sprints`: Use the deadline of the last configured sprint in a list
 - `--overrides`: Path to professor overrides JSON
 - `--skip-stage2b`: Skip cross-MR pattern detection
 
@@ -243,7 +286,15 @@ peer-eval fixture \
   --input fixtures/scenario1.json \
   --deadline 2024-12-01T23:59:00Z \
   --members alice bob charlie \
-  --llm-mode dry-run
+  --llm dry-run
+```
+
+Using the configured sprint deadline:
+```bash
+peer-eval fixture \
+  --input fixtures/scenario1.json \
+  --sprint 5 \
+  --llm skip
 ```
 
 #### 5. `peer-eval github`
@@ -260,7 +311,7 @@ Currently returns error. Use `gitlab` or `fixture` for now.
 
 ## LLM Modes
 
-All evaluation commands support three LLM modes via `--llm-mode`:
+All evaluation commands support three LLM modes via `--llm`:
 
 | Mode | Description | Speed | API Cost | Use Case |
 |------|-------------|-------|----------|----------|
@@ -272,13 +323,13 @@ All evaluation commands support three LLM modes via `--llm-mode`:
 
 ```bash
 # Fast mock (default)
-peer-eval gitlab --project-id 123 --deadline ... --llm-mode dry-run
+peer-eval gitlab --project-id 123 --deadline ... --llm dry-run
 
 # No LLM (quantitative only)
-peer-eval gitlab --project-id 123 --deadline ... --llm-mode skip
+peer-eval gitlab --project-id 123 --deadline ... --llm skip
 
 # Real API (requires ANTHROPIC_API_KEY)
-peer-eval gitlab --project-id 123 --deadline ... --llm-mode live
+peer-eval gitlab --project-id 123 --deadline ... --llm live
 ```
 
 ---
@@ -299,6 +350,11 @@ deadline = "2024-12-01T23:59:00Z"
 since = "2024-09-01T00:00:00Z"
 until = "2024-12-01T23:59:59Z"
 
+[sprints]
+start_date = "2024-09-01T00:00:00Z"
+length_days = 15
+count = 5
+
 [llm]
 mode = "dry-run"  # Options: live, dry-run, skip
 
@@ -309,16 +365,11 @@ project_id = ""  # Override via --project-id
 [provider.github]
 url = "https://api.github.com"
 repo = ""
-
-[auth]
-gitlab_token_env = "GITLAB_TOKEN"
-github_token_env = "GITHUB_TOKEN"
-anthropic_key_env = "ANTHROPIC_API_KEY"
 ```
 
-### `.env` (Secrets)
+### `.peer-eval.env` (Secrets)
 
-Store credentials securely:
+Store credentials securely. You can also point to another file with `--env-file path/to/file`.
 
 ```dotenv
 # GitLab
@@ -347,7 +398,7 @@ Values are loaded in this order (later overrides earlier):
    deadline = "2024-12-01T23:59:00Z"
    ```
 
-3. **Environment variables** (`.env`)
+3. **Environment variables** (`.peer-eval.env`, `.env`, or `--env-file`)
    ```dotenv
    GITLAB_TOKEN=...
    ANTHROPIC_API_KEY=...
@@ -356,7 +407,7 @@ Values are loaded in this order (later overrides earlier):
 4. **Hardcoded defaults** (lowest priority)
    - `--url`: https://gitlab.com
    - `--repo-path`: .
-   - `--llm-mode`: dry-run
+   - `--llm`: dry-run
 
 **Example:** If you set `deadline` in both CLI and `.peer-eval.toml`, CLI wins:
 
@@ -431,7 +482,7 @@ The CLI was redesigned in v2.0 for clarity and extensibility.
 # GitLab mode
 peer-eval --since 2024-09-01 --until 2024-12-01 \
           --deadline 2024-12-01T23:59:00Z \
-          --dry-run-llm
+          --llm dry-run
 
 # Fixture mode
 peer-eval --fixture fixtures/g03.json \
@@ -448,13 +499,13 @@ peer-eval gitlab \
   --since 2024-09-01T00:00:00Z \
   --until 2024-12-01T23:59:59Z \
   --deadline 2024-12-01T23:59:00Z \
-  --llm-mode dry-run
+  --llm dry-run
 
 # Fixture mode
 peer-eval fixture \
   --input fixtures/g03.json \
   --deadline 2024-12-01T23:59:00Z \
-  --llm-mode skip
+  --llm skip
 ```
 
 **Key differences:**
@@ -462,8 +513,8 @@ peer-eval fixture \
 | Feature | v1.x | v2.0 |
 |---------|------|------|
 | Data source | Flags (`--fixture`, `--since`) | Subcommands (`gitlab`, `fixture`) |
-| LLM control | Two flags (`--dry-run-llm`, `--skip-llm`) | One enum (`--llm-mode live\|dry-run\|skip`) |
-| Configuration | CLI + .env only | CLI + .toml + .env |
+| LLM control | Two flags (`--dry-run-llm`, `--skip-llm`) | One enum (`--llm live\|dry-run\|skip`) |
+| Configuration | CLI + .env only | CLI + .toml + `.peer-eval.env` |
 | Error messages | Generic | Mode-specific |
 | Help | Single page | Per-subcommand |
 
@@ -487,7 +538,7 @@ peer-eval doctor
 peer-eval fixture \
   --input ~/peer-eval/fixtures/mr_artifacts.json \
   --deadline 2024-12-01T23:59:00Z \
-  --llm-mode skip
+  --llm skip
 
 # 5. Run with real GitLab data
 peer-eval gitlab \
@@ -495,7 +546,7 @@ peer-eval gitlab \
   --since 2024-09-01T00:00:00Z \
   --until 2024-12-01T23:59:59Z \
   --deadline 2024-12-01T23:59:00Z \
-  --llm-mode dry-run
+  --llm dry-run
 
 # 6. View results
 cat output/integration-labs-g03/full_report.json | jq .
@@ -507,7 +558,7 @@ cat output/integration-labs-g03/full_report.json | jq .
 peer-eval gitlab \
   --project-id 123 \
   --deadline 2024-12-01T23:59:00Z \
-  --llm-mode live \
+  --llm live \
   --overrides professor_overrides.json \
   --skip-stage2b \
   --direct-committers alice bob
@@ -525,7 +576,7 @@ for group in G01 G02 G03 G04 G05; do
     --since 2024-09-01T00:00:00Z \
     --until 2024-12-01T23:59:59Z \
     --deadline 2024-12-01T23:59:00Z \
-    --llm-mode dry-run
+    --llm dry-run
 done
 ```
 

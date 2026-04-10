@@ -10,6 +10,7 @@ import platform
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
+from ..env import discover_env_files
 from .base import BaseCommand
 
 
@@ -57,9 +58,10 @@ class DoctorCommand(BaseCommand):
         # Project configuration
         print("Configuration")
         config_exists = Path(".peer-eval.toml").exists()
-        env_exists = Path(".env").exists()
+        env_candidates = list(discover_env_files())
+        env_path = next((path for path in env_candidates if path.exists()), None)
         print(f"  .peer-eval.toml: {'✓' if config_exists else '✗'}")
-        print(f"  .env: {'✓' if env_exists else '✗'}")
+        print(f"  env file: {'✓ ' + env_path.name if env_path else '✗'}")
         print()
 
         # Credentials

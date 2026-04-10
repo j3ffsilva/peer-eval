@@ -11,11 +11,12 @@ This module provides the refactored subcommand-based interface:
 
 import sys
 
+from .env import load_cli_env
+
 
 def cli():
     """Entry point for the peer-eval CLI command."""
-    from dotenv import load_dotenv
-    load_dotenv()
+    load_cli_env(sys.argv[1:])
     from .dispatcher import main as cli_main
     exit_code = cli_main()
     sys.exit(exit_code)

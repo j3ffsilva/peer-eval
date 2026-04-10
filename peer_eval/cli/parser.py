@@ -29,8 +29,22 @@ def add_common_arguments(parser: argparse.ArgumentParser) -> None:
     """
     parser.add_argument(
         "--deadline",
-        required=True,
+        default=None,
         help="Project deadline (ISO 8601 format, e.g., 2024-12-01T23:59:00Z)"
+    )
+
+    parser.add_argument(
+        "--sprint",
+        action="append",
+        type=int,
+        default=None,
+        help="Sprint number from the calendar configured in .peer-eval.toml. Can be repeated."
+    )
+
+    parser.add_argument(
+        "--sprints",
+        default=None,
+        help="Comma-separated sprint numbers from .peer-eval.toml (e.g., 1,2,3)"
     )
 
     parser.add_argument(
@@ -67,7 +81,8 @@ def add_common_arguments(parser: argparse.ArgumentParser) -> None:
     )
 
     parser.add_argument(
-        "--llm-mode",
+        "--llm",
+        dest="llm_mode",
         choices=["live", "dry-run", "skip"],
         default="dry-run",
         help="LLM evaluation mode: live (Claude API), dry-run (mock), skip (none)"

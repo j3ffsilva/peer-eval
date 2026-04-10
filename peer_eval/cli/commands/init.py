@@ -53,6 +53,11 @@ deadline = "2024-12-01T23:59:00Z"
 # since = "2024-09-01T00:00:00Z"
 # until = "2024-12-01T23:59:59Z"
 
+[sprints]
+start_date = "2024-09-01T00:00:00Z"
+length_days = 15
+count = 5
+
 [llm]
 mode = "dry-run"  # Options: live, dry-run, skip
 
@@ -64,11 +69,6 @@ url = "https://gitlab.com"
 [provider.github]
 url = "https://api.github.com"
 # repo = ""  # Set via --repo or environment
-
-[auth]
-gitlab_token_env = "GITLAB_TOKEN"
-github_token_env = "GITHUB_TOKEN"
-anthropic_key_env = "ANTHROPIC_API_KEY"
 '''
 
         try:
@@ -77,7 +77,7 @@ anthropic_key_env = "ANTHROPIC_API_KEY"
             print()
             print("📝 Next steps:")
             print("   1. Edit .peer-eval.toml to configure your project")
-            print("   2. Set credentials in .env (see .env.example)")
+            print("   2. Set credentials in .peer-eval.env (or pass --env-file)")
             print("   3. Run: peer-eval gitlab --project-id <ID> --deadline <ISO8601>")
             print("         or: peer-eval fixture --input <file.json> --deadline <ISO8601>")
             return 0

@@ -9,8 +9,8 @@ import os
 import sys
 from argparse import Namespace
 
-from ...configuration.loader import load_config
 from ..parser import add_common_arguments, add_fixture_arguments
+from ..resolution import load_project_config, resolve_common_options
 from ...providers.fixture import FixtureProvider
 from ..runners.shared import run_evaluation
 from .base import BaseCommand
@@ -62,6 +62,20 @@ class FixtureCommand(BaseCommand):
             return 1
 
         try:
+            config = load_project_config()
+            resolved = resolve_common_options(args, config)
+        except ValueError as e:
+            logger.error(str(e))
+            return 1
+
+        if resolved["sprint_numbers"]:
+            logger.info(
+                "Resolved deadline %s from sprint(s) %s",
+                resolved["deadline"],
+                ", ".join(str(number) for number in resolved["sprint_numbers"]),
+            )
+
+        try:
             # Collect artifacts from fixture
             logger.info(f"Loading fixtures from {args.input}")
             data = provider.collect()
@@ -77,7 +91,7 @@ class FixtureCommand(BaseCommand):
             scores = run_evaluation(
                 artifacts=artifacts,
                 members=members,
-                deadline=args.deadline,
+                deadline=resolved["deadline"],
                 llm_mode=args.llm_mode,
                 anthropic_key=anthropic_key,
                 output_dir=args.output_dir,
