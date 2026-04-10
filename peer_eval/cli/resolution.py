@@ -168,6 +168,14 @@ def resolve_gitlab_options(args, config: Dict[str, Any]) -> Dict[str, Any]:
     """Resolve the effective GitLab date window and deadline."""
     resolved = resolve_common_options(args, config)
 
+    resolved["project_id"] = args.project_id
+    resolved["url"] = args.url or _get_config_value(
+        config,
+        "provider.gitlab.url",
+        "gitlab.url",
+        default="https://gitlab.com",
+    )
+
     if resolved["sprint_numbers"] and (args.since or args.until):
         raise ValueError(
             "Use either --since/--until or --sprint/--sprints, not both."

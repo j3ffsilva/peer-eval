@@ -117,8 +117,8 @@ def add_gitlab_arguments(parser: argparse.ArgumentParser) -> None:
 
     parser.add_argument(
         "--url",
-        default="https://gitlab.com",
-        help="GitLab instance URL (default: https://gitlab.com)"
+        default=None,
+        help="GitLab instance URL (defaults to provider.gitlab.url in .peer-eval.toml or https://gitlab.com)"
     )
 
     parser.add_argument(

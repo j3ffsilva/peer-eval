@@ -62,8 +62,15 @@ def test_resolve_gitlab_options_uses_sprint_window():
         sprints="2,3",
         since=None,
         until=None,
+        project_id="graduacao/2026-1a/t17/g03",
+        url=None,
     )
     config = {
+        "provider": {
+            "gitlab": {
+                "url": "https://git.inteli.edu.br",
+            }
+        },
         "sprints": {
             "start_date": "2026-03-16T00:00:00Z",
             "length_days": 15,
@@ -76,6 +83,8 @@ def test_resolve_gitlab_options_uses_sprint_window():
     assert resolved["since"] == "2026-03-31T00:00:00Z"
     assert resolved["until"] == "2026-04-29T23:59:59Z"
     assert resolved["deadline"] == "2026-04-29T23:59:59Z"
+    assert resolved["project_id"] == "graduacao/2026-1a/t17/g03"
+    assert resolved["url"] == "https://git.inteli.edu.br"
 
 
 def test_resolve_gitlab_options_rejects_mixed_manual_and_sprint_windows():
@@ -85,6 +94,8 @@ def test_resolve_gitlab_options_rejects_mixed_manual_and_sprint_windows():
         sprints=None,
         since="2026-03-16T00:00:00Z",
         until=None,
+        project_id="graduacao/2026-1a/t17/g03",
+        url=None,
     )
 
     with pytest.raises(ValueError, match="Use either --since/--until or --sprint/--sprints"):

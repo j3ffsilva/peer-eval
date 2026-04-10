@@ -68,8 +68,8 @@ class GitLabCommand(BaseCommand):
 
         # Create provider
         provider = GitLabProvider(
-            project_id=args.project_id,
-            url=args.url,
+            project_id=resolved["project_id"],
+            url=resolved["url"],
             token=args.token or os.getenv("GITLAB_TOKEN"),
             repo_path=args.repo_path,
             since=resolved["since"],
@@ -87,7 +87,7 @@ class GitLabCommand(BaseCommand):
 
         try:
             # Collect artifacts from GitLab
-            logger.info(f"Collecting artifacts from GitLab ({args.project_id})")
+            logger.info(f"Collecting artifacts from GitLab ({resolved['project_id']})")
             data = provider.collect()
             artifacts = data["artifacts"]
             members = args.members if args.members else None
