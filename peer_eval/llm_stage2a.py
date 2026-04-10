@@ -1,14 +1,17 @@
 """
-Stage 2a: MR-level qualitative evaluation (E, A, T_review, P estimation).
+Stage 2.3 — Avaliação qualitativa por MR.
 
-Cycle 1: dry_run mode returns structured mock estimates derived heuristically.
-Cycle 2+: Will call Anthropic Claude API for real evaluation with caching and fallback.
+Avalia apenas:
+  A(k)       — importância arquitetural (LLM)
+  T_review   — qualidade do review (LLM)
+
+X(k) e E(k) são calculados a partir dos commits (Stage 2.2).
+P(k) foi removido; S(k) e Q(k) são determinísticos.
 """
 
 import anthropic
 import json
 import logging
-import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -16,9 +19,59 @@ from typing import Optional, List, Dict
 
 from . import config
 from . import model
-from .exceptions import LLMParseError
 
 logger = logging.getLogger(__name__)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Tool Schema — enforces structured output without text parsing
+# ═══════════════════════════════════════════════════════════════════════════
+
+MR_EVALUATION_TOOL: dict = {
+    "name": "submit_mr_evaluation",
+    "description": (
+        "Submit the structured qualitative evaluation for a Merge Request. "
+        "Evaluate only A (architectural importance) and T_review (review quality). "
+        "X and E are computed from commits (Stage 2.2) — do NOT estimate them here."
+    ),
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "A": {
+                "type": "object",
+                "description": (
+                    "Architectural importance — is this MR structurally central to the project? "
+                    "Consider: position in system (core vs. peripheral), observable practical effect, "
+                    "relevance to project goals. Base evaluation on concrete evidence from the diff."
+                ),
+                "properties": {
+                    "value":      {"type": "number", "minimum": 0.0, "maximum": 1.0},
+                    "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+                    "reasoning":  {"type": "string"}
+                },
+                "required": ["value", "confidence", "reasoning"]
+            },
+            "T_review": {
+                "type": "object",
+                "description": (
+                    "Review quality — depth of feedback provided by reviewers. "
+                    "0.20–0.30: substantial review with technical comments, changes requested, "
+                    "evidence MR was altered after review. "
+                    "0.10–0.20: superficial review, simple approval. "
+                    "0.00–0.10: absent or irrelevant review."
+                ),
+                "properties": {
+                    "value":      {"type": "number", "minimum": 0.0, "maximum": 0.30},
+                    "level":      {"type": "string", "enum": ["absent", "superficial", "substantive"]},
+                    "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+                    "reasoning":  {"type": "string"}
+                },
+                "required": ["value", "level", "confidence", "reasoning"]
+            }
+        },
+        "required": ["A", "T_review"]
+    }
+}
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -61,56 +114,13 @@ def load_prompt(section: str, prompt_path: str = config.PROMPT_FILE) -> str:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# LLM Client & Response Parsing
+# LLM Client
 # ═══════════════════════════════════════════════════════════════════════════
 
 
 def _get_client(api_key: str) -> anthropic.Anthropic:
     """Create and return Anthropic client."""
     return anthropic.Anthropic(api_key=api_key)
-
-
-def _parse_llm_response(raw: str, mr_id: str) -> Optional[dict]:
-    """
-    Extract JSON from LLM response, handling various formats.
-
-    Tries in order:
-      1. Direct JSON parse
-      2. JSON in ```json ... ``` block
-      3. JSON in ``` ... ``` block
-      4. First {...} substring
-
-    Returns None if no JSON found or invalid.
-    """
-    # Case 1: Direct JSON
-    try:
-        return json.loads(raw.strip())
-    except json.JSONDecodeError:
-        pass
-
-    # Case 2 & 3: Markdown code blocks
-    patterns = [
-        r'```json\s*([\s\S]*?)\s*```',
-        r'```\s*([\s\S]*?)\s*```',
-    ]
-    for pattern in patterns:
-        match = re.search(pattern, raw)
-        if match:
-            try:
-                return json.loads(match.group(1).strip())
-            except json.JSONDecodeError:
-                continue
-
-    # Case 4: Extract first {...} object
-    match = re.search(r'\{[\s\S]*\}', raw)
-    if match:
-        try:
-            return json.loads(match.group(0))
-        except json.JSONDecodeError:
-            pass
-
-    logger.warning(f"[{mr_id}] Could not parse LLM response: {raw[:200]}")
-    return None
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -120,27 +130,16 @@ def _parse_llm_response(raw: str, mr_id: str) -> Optional[dict]:
 
 def _fallback_estimate(mr_artifact: dict, reason: str = "fallback") -> dict:
     """
-    Return heuristic estimate when LLM fails or confidence is low.
-
-    Uses model.py functions as base.
+    Estimativa heurística quando o LLM falha.
+    Retorna apenas A e T_review (X e E vêm dos commits).
     """
     files = [f["file"] for f in mr_artifact.get("diff_summary", [])]
-    type_declared = mr_artifact.get("type_declared", "unknown")
     has_reviewers = len(mr_artifact.get("reviewers", [])) > 0
-    has_ci = mr_artifact.get("quantitative", {}).get("Q", 0.5) == 1.0
-    has_issues = len(mr_artifact.get("linked_issues", [])) > 0
-
-    e_value = model.calc_e_heuristic(type_declared, has_ci, has_issues)
     a_value = model.calc_a_heuristic(files)
 
     return {
         "mr_id": mr_artifact["mr_id"],
         "author": mr_artifact["author"],
-        "E": {
-            "value": e_value,
-            "confidence": "low",
-            "reasoning": f"Heuristic fallback ({reason})"
-        },
         "A": {
             "value": a_value,
             "confidence": "low",
@@ -149,11 +148,6 @@ def _fallback_estimate(mr_artifact: dict, reason: str = "fallback") -> dict:
         "T_review": {
             "value": config.T_REVIEWER_MAX if has_reviewers else 0.0,
             "level": "absent" if not has_reviewers else "superficial",
-            "confidence": "low",
-            "reasoning": f"Heuristic fallback ({reason})"
-        },
-        "P": {
-            "value": 0.5,
             "confidence": "low",
             "reasoning": f"Heuristic fallback ({reason})"
         },
@@ -169,130 +163,56 @@ def _fallback_estimate(mr_artifact: dict, reason: str = "fallback") -> dict:
 
 def _mock_estimate(mr_artifact: dict) -> dict:
     """
-    Generate mock LLM estimate based on heuristics from the artifact.
-
-    Returns structured estimate with plausible values derived from:
-    - Commit type and description for E(k)
-    - Module paths for A(k)
-    - Review comments for T_review(k)
-    - Diff size/complexity for P(k)
-
-    Args:
-        mr_artifact: MR artifact dict
-
-    Returns:
-        Mock estimate dict with E, A, T_review, P values and confidence
+    Estimativa mock para dry_run.
+    Retorna apenas A e T_review (Stage 2.3).
+    X e E são calculados a partir dos commits (Stage 2.2).
     """
-    mr_id = mr_artifact.get("mr_id", "UNKNOWN")
-    author = mr_artifact.get("author", "unknown")
-    type_declared = mr_artifact.get("type_declared", "fix").lower()
-    reviewers = mr_artifact.get("reviewers", [])
-    diff_summary = mr_artifact.get("diff_summary", [])
+    mr_id    = mr_artifact.get("mr_id", "UNKNOWN")
+    author   = mr_artifact.get("author", "unknown")
+    reviewers     = mr_artifact.get("reviewers", [])
     review_comments = mr_artifact.get("review_comments", [])
-    linked_issues = mr_artifact.get("linked_issues", [])
-    quantitative = mr_artifact.get("quantitative", {})
+    diff_summary  = mr_artifact.get("diff_summary", [])
 
-    # ===== E(k) — effort/authenticity =====
-    # Use heuristic calculation
-    ci_green = quantitative.get("Q", 1.0) == 1.0
-    closes_issue = len(linked_issues) > 0
-    E_value = model.calc_e_heuristic(type_declared, ci_green, closes_issue)
-
-    # ===== A(k) — architectural importance =====
-    # Use heuristic calculation
+    # A(k) — heurístico por módulos
     module_paths = [f["file"] for f in diff_summary]
     A_value = model.calc_a_heuristic(module_paths)
 
-    # ===== T_review(k) — reviewer quality =====
-    # Assess review comments
+    # T_review — heurístico por comentários
     T_review_value = 0.0
-    T_review_level = "ausente"
+    T_review_level = "absent"
 
     if reviewers and review_comments:
-        # Count substantive vs cosmetic comments
-        substantive_count = 0
-        superficial_count = 0
-        cosmetic_count = 0
-
-        for comment in review_comments:
-            body = comment.get("body", "").lower()
-            comment_type = comment.get("type", "comment")
-
-            if comment_type == "approval":
-                # Approval without prior comments = cosmetic
-                if not [c for c in review_comments if c.get("type") == "comment"]:
-                    cosmetic_count += 1
-                else:
-                    # Had technical comments before approval
-                    substantive_count += 1
-            elif len(body) > 30 and any(w in body for w in ["add", "remove", "fix", "improve", "refactor"]):
-                substantive_count += 1
-            elif len(body) < 10:
-                cosmetic_count += 1
-            else:
-                superficial_count += 1
-
-        if substantive_count > superficial_count + cosmetic_count:
-            T_review_value = 0.26  # substantivo
-            T_review_level = "substantivo"
-        elif superficial_count > cosmetic_count:
-            T_review_value = 0.12  # superficial
-            T_review_level = "superficial"
+        substantive = sum(
+            1 for c in review_comments
+            if len(c.get("body", "")) > 30
+            and any(w in c.get("body", "").lower() for w in ["add", "remove", "fix", "improve", "refactor"])
+        )
+        if substantive > 0:
+            T_review_value = 0.26
+            T_review_level = "substantive"
         else:
-            T_review_value = 0.03  # cosmetic
-            T_review_level = "cosmetico"
+            T_review_value = 0.12
+            T_review_level = "superficial"
     elif reviewers:
-        # Reviewers exist but we're in this branch = no comments analyzed
         T_review_value = 0.15
         T_review_level = "superficial"
 
-    # ===== P(k) — potential/impact =====
-    # Estimate based on diff characteristics
-    total_additions = sum(f.get("additions", 0) for f in diff_summary)
-    n_files = len(diff_summary)
-
-    if n_files > 5 and total_additions > 100:
-        # Large, multi-file change likely to have impact
-        P_value = 0.7
-    elif n_files > 2 and any("core" in f["file"] or "domain" in f["file"] for f in diff_summary):
-        # Core/domain logic = high impact
-        P_value = 0.75
-    elif n_files >= 1 and total_additions >= 50:
-        # Medium-sized meaningful change
-        P_value = 0.5
-    elif "test" in " ".join(f["file"] for f in diff_summary):
-        # Test-only = lower impact
-        P_value = 0.2
-    else:
-        # Default for unknown
-        P_value = 0.5
-
     return {
-        "mr_id": mr_id,
+        "mr_id":  mr_id,
         "author": author,
-        "E": {
-            "value": min(1.0, max(0.0, E_value)),
-            "confidence": "medium",
-            "reasoning": "mock"
-        },
         "A": {
-            "value": min(1.0, max(0.0, A_value)),
+            "value":      min(1.0, max(0.0, A_value)),
             "confidence": "medium",
-            "reasoning": "mock"
+            "reasoning":  "mock"
         },
         "T_review": {
-            "value": min(0.30, max(0.0, T_review_value)),
-            "level": T_review_level,
+            "value":      min(0.30, max(0.0, T_review_value)),
+            "level":      T_review_level,
             "confidence": "medium",
-            "reasoning": "mock"
+            "reasoning":  "mock"
         },
-        "P": {
-            "value": min(1.0, max(0.0, P_value)),
-            "confidence": "medium",
-            "reasoning": "mock"
-        },
-        "llm_model": "dry_run",
-        "estimated_at": datetime.utcnow().isoformat() + "Z"
+        "llm_model":    "dry_run",
+        "estimated_at": datetime.now(timezone.utc).isoformat() + "Z",
     }
 
 
@@ -340,79 +260,86 @@ def estimate_mr(
     system_prompt: str = "",
     api_key: Optional[str] = None,
     dry_run: bool = True,
-    cache_dir: str = "output/cache"
+    cache_dir: str = "output/cache",
+    context_flags: Optional[List[str]] = None,
 ) -> dict:
     """
-    Estimate E, A, T_review, P for a single MR.
+    Avalia A(k) e T_review para um único MR (Stage 2.3).
 
     Args:
         mr_artifact: MR artifact dict
-        system_prompt: System prompt for API
-        api_key: Anthropic API key (required if dry_run=False)
-        dry_run: If True, return mock estimate; if False, call API (cycle 2+)
-        cache_dir: Directory for caching estimates
+        system_prompt: System prompt para a API
+        api_key: Anthropic API key (obrigatório se dry_run=False)
+        dry_run: Se True, retorna estimativa mock
+        cache_dir: Diretório para cache
+        context_flags: Flags de padrão do Stage 2.1 para este MR
 
     Returns:
-        Estimate dict with E, A, T_review, P values
+        Estimativa com A e T_review
 
     Raises:
-        ValueError: If dry_run=False and api_key is None
+        ValueError: Se dry_run=False e api_key é None
     """
     mr_id = mr_artifact["mr_id"]
 
-    # Dry run: return mock
     if dry_run:
         return _mock_estimate(mr_artifact)
 
-    # Real LLM path
     if not api_key:
         raise ValueError("api_key required when dry_run=False")
 
-    # Check cache first
     cached = _load_from_cache(mr_id, cache_dir)
     if cached:
         return cached
 
-    # Build message
-    user_message = (
-        "Avalie o Merge Request abaixo e retorne apenas o JSON de saída "
-        "conforme especificado no system prompt. Nenhum texto fora do JSON.\n\n"
-        + json.dumps(mr_artifact, ensure_ascii=False, indent=2)
-    )
+    # Monta mensagem com contexto do Stage 2.1
+    parts = [
+        "Avalie o Merge Request abaixo chamando a ferramenta submit_mr_evaluation "
+        "para estimar A(k) e T_review.\n"
+    ]
+    if context_flags:
+        parts.append(
+            "[CONTEXTO — Stage 2.1]\n"
+            f"Padrões suspeitos detectados: {', '.join(context_flags)}\n"
+            "Considere esses sinais ao estimar A(k) e T_review.\n"
+        )
+    parts.append(json.dumps(mr_artifact, ensure_ascii=False, indent=2))
+    user_message = "\n".join(parts)
 
     try:
         client = _get_client(api_key)
-        logger.info(f"[{mr_id}] Calling LLM...")
+        logger.info(f"[{mr_id}] Calling LLM (Stage 2.3)...")
 
         response = client.messages.create(
             model=config.LLM_MODEL,
             max_tokens=config.LLM_MAX_TOKENS,
             temperature=config.LLM_TEMPERATURE,
             system=system_prompt,
-            messages=[{"role": "user", "content": user_message}]
+            tools=[MR_EVALUATION_TOOL],
+            tool_choice={"type": "tool", "name": "submit_mr_evaluation"},
+            messages=[{"role": "user", "content": user_message}],
         )
 
-        raw = response.content[0].text
-        parsed = _parse_llm_response(raw, mr_id)
+        tool_block = next(
+            (b for b in response.content if b.type == "tool_use"), None
+        )
 
-        if parsed is None:
-            logger.warning(f"[{mr_id}] Parse failed — using fallback heuristic")
-            result = _fallback_estimate(mr_artifact, reason="parse error")
+        if tool_block is None:
+            logger.warning(f"[{mr_id}] No tool_use block — fallback heuristic")
+            result = _fallback_estimate(mr_artifact, reason="no tool call")
         else:
-            # Ensure required fields
+            parsed = tool_block.input
             result = {
-                "mr_id": mr_id,
+                "mr_id":  mr_id,
                 "author": mr_artifact["author"],
                 **parsed,
-                "llm_model": config.LLM_MODEL,
-                "estimated_at": datetime.now(timezone.utc).isoformat() + "Z"
+                "llm_model":    config.LLM_MODEL,
+                "estimated_at": datetime.now(timezone.utc).isoformat() + "Z",
             }
             logger.info(
                 f"[{mr_id}] OK — "
-                f"E={result['E']['value']:.2f}({result['E']['confidence']}) "
                 f"A={result['A']['value']:.2f}({result['A']['confidence']}) "
-                f"T={result['T_review']['value']:.2f}({result['T_review']['level']}) "
-                f"P={result['P']['value']:.2f}({result['P']['confidence']})"
+                f"T={result['T_review']['value']:.2f}({result['T_review']['level']})"
             )
 
     except anthropic.APIStatusError as e:
@@ -444,54 +371,82 @@ def estimate_mr(
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def run_stage2a(
+def run_stage2_mr(
     mr_artifacts: List[Dict],
     api_key: Optional[str] = None,
     prompt_path: str = config.PROMPT_FILE,
     dry_run: bool = True,
     cache_dir: str = "output/cache",
-    output_path: str = "output/mr_llm_estimates.json"
+    output_path: str = "output/mr_llm_estimates.json",
+    context_flags: Optional[Dict] = None,
 ) -> List[Dict]:
     """
-    Run Stage 2a: estimate qualitative components for all MRs.
+    Executa Stage 2.3: avalia A(k) e T_review para todos os MRs.
 
     Args:
-        mr_artifacts: List of MR artifacts
-        api_key: Anthropic API key (required if dry_run=False)
-        prompt_path: Path to prompts markdown file
-        dry_run: If True, return mock estimates
-        cache_dir: Directory for caching estimates
-        output_path: Where to save estimates JSON
+        mr_artifacts: Lista de MR artifacts
+        api_key: Anthropic API key (obrigatório se dry_run=False)
+        prompt_path: Caminho para o arquivo de prompts
+        dry_run: Se True, usa estimativas mock
+        cache_dir: Diretório para cache
+        output_path: Onde salvar as estimativas em JSON
+        context_flags: Dict {mr_id: [flags]} do Stage 2.1
 
     Returns:
-        List of estimate dicts
+        Lista de estimativas com A e T_review por MR
     """
-    logger.info(f"Stage 2a: Processing {len(mr_artifacts)} MRs (dry_run={dry_run})")
+    context_flags = context_flags or {}
+    logger.info(f"Stage 2.3: {len(mr_artifacts)} MRs (dry_run={dry_run})")
 
-    # Load system prompt
     system_prompt = ""
     if not dry_run:
         try:
-            system_prompt = load_prompt("Stage 2a", prompt_path)
+            system_prompt = load_prompt("Stage 2.3", prompt_path)
         except (FileNotFoundError, ValueError) as e:
             logger.error(f"Could not load prompt: {e}")
             raise
 
     estimates = []
     for i, mr_artifact in enumerate(mr_artifacts, 1):
-        logger.info(f"Stage 2a [{i}/{len(mr_artifacts)}] {mr_artifact['mr_id']} — {mr_artifact['title'][:60]}")
+        mr_id = mr_artifact["mr_id"]
+        logger.info(
+            f"Stage 2.3 [{i}/{len(mr_artifacts)}] "
+            f"{mr_id} — {mr_artifact.get('title', '')[:60]}"
+        )
+        flags = context_flags.get(mr_id, [])
         estimate = estimate_mr(
             mr_artifact=mr_artifact,
             system_prompt=system_prompt,
             api_key=api_key,
             dry_run=dry_run,
-            cache_dir=cache_dir
+            cache_dir=cache_dir,
+            context_flags=flags,
         )
         estimates.append(estimate)
 
-    # Save to disk
     from . import loader
     loader.save_json(estimates, output_path)
-
-    logger.info(f"Stage 2a complete: saved {len(estimates)} estimates to {output_path}")
+    logger.info(f"Stage 2.3 completo: {len(estimates)} estimativas → {output_path}")
     return estimates
+
+
+# Alias de compatibilidade com código legado
+def run_stage2a(
+    mr_artifacts: List[Dict],
+    api_key: Optional[str] = None,
+    prompt_path: str = config.PROMPT_FILE,
+    dry_run: bool = True,
+    cache_dir: str = "output/cache",
+    output_path: str = "output/mr_llm_estimates.json",
+    context_flags: Optional[Dict] = None,
+) -> List[Dict]:
+    """Alias para run_stage2_mr (compatibilidade com código existente)."""
+    return run_stage2_mr(
+        mr_artifacts=mr_artifacts,
+        api_key=api_key,
+        prompt_path=prompt_path,
+        dry_run=dry_run,
+        cache_dir=cache_dir,
+        output_path=output_path,
+        context_flags=context_flags,
+    )

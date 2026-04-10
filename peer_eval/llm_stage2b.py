@@ -1,8 +1,14 @@
 """
-Stage 2b: Cross-MR pattern detection and group analysis.
+Stage 2.1 — Detecção de padrões suspeitos cross-MR.
 
-Cycle 1: dry_run mode with heuristic pattern detection.
-Cycle 2+: Will call Anthropic Claude API for detailed analysis.
+Executado ANTES das avaliações LLM. Detecta:
+  - cascata_de_fixes
+  - fragmentacao_artificial
+  - burst_de_vespera
+  - commit_inflado
+
+Os padrões detectados são passados como contexto (context_by_mr, context_by_sha)
+para o Stage 2.2 (commits) e Stage 2.3 (MRs).
 """
 
 import anthropic
@@ -13,6 +19,55 @@ from datetime import datetime, timedelta
 from typing import Optional, List, Dict
 from . import config
 from .llm_stage2a import load_prompt
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Tool Schema — enforces structured group report without text parsing
+# ═══════════════════════════════════════════════════════════════════════════
+
+GROUP_ANALYSIS_TOOL: dict = {
+    "name": "submit_group_analysis",
+    "description": (
+        "Submit the structured cross-MR pattern analysis for the group. "
+        "Report all detected anomalies with evidence and suspicion level."
+    ),
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "flags": {
+                "type": "array",
+                "description": "List of detected suspicious patterns",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "fragmentacao_artificial",
+                                "burst_de_vespera",
+                                "commit_inflado",
+                                "padding_de_volume",
+                                "cascata_de_fixes"
+                            ]
+                        },
+                        "persons":         {"type": "array", "items": {"type": "string"}},
+                        "mr_ids":          {"type": "array", "items": {"type": "string"}},
+                        "evidence":        {"type": "string"},
+                        "alternative":     {"type": "string"},
+                        "suspicion_level": {"type": "string", "enum": ["baixo", "medio", "alto"]}
+                    },
+                    "required": ["type", "persons", "mr_ids", "evidence", "alternative", "suspicion_level"]
+                }
+            },
+            "observations": {
+                "type": "array",
+                "description": "General observations about the group's workflow",
+                "items": {"type": "string"}
+            }
+        },
+        "required": ["flags", "observations"]
+    }
+}
 
 logger = logging.getLogger(__name__)
 
@@ -249,9 +304,9 @@ def _mock_group_report(
                 flags_by_level[suspicion] += 1
 
     observations.append(f"Análise de {len(mr_artifacts)} MRs de {len(members)} membros")
-    observations.append("Padrões: fragmentação artificial, burst de véspera, commits inflados, padding de volume, cascata de fixes")
+    observations.append("Padrões: fragmentação artificial, burst de véspera, commits inflados, cascata de fixes")
 
-    return {
+    group_report = {
         "project": "peer-eval-project",
         "analyzed_at": datetime.utcnow().isoformat() + "Z",
         "flags": flags,
@@ -262,6 +317,36 @@ def _mock_group_report(
             "flags_by_level": flags_by_level
         }
     }
+    group_report["context_by_mr"], group_report["context_by_sha"] = \
+        extract_context_flags(group_report)
+    return group_report
+
+
+def extract_context_flags(group_report: dict):
+    """
+    Extrai dicts de contexto indexados por mr_id e sha a partir dos flags detectados.
+
+    Retorna:
+        context_by_mr  — {mr_id: [flag_type, ...]}
+        context_by_sha — {sha:   [flag_type, ...]}
+
+    Usado pelo Stage 2.2 e Stage 2.3 para enriquecer os prompts LLM.
+    """
+    context_by_mr: Dict[str, List[str]] = {}
+    context_by_sha: Dict[str, List[str]] = {}
+
+    for flag in group_report.get("flags", []):
+        flag_type = flag.get("type", "unknown")
+
+        for mr_id in flag.get("mr_ids", []):
+            context_by_mr.setdefault(mr_id, []).append(flag_type)
+
+        # cascata_de_fixes registra commits individuais no evidence
+        # Para shas, examinamos o commit_a no pattern (se disponível)
+        for sha in flag.get("shas", []):
+            context_by_sha.setdefault(sha, []).append(flag_type)
+
+    return context_by_mr, context_by_sha
 
 
 def _get_client(api_key: str) -> anthropic.Anthropic:
@@ -331,51 +416,6 @@ def _consolidate_group_data(
     return json.dumps(summary, ensure_ascii=False, indent=2)
 
 
-def _parse_group_report(raw: str, group_name: str = "group") -> Optional[dict]:
-    """
-    Extract group report JSON from LLM response, handling various formats.
-
-    Tries in order:
-      1. Direct JSON parse
-      2. JSON in ```json ... ``` block
-      3. JSON in ``` ... ``` block
-      4. First {...} substring
-
-    Returns None if no JSON found or invalid.
-    """
-    import re
-
-    # Case 1: Direct JSON
-    try:
-        return json.loads(raw.strip())
-    except json.JSONDecodeError:
-        pass
-
-    # Case 2 & 3: Markdown code blocks
-    patterns = [
-        r'```json\s*([\s\S]*?)\s*```',
-        r'```\s*([\s\S]*?)\s*```',
-    ]
-    for pattern in patterns:
-        match = re.search(pattern, raw)
-        if match:
-            try:
-                return json.loads(match.group(1).strip())
-            except json.JSONDecodeError:
-                continue
-
-    # Case 4: Extract first {...} object
-    match = re.search(r'\{[\s\S]*\}', raw)
-    if match:
-        try:
-            return json.loads(match.group(0))
-        except json.JSONDecodeError:
-            pass
-
-    logger.warning(f"[{group_name}] Could not parse LLM response: {raw[:200]}")
-    return None
-
-
 def _call_llm_group_analysis(
     mr_artifacts: List[Dict],
     llm_estimates: List[Dict],
@@ -397,8 +437,8 @@ def _call_llm_group_analysis(
         group_data = _consolidate_group_data(mr_artifacts, llm_estimates, members, deadline)
 
         user_message = (
-            "Analise o relatório do grupo abaixo e retorne apenas o JSON de saída "
-            "conforme especificado no system prompt. Nenhum texto fora do JSON.\n\n"
+            "Analise o relatório do grupo abaixo chamando a ferramenta submit_group_analysis "
+            "com os padrões detectados conforme o system prompt.\n\n"
             + group_data
         )
 
@@ -407,21 +447,34 @@ def _call_llm_group_analysis(
             max_tokens=config.LLM_MAX_TOKENS,
             temperature=config.LLM_TEMPERATURE,
             system=system_prompt,
+            tools=[GROUP_ANALYSIS_TOOL],
+            tool_choice={"type": "tool", "name": "submit_group_analysis"},
             messages=[{"role": "user", "content": user_message}]
         )
 
-        raw = response.content[0].text
-        parsed = _parse_group_report(raw, "group")
+        tool_block = next(
+            (b for b in response.content if b.type == "tool_use"),
+            None
+        )
 
-        if parsed is None:
-            logger.warning("Parse failed — using fallback mock report")
+        if tool_block is None:
+            logger.warning("No tool_use block in response — using fallback mock report")
             return _mock_group_report(mr_artifacts, llm_estimates, members, deadline)
 
-        # Ensure required fields
+        parsed = tool_block.input  # already a dict, guaranteed by the schema
         result = {
             **parsed,
+            "project": "peer-eval-project",
             "llm_model": config.LLM_MODEL,
-            "analyzed_at": datetime.now(datetime.now().astimezone().tzinfo).isoformat()
+            "analyzed_at": datetime.now(datetime.now().astimezone().tzinfo).isoformat(),
+            "summary": {
+                "total_mrs": len(mr_artifacts),
+                "total_persons": len(members),
+                "flags_by_level": {
+                    level: sum(1 for f in parsed["flags"] if f["suspicion_level"] == level)
+                    for level in ("alto", "medio", "baixo")
+                }
+            }
         }
         logger.info("Group analysis OK")
         return result
@@ -449,56 +502,54 @@ def detect_patterns(
     prompt_path: str = config.PROMPT_FILE,
     api_key: Optional[str] = None,
     dry_run: bool = True,
-    output_path: str = "output/group_report.json"
+    output_path: str = "output/group_report.json",
 ) -> dict:
     """
-    Run Stage 2b: detect cross-MR patterns and group analysis.
+    Executa Stage 2.1: detecta padrões suspeitos cross-MR.
+
+    Retorna o group_report com campos adicionais:
+      context_by_mr  — {mr_id: [flag_type, ...]}  para Stage 2.3
+      context_by_sha — {sha:   [flag_type, ...]}  para Stage 2.2
 
     Args:
-        mr_artifacts: List of MR artifacts
-        llm_estimates: List of LLM estimates
-        members: List of team members
+        mr_artifacts: Lista de MR artifacts
+        llm_estimates: Lista de LLM estimates (usadas para detecção heurística)
+        members: Lista de membros do grupo
         deadline: Deadline ISO string
-        prompt_path: Path to prompts markdown file
-        api_key: Anthropic API key (required if dry_run=False)
-        dry_run: If True, return mock report
-        output_path: Where to save report JSON
+        prompt_path: Caminho para o arquivo de prompts
+        api_key: Anthropic API key (obrigatório se dry_run=False)
+        dry_run: Se True, usa detecção heurística
+        output_path: Onde salvar o report JSON
 
     Returns:
-        Group report dict
+        Group report dict com flags e context_by_mr / context_by_sha
     """
-    logger.info(f"Running Stage 2b (dry_run={dry_run}) on {len(mr_artifacts)} MRs")
+    logger.info(f"Stage 2.1: {len(mr_artifacts)} MRs (dry_run={dry_run})")
 
-    # Load system prompt if not dry_run (will be used in cycle 2)
     system_prompt = ""
     if not dry_run:
         try:
-            system_prompt = load_prompt("Stage 2b", prompt_path)
+            system_prompt = load_prompt("Stage 2.1", prompt_path)
         except (FileNotFoundError, ValueError) as e:
-            logger.warning(f"Could not load prompt: {e}")
+            logger.warning(f"Prompt para Stage 2.1 não encontrado: {e}")
 
-    # Generate report
     if dry_run:
         report = _mock_group_report(mr_artifacts, llm_estimates, members, deadline)
     else:
-        # Cycle 3: Call Anthropic API
         if not api_key:
-            logger.warning("api_key not provided for real LLM call — using mock report")
+            logger.warning("api_key não fornecida — usando detecção heurística")
             report = _mock_group_report(mr_artifacts, llm_estimates, members, deadline)
         else:
             report = _call_llm_group_analysis(
-                mr_artifacts,
-                llm_estimates,
-                members,
-                deadline,
-                system_prompt,
-                api_key
+                mr_artifacts, llm_estimates, members, deadline, system_prompt, api_key
             )
 
-    # Save to disk
+    # Garante que context_by_mr e context_by_sha estejam presentes
+    if "context_by_mr" not in report:
+        report["context_by_mr"], report["context_by_sha"] = extract_context_flags(report)
+
     from . import loader
     loader.save_json(report, output_path)
-
-    logger.info(f"Stage 2b complete: saved report to {output_path}")
+    logger.info(f"Stage 2.1 completo → {output_path}")
     return report
 

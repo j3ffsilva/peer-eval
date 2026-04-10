@@ -527,9 +527,15 @@ def _collect_commit_log(repo: git.Repo, mr) -> List[Dict[str, Any]]:
     """
     Collect commit-level log for an MR (substantive commits only, max 15).
 
-    Skips merge commits (noise, no code intent). Drops author, authored_at and
-    files_touched — redundant with diff_summary and MR metadata — to keep the
-    LLM payload small. Uses gitpython commit.stats (no extra API calls).
+    Skips merge commits — esses são filtrados novamente pelo Stage 2.2, mas
+    excluí-los aqui evita payload desnecessário.
+
+    Campos retornados por commit:
+      sha, author, authored_at, message, additions, deletions,
+      files_touched, diff  (truncado em COMMIT_DIFF_MAX_CHARS)
+
+    files_touched e diff são necessários para o Stage 2.2 avaliar
+    scope_clarity e atomicity por commit.
     """
     commits = _get_mr_commits(repo, mr)
     log = []
@@ -537,7 +543,7 @@ def _collect_commit_log(repo: git.Repo, mr) -> List[Dict[str, Any]]:
     for commit in commits:
         message = commit.message.strip().split("\n")[0]
 
-        # Skip merge commits — pure noise for E/A/T/P estimation
+        # Merge commits: filtro aqui e no Stage 2.2 por redundância segura
         if message.lower().startswith("merge"):
             continue
 
@@ -545,15 +551,31 @@ def _collect_commit_log(repo: git.Repo, mr) -> List[Dict[str, Any]]:
             files_info = commit.stats.files
             additions = sum(f.get("insertions", 0) for f in files_info.values())
             deletions = sum(f.get("deletions", 0) for f in files_info.values())
+            files_touched = list(files_info.keys())
         except Exception:
             additions = 0
             deletions = 0
+            files_touched = []
+
+        # Coleta diff truncado — necessário para atomicity e message_semantic
+        diff_text = ""
+        try:
+            parent = commit.parents[0] if commit.parents else None
+            if parent:
+                raw_diff = repo.git.diff(parent.hexsha, commit.hexsha)
+                diff_text = raw_diff[:config.COMMIT_DIFF_MAX_CHARS]
+        except Exception:
+            pass
 
         log.append({
-            "sha": commit.hexsha[:8],
-            "message": message,
-            "additions": additions,
-            "deletions": deletions,
+            "sha":          commit.hexsha[:8],
+            "author":       commit.author.name if commit.author else "unknown",
+            "authored_at":  commit.authored_datetime.isoformat(),
+            "message":      message,
+            "additions":    additions,
+            "deletions":    deletions,
+            "files_touched": files_touched,
+            "diff":          diff_text,
         })
 
     return log[:15]

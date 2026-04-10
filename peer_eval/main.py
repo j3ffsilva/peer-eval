@@ -31,6 +31,7 @@ from dotenv import load_dotenv
 from . import loader
 from . import llm_stage2a
 from . import llm_stage2b
+from . import llm_stage2_commits
 from . import model
 from . import scorer
 from . import report
@@ -373,65 +374,94 @@ def main():
 
     logger.info("Quantitative metrics loaded from fixture")
 
-    # ===== STAGE 2a: LLM evaluation of components =====
-    logger.info("=" * 60)
-    logger.info("Stage 2a: LLM component estimation (E, A, T_review, P)")
-    logger.info("=" * 60)
-
-    llm_estimates = []
-    if args.skip_llm:
-        logger.info("Skipping Stage 2a (--skip-llm flag set)")
-    elif args.llm_estimates and os.path.exists(args.llm_estimates):
-        logger.info(f"Loading pre-computed LLM estimates from {args.llm_estimates}")
-        llm_estimates = loader.load_llm_estimates(args.llm_estimates)
-    else:
-        logger.info("Running Stage 2a to estimate components...")
-        output_path = os.path.join(args.output_dir, "mr_llm_estimates.json")
-        cache_dir = os.path.join(args.output_dir, "cache")
-        llm_estimates = llm_stage2a.run_stage2a(
-            mr_artifacts,
-            api_key=args.anthropic_key if not args.dry_run_llm else None,
-            prompt_path=os.path.join(os.path.dirname(__file__), "..", "prompts", "avaliacao_llm.md"),
-            dry_run=args.dry_run_llm,
-            cache_dir=cache_dir,
-            output_path=output_path
-        )
-
     # ===== Load overrides =====
     logger.info("=" * 60)
-    logger.info("Loading professor overrides (if any)")
+    logger.info("Carregando overrides do professor (se houver)")
     logger.info("=" * 60)
 
     overrides = None
     if args.overrides:
         overrides = loader.load_overrides(args.overrides)
         if overrides:
-            logger.info(f"Loaded overrides for {len(overrides)} MRs")
+            logger.info(f"Overrides carregados para {len(overrides)} MRs")
         else:
-            logger.info("No overrides found")
+            logger.info("Nenhum override encontrado")
 
-    # ===== STAGE 2b: Cross-MR pattern detection =====
-    group_report = None
+    prompt_path = os.path.join(os.path.dirname(__file__), "..", "prompts", "avaliacao_llm.md")
+    cache_dir   = os.path.join(args.output_dir, "cache")
+    api_key     = args.anthropic_key if not args.dry_run_llm else None
+
+    # ===== STAGE 2.1: Detecção de padrões suspeitos =====
+    logger.info("=" * 60)
+    logger.info("Stage 2.1: Detecção de padrões suspeitos cross-MR")
+    logger.info("=" * 60)
+
+    group_report  = None
+    context_flags = {}
+
     if not args.skip_stage2b:
-        logger.info("=" * 60)
-        logger.info("Stage 2b: Cross-MR pattern detection")
-        logger.info("=" * 60)
-
-        output_path = os.path.join(args.output_dir, "group_report.json")
+        # Stage 2.1 roda com estimativas vazias (ainda não temos Stage 2.3)
         group_report = llm_stage2b.detect_patterns(
             mr_artifacts,
-            llm_estimates if llm_estimates else [],
+            [],  # llm_estimates ainda não existem
             args.members,
             args.deadline,
-            prompt_path=os.path.join(os.path.dirname(__file__), "..", "prompts", "avaliacao_llm.md"),
-            api_key=args.anthropic_key if not args.dry_run_llm else None,
+            prompt_path=prompt_path,
+            api_key=api_key,
             dry_run=args.dry_run_llm,
-            output_path=output_path
+            output_path=os.path.join(args.output_dir, "group_report.json"),
+        )
+        context_flags = {
+            **group_report.get("context_by_mr", {}),
+            **group_report.get("context_by_sha", {}),
+        }
+    else:
+        logger.info("Stage 2.1 ignorado (--skip-stage2b)")
+
+    # ===== STAGE 2.2: Avaliação LLM por commit =====
+    logger.info("=" * 60)
+    logger.info("Stage 2.2: Avaliação de commits (atomicity, message_quality, scope_clarity)")
+    logger.info("=" * 60)
+
+    commit_estimates = []
+    if args.skip_llm:
+        logger.info("Stage 2.2 ignorado (--skip-llm)")
+    else:
+        commit_estimates = llm_stage2_commits.run_stage2_commits(
+            mr_artifacts,
+            api_key=api_key,
+            prompt_path=prompt_path,
+            dry_run=args.dry_run_llm,
+            cache_dir=cache_dir,
+            output_path=os.path.join(args.output_dir, "commit_estimates.json"),
+            context_flags=group_report.get("context_by_sha", {}) if group_report else {},
         )
 
-    # ===== STAGE 3: Compute per-member scores =====
+    # ===== STAGE 2.3: Avaliação LLM por MR (A + T_review) =====
     logger.info("=" * 60)
-    logger.info("Stage 3: Aggregate scores per member")
+    logger.info("Stage 2.3: Avaliação de MRs pelo LLM (A, T_review)")
+    logger.info("=" * 60)
+
+    llm_estimates = []
+    if args.skip_llm:
+        logger.info("Stage 2.3 ignorado (--skip-llm)")
+    elif args.llm_estimates and os.path.exists(args.llm_estimates):
+        logger.info(f"Carregando estimativas LLM pré-computadas de {args.llm_estimates}")
+        llm_estimates = loader.load_llm_estimates(args.llm_estimates)
+    else:
+        llm_estimates = llm_stage2a.run_stage2_mr(
+            mr_artifacts,
+            api_key=api_key,
+            prompt_path=prompt_path,
+            dry_run=args.dry_run_llm,
+            cache_dir=cache_dir,
+            output_path=os.path.join(args.output_dir, "mr_llm_estimates.json"),
+            context_flags=group_report.get("context_by_mr", {}) if group_report else {},
+        )
+
+    # ===== STAGE 3: Cálculo do fator de contribuição =====
+    logger.info("=" * 60)
+    logger.info("Stage 3: Fator de contribuição por membro")
     logger.info("=" * 60)
 
     scores = scorer.compute_scores(
@@ -439,7 +469,8 @@ def main():
         llm_estimates,
         overrides,
         args.members,
-        direct_committers=args.direct_committers if args.direct_committers else None
+        direct_committers=args.direct_committers if args.direct_committers else None,
+        commit_estimates=commit_estimates if commit_estimates else None,
     )
 
     logger.info(f"Computed scores for {len(scores)} members")

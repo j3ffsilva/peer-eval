@@ -1,7 +1,7 @@
 """
-Shared evaluation pipeline (Stages 1-4).
+Pipeline de avaliação compartilhado (Stages 1-4).
 
-Extracted from main.py to be reusable across all subcommands.
+Reutilizado por todos os subcomandos CLI (gitlab, github, fixture).
 """
 
 import logging
@@ -12,39 +12,29 @@ from typing import List, Dict, Optional, Literal
 from ... import loader
 from ... import llm_stage2a
 from ... import llm_stage2b
+from ... import llm_stage2_commits
 from ... import scorer
 from ... import report
 
 logger = logging.getLogger(__name__)
 
+_PROMPT_PATH = str(
+    Path(__file__).parent.parent.parent / "prompts" / "avaliacao_llm.md"
+)
+
 
 def _extract_members_from_artifacts(mr_artifacts: List[Dict]) -> List[str]:
-    """
-    Extract unique member usernames from MR artifacts.
-
-    Args:
-        mr_artifacts: List of MR artifact dicts
-
-    Returns:
-        Sorted list of unique member usernames
-    """
+    """Extrai usernames únicos de autores e revisores dos artefatos."""
     members = set()
-
     for mr in mr_artifacts:
-        # Add author
         if mr.get("author"):
             members.add(mr["author"])
-
-        # Add reviewers
         for reviewer in mr.get("reviewers", []):
             members.add(reviewer)
-
-        # Add reviewers from comments
         for comment in mr.get("review_comments", []):
             if comment.get("author"):
                 members.add(comment["author"])
-
-    return sorted(list(members))
+    return sorted(members)
 
 
 def run_evaluation(
@@ -59,140 +49,142 @@ def run_evaluation(
     direct_committers: Optional[List[str]] = None,
 ) -> Dict:
     """
-    Run Stages 1-4 of the evaluation pipeline.
+    Executa o pipeline completo de avaliação (Stages 1–4).
 
-    This function:
-    1. Ensures quantitative metrics are present
-    2. Runs LLM component estimation (Stage 2a)
-    3. Detects group patterns (Stage 2b, optional)
-    4. Computes per-member scores (Stage 3)
-    5. Generates reports (Stage 4)
+    Pipeline:
+      Stage 1    — verifica métricas quantitativas
+      Stage 2.1  — detecção de padrões suspeitos cross-MR
+      Stage 2.2  — avaliação LLM por commit (atomicity, message_quality, scope_clarity)
+      Stage 2.3  — avaliação LLM por MR (A, T_review)
+      Stage 3    — fator de contribuição por membro
+      Stage 4    — relatórios
 
     Args:
-        artifacts: List of MR/PR artifact dicts
-        deadline: Project deadline (ISO 8601 format)
-        llm_mode: "live" (Anthropic API), "dry-run" (mock), "skip" (none)
-        anthropic_key: Anthropic API key (required if llm_mode="live")
-        members: List of team member usernames (auto-extracted if None)
-        output_dir: Directory for output reports (default: output)
-        overrides: Path to professor overrides JSON file (optional)
-        skip_stage2b: Skip Stage 2b (group pattern detection)
-        direct_committers: List of members to zero out (direct commits)
+        artifacts: Lista de MR artifacts
+        deadline: Deadline do projeto (ISO 8601)
+        llm_mode: "live" (API Anthropic), "dry-run" (mock), "skip" (nenhum LLM)
+        anthropic_key: Anthropic API key (obrigatório se llm_mode="live")
+        members: Lista de usernames (auto-extraída se None)
+        output_dir: Diretório de saída
+        overrides: Caminho para JSON de overrides do professor (opcional)
+        skip_stage2b: Pula Stage 2.1 (detecção de padrões)
+        direct_committers: Membros com commits diretos (penalidade W×0.40)
 
     Returns:
-        Dictionary with final scores and metadata
-
-    Raises:
-        ValueError: If llm_mode="live" but anthropic_key is missing
-        Exception: If any stage fails
+        Dict com scores finais por membro
     """
 
-    # ===== STAGE 1: Extract quantitative (ensure present) =====
+    # ===== STAGE 1: Métricas quantitativas =====
     logger.info("=" * 60)
-    logger.info("Stage 1: Quantitative metrics")
+    logger.info("Stage 1: Métricas quantitativas")
     logger.info("=" * 60)
 
     for mr in artifacts:
         if "quantitative" not in mr:
-            logger.warning(f"{mr.get('mr_id', 'UNKNOWN')}: missing quantitative — using defaults")
+            logger.warning(
+                f"{mr.get('mr_id', 'UNKNOWN')}: sem quantitative — usando defaults"
+            )
             mr["quantitative"] = {"X": 0.0, "S": 1.0, "Q": 1.0}
 
-    logger.info("Quantitative metrics verified")
+    logger.info("Métricas quantitativas verificadas")
 
-    # ===== Auto-extract members if not provided =====
     if not members:
         members = _extract_members_from_artifacts(artifacts)
-        logger.info(f"Auto-extracted {len(members)} unique members from artifacts:")
-        logger.info(f"  {', '.join(members)}")
+        logger.info(f"Auto-extraídos {len(members)} membros: {', '.join(members)}")
     else:
-        logger.info(f"Using {len(members)} provided members:")
-        logger.info(f"  {', '.join(members)}")
+        logger.info(f"Membros fornecidos ({len(members)}): {', '.join(members)}")
 
-    # ===== STAGE 2a: LLM evaluation of components =====
-    logger.info("=" * 60)
-    logger.info("Stage 2a: LLM component estimation (E, A, T_review, P)")
-    logger.info("=" * 60)
-
-    llm_estimates = []
-    if llm_mode == "skip":
-        logger.info("Skipping Stage 2a (--llm-mode skip)")
-    else:
-        # Determine if dry_run
-        dry_run = (llm_mode == "dry-run")
-
-        # Validate live mode
-        if llm_mode == "live" and not anthropic_key:
-            raise ValueError(
-                "LLM mode is 'live' but anthropic_key not provided. "
-                "Set ANTHROPIC_API_KEY env var or pass --anthropic-key"
-            )
-
-        logger.info(f"Running Stage 2a (mode={llm_mode})...")
-        output_path = os.path.join(output_dir, "mr_llm_estimates.json")
-        cache_dir = os.path.join(output_dir, "cache")
-
-        # Get prompt path (relative to this module)
-        prompt_path = os.path.join(
-            Path(__file__).parent.parent.parent,  # package root
-            "prompts",
-            "avaliacao_llm.md"
+    # Validação antecipada
+    if llm_mode == "live" and not anthropic_key:
+        raise ValueError(
+            "llm_mode='live' mas anthropic_key não fornecida. "
+            "Defina ANTHROPIC_API_KEY ou passe --anthropic-key."
         )
 
-        llm_estimates = llm_stage2a.run_stage2a(
+    dry_run  = (llm_mode == "dry-run")
+    skip_llm = (llm_mode == "skip")
+    api_key  = anthropic_key if llm_mode == "live" else None
+    cache_dir = os.path.join(output_dir, "cache")
+
+    # ===== STAGE 2.1: Detecção de padrões suspeitos =====
+    group_report  = None
+    context_flags = {}
+
+    if not skip_stage2b:
+        logger.info("=" * 60)
+        logger.info("Stage 2.1: Detecção de padrões suspeitos cross-MR")
+        logger.info("=" * 60)
+
+        group_report = llm_stage2b.detect_patterns(
             artifacts,
-            api_key=anthropic_key if llm_mode == "live" else None,
-            prompt_path=prompt_path,
+            [],          # estimativas LLM ainda não existem neste ponto
+            members,
+            deadline,
+            prompt_path=_PROMPT_PATH,
+            api_key=api_key,
+            dry_run=dry_run,
+            output_path=os.path.join(output_dir, "group_report.json"),
+        )
+        context_flags = {
+            **group_report.get("context_by_mr",  {}),
+            **group_report.get("context_by_sha", {}),
+        }
+    else:
+        logger.info("Stage 2.1 ignorado (--skip-stage2b)")
+
+    # ===== STAGE 2.2: Avaliação LLM por commit =====
+    commit_estimates = []
+
+    if not skip_llm:
+        logger.info("=" * 60)
+        logger.info("Stage 2.2: Avaliação de commits (atomicity, message_quality, scope_clarity)")
+        logger.info("=" * 60)
+
+        commit_estimates = llm_stage2_commits.run_stage2_commits(
+            artifacts,
+            api_key=api_key,
+            prompt_path=_PROMPT_PATH,
             dry_run=dry_run,
             cache_dir=cache_dir,
-            output_path=output_path,
+            output_path=os.path.join(output_dir, "commit_estimates.json"),
+            context_flags=group_report.get("context_by_sha", {}) if group_report else {},
         )
+    else:
+        logger.info("Stage 2.2 ignorado (--llm skip)")
 
-    # ===== Load overrides =====
-    logger.info("=" * 60)
-    logger.info("Loading professor overrides (if any)")
-    logger.info("=" * 60)
+    # ===== STAGE 2.3: Avaliação LLM por MR (A + T_review) =====
+    llm_estimates = []
 
+    if not skip_llm:
+        logger.info("=" * 60)
+        logger.info("Stage 2.3: Avaliação de MRs pelo LLM (A, T_review)")
+        logger.info("=" * 60)
+
+        llm_estimates = llm_stage2a.run_stage2_mr(
+            artifacts,
+            api_key=api_key,
+            prompt_path=_PROMPT_PATH,
+            dry_run=dry_run,
+            cache_dir=cache_dir,
+            output_path=os.path.join(output_dir, "mr_llm_estimates.json"),
+            context_flags=group_report.get("context_by_mr", {}) if group_report else {},
+        )
+    else:
+        logger.info("Stage 2.3 ignorado (--llm skip)")
+
+    # ===== Overrides do professor =====
     overrides_dict = None
     if overrides:
         try:
             overrides_dict = loader.load_overrides(overrides)
             if overrides_dict:
-                logger.info(f"Loaded overrides for {len(overrides_dict)} MRs")
-            else:
-                logger.info("No overrides found")
+                logger.info(f"Overrides carregados para {len(overrides_dict)} MRs")
         except Exception as e:
-            logger.warning(f"Failed to load overrides: {e}")
+            logger.warning(f"Falha ao carregar overrides: {e}")
 
-    # ===== STAGE 2b: Cross-MR pattern detection =====
-    group_report = None
-    if not skip_stage2b:
-        logger.info("=" * 60)
-        logger.info("Stage 2b: Cross-MR pattern detection")
-        logger.info("=" * 60)
-
-        output_path = os.path.join(output_dir, "group_report.json")
-
-        # Get prompt path
-        prompt_path = os.path.join(
-            Path(__file__).parent.parent.parent,
-            "prompts",
-            "avaliacao_llm.md"
-        )
-
-        group_report = llm_stage2b.detect_patterns(
-            artifacts,
-            llm_estimates if llm_estimates else [],
-            members,
-            deadline,
-            prompt_path=prompt_path,
-            api_key=anthropic_key if llm_mode == "live" else None,
-            dry_run=(llm_mode == "dry-run"),
-            output_path=output_path,
-        )
-
-    # ===== STAGE 3: Compute per-member scores =====
+    # ===== STAGE 3: Fator de contribuição =====
     logger.info("=" * 60)
-    logger.info("Stage 3: Aggregate scores per member")
+    logger.info("Stage 3: Fator de contribuição por membro")
     logger.info("=" * 60)
 
     scores = scorer.compute_scores(
@@ -201,47 +193,41 @@ def run_evaluation(
         overrides_dict,
         members,
         direct_committers=direct_committers,
+        commit_estimates=commit_estimates if commit_estimates else None,
     )
 
-    logger.info(f"Computed scores for {len(scores)} members")
+    logger.info(f"Scores calculados para {len(scores)} membros")
 
-    # ===== STAGE 4: Generate reports =====
+    # ===== STAGE 4: Relatórios =====
     logger.info("=" * 60)
-    logger.info("Stage 4: Generate reports")
+    logger.info("Stage 4: Relatórios")
     logger.info("=" * 60)
 
-    # Ensure output directory exists
     os.makedirs(output_dir, exist_ok=True)
-
-    # Print summary
     report.print_summary(scores, group_report)
 
-    # Export full report
-    full_report_path = os.path.join(output_dir, "full_report.json")
     report.export_full_report(
         artifacts,
         llm_estimates,
         scores,
         group_report,
-        output_path=full_report_path,
+        output_path=os.path.join(output_dir, "full_report.json"),
     )
 
-    # Narrative report (live mode only)
     if llm_mode == "live" and anthropic_key:
-        logger.info("Generating narrative report...")
-        narrative_path = os.path.join(output_dir, "narrative_report.txt")
+        logger.info("Gerando relatório narrativo...")
         report.generate_narrative_report(
             artifacts,
             llm_estimates if llm_estimates else [],
             scores,
             group_report,
             api_key=anthropic_key,
-            output_path=narrative_path,
+            output_path=os.path.join(output_dir, "narrative_report.txt"),
         )
 
     logger.info("=" * 60)
-    logger.info("Pipeline completed successfully")
+    logger.info("Pipeline concluído com sucesso")
+    logger.info(f"Relatórios em {output_dir}/")
     logger.info("=" * 60)
-    logger.info(f"Reports generated in {output_dir}/")
 
     return scores
